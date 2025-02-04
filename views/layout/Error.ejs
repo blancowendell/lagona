@@ -1,0 +1,76 @@
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #ff4d4d;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: #ff9900;
+      margin-bottom: 20px;
+    }
+
+    pre {
+      background-color: #f2f2f2;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .error-message {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+
+    .footer {
+      margin-top: 50px;
+      font-size: 1rem;
+      text-align: center;
+      color: #777;
+    }
+
+    .footer a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Oops! Something went wrong.</h1>
+    <h2>Error Status: <%= error.status %></h2>
+    <p class="error-message"><%= message %></p>
+    <pre><%= error.stack %></pre>
+
+    <div class="footer">
+      <p>For more details, contact the system administrator or <a href="/">go back to the homepage</a>.</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<script>
+    $(document).ready(function () {
+      console.log("Initialize");
+  
+      $(document).on("keydown", function (event) {
+        if (event.key === "Enter") {
+          $("#loginBtn").click();
+        }
+      });
+
+      $(document).on("click", "#loginBtn", function () {
+        let username = $("#username").val();
+        let password = $("#password").val();
+
+        var message = "";
+  
+        if (username === "") {
+          message += "Username ";
+        }
+  
+        if (password === "") {
+          message += "Password";
+        }
+  
+        if (message !== "") {
+          toastr.error(`Please fill up ${message}`, "Required");
+        } else {
+          $.ajax({
+            type: "POST",
+            url: "/AdminLogin/login",
+            data: {
+              username: username,
+              password: password,
+            },
+            success: function (result) {
+              if (result.msg === "success") {
+                toastr.success("Login Successful!", "Success");
+                setTimeout(() => {
+                  if (result.data[0]) {
+                    location.replace("/");
+                  } else {
+                    location.replace("/");
+                  }
+                }, 2000); // Wait 2 seconds for toast to display before redirect
+              } else if (result.msg === "inactive") {
+                toastr.error(
+                  "Your account is inactive. Please be guided accordingly.",
+                );
+              } else if (result.msg === "incorrect") {
+                toastr.error(
+                  "Incorrect Credentials. Please try again!",
+                  "Incorrect"
+                );
+              }
+            },
+            error: function (err) {
+              toastr.error("An error occurred while saving data.", "Error");
+            },
+          });
+        }
+      });
+  
+      $(document).on("click", "#forgotPasswordBtn", function (event) {
+        event.preventDefault(); // Prevent the default form submission
+  
+        let email = $("#forgotEmail").val();
+  
+        if (email === "") {
+          swal({
+            icon: "warning",
+            title: "Required",
+            text: "Please fill up email",
+          });
+        } else {
+          $.ajax({
+            type: "POST",
+            url: "/login/forgotpassword",
+            data: {
+              email: email,
+            },
+            success: function (result) {
+              if (result.msg === "success") {
+                swal({
+                  icon: "success",
+                  title: "Success",
+                  text: "Password reset link sent to your email!",
+                }).then(() => {
+                  window.location.reload();
+                });
+              } else if (result.msg === "notexist") {
+                swal({
+                  icon: "error",
+                  title: "Error",
+                  text: "Email does not exist. Please try again!",
+                });
+              } else {
+                swal({
+                  icon: "error",
+                  title: "Error",
+                  text: "An error occurred while processing your request.",
+                });
+              }
+            },
+            error: function (err) {
+              swal({
+                icon: "error",
+                title: "Error",
+                text: "A server error occurred.",
+              });
+            },
+          });
+        }
+      });
+  
+      // Toggle Password Visibility
+      document
+        .getElementById("togglePassword")
+        .addEventListener("click", function () {
+          const passwordField = document.getElementById("password");
+          const icon = this.querySelector("i");
+  
+          if (passwordField.type === "password") {
+            passwordField.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+          } else {
+            passwordField.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+          }
+        });
+    });
+  </script>

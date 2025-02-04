@@ -1,0 +1,198 @@
+<script>
+  $(document).ready(function () {
+    // Home Initializaton
+    initMap();
+    initializeCalendar();
+
+    // Data Summary Initialization
+
+    // JAS Initialization
+
+    //#region Home Tab
+    // Initialize the map
+    function initMap() {
+      const mapElement = document.getElementById("farmMap");
+      if (!mapElement) {
+        console.error("Map container not found!");
+        return;
+      }
+      const map = new google.maps.Map(mapElement, {
+        center: { lat: 13.41, lng: 122.56 },  
+        zoom: 6,  
+      });
+
+
+      // Add markers to the map
+      const markers = [
+        { position: { lat: -34.397, lng: 150.644 }, farm_id: "Farm 1" },
+        { position: { lat: -35.297, lng: 149.644 }, farm_id: "Farm 2" },
+      ];
+
+      markers.forEach((point) => {
+        new google.maps.Marker({
+          position: point.position,
+          map: map,
+          title: point.farm_id,
+          icon: {
+            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQx0y1Ensv9-dF8rpNkXhfAEfQnyWF4kXMoE_OyWbI8GQ&s", // Custom icon URL
+            scaledSize: new google.maps.Size(40, 40), 
+            origin: new google.maps.Point(0, 0), 
+            anchor: new google.maps.Point(20, 40), 
+          },
+        });
+      });
+    }
+
+    // Initialize the calendar
+    function initializeCalendar() {
+      const calendarEl = document.getElementById("showCalendar");
+      if (!calendarEl) {
+        console.error("Calendar container not found!");
+        return;
+      }
+
+      new FullCalendar.Calendar(calendarEl, {
+        headerToolbar: {
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek,timeGridDay",
+        },
+        initialView: "timeGridWeek",
+        editable: true,
+        selectable: true,
+        events: [
+          {
+            title: "Team Meeting",
+            start: "2025-01-16T10:00:00",
+            end: "2025-01-16T11:30:00",
+            description: "Discuss Q1 planning",
+            color: "#1a73e8",
+          },
+          {
+            title: "Doctor Appointment",
+            start: "2025-01-17T15:00:00",
+            end: "2025-01-17T16:00:00",
+            color: "#34a853",
+          },
+          {
+            title: "Work Deadline",
+            start: "2025-01-18T23:59:00",
+            color: "#fbbc05",
+          },
+        ],
+        eventClick: function (info) {
+          alert("Event: " + info.event.title);
+        },
+        themeSystem: "bootstrap5",
+      }).render();
+    }
+    //#endregion
+    
+    //#region Data Summary Tab
+    //#endregion
+
+    //#region JAS Tab
+
+    $('#jas-tab').on('click', function () {
+      LoadJasProfileTable(); 
+    });
+
+
+    function LoadJasProfileTable() {
+      $("#jasProfilesTable").DataTable({
+        destroy: true,
+        processing: true,
+        serverSide: true,
+        paging: true,
+        searching: true,
+        info: true,
+        scrollY: 600,
+        scrollCollapse: true,
+        serverMethod: "GET",
+        ajax: {
+          url: "/JasProfiles/load",
+          dataSrc: (json) => {
+            var finalData = [];
+            var data = json.data;
+
+            console.log(data);
+
+            $.each(data, (key, item) => {
+              var action = `
+                              <button id="editBtn" class="btn text-success" name="editBtn" data-bs-toggle="modal" data-bs-target="#viewstudentsmodal">
+                              <i class="fas fa-fw fa-pen"></i>
+                              </button>
+                          `;
+
+              finalData.push({
+                id: item.id,
+                member_id: item.member_id,
+                firstname: item.firstname,
+                lastname: item.lastname,
+                phone: item.phone,
+                year: item.year,
+                technician: item.technician,
+                area: item.area,
+                create_date: item.create_date,
+                modified_at: item.modified_at,
+                action: action,
+              });
+            });
+
+            return finalData;
+          },
+        },
+        columns: [
+        { data: "id" },
+          { data: "member_id" },
+          { data: "firstname" },
+          { data: "lastname" },
+          { data: "phone" },
+          { data: "year" },
+          { data: "technician" },
+          { data: "area" },
+          { data: "create_date" },
+          { data: "modified_at" },
+          { data: "action" },
+        ],
+        createdRow: function (row, data, dataIndex) {
+          // var jobStatusCell = $(row).find("td:eq(2)");
+          // var jobStatusText = data.assessment_type;
+
+          // var jobStatusClass = "";
+          // if (jobStatusText === "Personality Test") {
+          //     jobStatusClass =
+          //         "badge badge-sm bg-gradient-success text-white rounded-pill";
+          // } else if (jobStatusText === "Interest Assessment") {
+          //     jobStatusClass =
+          //         "badge badge-sm bg-gradient-danger text-white rounded-pill";
+          // }
+
+          // else if (jobStatusText === "Skill Assessment") {
+          //     jobStatusClass =
+          //         "badge badge-sm bg-gradient-warning text-black rounded-pill";
+          // }
+
+          // jobStatusCell.html(
+          //     `<span class="${jobStatusClass}">${jobStatusText}</span>`
+          // );
+
+          $("td", row).each(function () {
+            this.style.textAlign = "center";
+            this.style.verticalAlign = "middle";
+            this.style.fontSize = "14px";
+          });
+        },
+        initComplete: function () {
+          $("#dataTableStrandsType thead th").css({
+            "font-size": "14px",
+            "font-weight": "bold",
+            "text-align": "center",
+          });
+        },
+      });
+    }
+
+    //#endregion
+  });
+</script>
