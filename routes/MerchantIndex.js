@@ -1,7 +1,7 @@
 const mysql = require("./repository/lagonaDb");
 //const moment = require('moment');
 var express = require("express");
-const { UserValidator } = require("./controller/middleware");
+const { MerchantValidator } = require("./controller/middleware");
 const {
   JsonErrorResponse,
   JsonSuccess,
@@ -14,18 +14,17 @@ const {
   SelectStatement,
   InsertStatement,
   UpdateStatement,
+  GetCurrentDatetime,
 } = require("./repository/customhelper");
+const { generateCode, refineCurrencyInput } = require("./repository/helper");
 const { DataModeling } = require("./model/lagonaDb");
 var router = express.Router();
 //const currentDate = moment();
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  Validator(req, res, "ApiAppLayout");
+  MerchantValidator(req, res, "MerchantIndexLayout");
 });
 
-
-
 module.exports = router;
-
 

@@ -111,6 +111,28 @@ exports.UserLogin = (result, callback) => {
   }
 };
 
+exports.MerchantLogin = (result, callback) => {
+  try {
+    const MerchantData = [];
+
+    result.forEach((row) => {
+      MerchantData.push({
+        merchant_id: row.merchant_id,
+        merchant_code: row.merchant_code,
+        fullname: row.fullname,
+        role_type: row.role_type,
+        status: row.status,
+        image: row.image,
+      });
+    });
+
+    return MerchantData;
+  } catch (error) {
+    console.log(error);
+    callback(error);
+  }
+};
+
 exports.AdminLogin = (result, callback) => {
   try {
     const AdminData = [];
@@ -167,7 +189,7 @@ exports.generateUsernameAndPasswordforOjt = (ojt) => {
 };
 
 exports.generateCode = function(length) {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // Characters to choose from
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; // Characters to choose from
   let result = '';
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * chars.length);
