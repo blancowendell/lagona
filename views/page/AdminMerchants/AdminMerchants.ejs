@@ -3,7 +3,7 @@
       <div class="col-12">
         <div class="card mb-4">
             <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-                <h6>Loading Stations</h6>
+                <h6>Merchants</h6>
                 <!-- Dropdowns and Filter Button -->
                 <div class="d-flex align-items-center">
                     <div class="me-2">
@@ -20,22 +20,20 @@
                             <option value="option2">Option 2</option>
                         </select>
                     </div>
-                    <button class="btn lagona_class-btn btn-sm" data-bs-toggle="modal" data-bs-target="#addLoadStationModal">
-                        Add
+                    <button class="btn lagona_class-btn btn-sm" data-bs-toggle="modal" data-bs-target="#addMerchantModal">
+                        Add Merchant
                     </button>                    
                 </div>
             </div>
           <div class="card-body px-0 pt-0 pb-2">
             <div class="table-responsive p-0">
-              <table class="table align-items-center mb-0" id="dataTableLoadignStation">
+              <table class="table align-items-center mb-0" id="dataTableMerchants">
                 <thead>
                     <tr>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">ID</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Hub Code</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Owner</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Station Code</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Address</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Business Hub Name</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Business Name</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Branch</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Phone Number</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Status</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Register Date</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Action</th>
@@ -52,59 +50,69 @@
 </div>
 
 <!-- Add Modal -->
-<div class="modal fade" id="addLoadStationModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addMerchantModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header" id="modal-header">
                 <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
                 colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
-                <h3 class="modal-title" id="exampleModalLabel">Add Load Station</h3>
+                <h3 class="modal-title" id="exampleModalLabel">Enroll Merchant</h3>
                 <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
             </div>
             <div class="modal-body" id="modal-body">
                 <form>
                     <div class="row g-3">
-                        <!-- <div class="col-12">
+                        <div class="col-12">
                             <div class="text-center mb-3">
-                                <img id="userImagePreview" src="/img/userimage.jpg" alt="User Image" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                                <img id="userImagePreview" src="/img/userimage.jpg" alt="User Image" class="img-thumbnail rounded" style="width: 200px; height: 200px; object-fit: cover;">
                                 <br><br>
-                                <input type="file" class="form-control" id="edituserimage" name="edituserimage" accept="image/*">
-                                <label for="edituserimage" class="form-label">Upload Profile Image</label>
+                                <input type="file" class="form-control" id="addmerchantimg" name="addmerchantimg" accept="image/*">
+                                <label for="addmerchantimg" class="form-label">Upload Merchant Image</label>
                             </div>
-                        </div> -->
+                        </div>
 
                         <!-- Hub Name -->
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <select class="form-control border-form-modal" id="addhubname" name="addhubname" placeholder="Hub Name">
-                                    <option selected disabled>Chose Hub Name</option>
-                                </select>
-                                <label for="addhubname">Hub Name</label>
-                            </div>
-                        </div>
-
-
-                        <!-- Owner Name-->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="addloadname" name="addloadname" placeholder="Load Name">
-                                <label for="addloadname">Load Station Name</label>
+                                <input type="text" class="form-control border-form-modal" id="addbusinessname" name="addbusinessname" placeholder="Business Name">
+                                <label for="addbusinessname">Business Name</label>
                             </div>
                         </div>
 
                         <!-- Owner Name-->
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="addownername" name="addownername" placeholder="Owner Name">
-                                <label for="addownername">Owner Name</label>
+                                <input type="text" class="form-control border-form-modal" id="addbranch" name="addbranch" placeholder="Branch Name">
+                                <label for="addbranch">Business Branch</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="addowner" name="addowner" placeholder="Merchant Owner">
+                                <label for="addowner">Business Owner</label>
                             </div>
                         </div>
 
                         <!-- Hub Address -->
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="addlaodaddress" name="addlaodaddress" placeholder="Load Address">
-                                <label for="addlaodaddress">Load Address</label>
+                                <input type="text" class="form-control border-form-modal" id="addmerchaddress" name="addmerchaddress" placeholder="Merchant Address">
+                                <label for="addmerchaddress">Merchant Address</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="addlatitude" name="addlatitude" placeholder="Latitude Address">
+                                <label for="addlatitude">Latitude Address</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="addlongitude" name="addlongitude" placeholder="Longitude Address">
+                                <label for="addlongitude">Longitude Address</label>
                             </div>
                         </div>
 
@@ -124,15 +132,13 @@
                             </div>
                         </div>
 
-                        <!-- School Name -->
-                        <!-- <div class="col-md-6">
+                        <!-- Qr Code -->
+                        <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control border-form-moda" id="addstartbudget" name="addstartbudget" placeholder="Starting Budget"
-                                oninput="formatPrice(event, this)">
-                                <label for="addstartbudget">Starting Budget</label>
+                                <input type="file" class="form-control" id="addqrcode" name="addqrcode" accept="image/*">
+                                <label for="addqrcode">Upload QR Code</label>
                             </div>
-                        </div> -->
-                        
+                        </div>
 
                          <!-- Username -->
                         <div class="col-md-6">
@@ -154,128 +160,118 @@
                             </div>
                         </div>
 
-                        <div class="col-12">
-                            <div class="text-center mb-3">
-                                <label for="addnotes">Notes</label>
-                                <textarea name="addnotes" id="addnotes" class="form-control border-form-modal" placeholder="Description" rows="3"></textarea>
-                            </div>
-                        </div>
-
                     </div>
                     <br>
                 </form>
             </div>
             <div class="modal-footer" id="modal-footer">
                 <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveLoadStationBtn">Save</button>
+                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveMerchantBtn">Save</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Edit Modal -->
-<div class="modal fade" id="editLoadStationModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="viewMerchantModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header" id="modal-header">
                 <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
                 colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
-                <h3 class="modal-title" id="editModalLabel">Edit Load Station</h3>
+                <h3 class="modal-title" id="editModalLabel">Edit Business Hub</h3>
                 <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
             </div>
             <div class="modal-body" id="modal-body">
-                <form>
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <div class="text-center mb-3">
-                                <label class="fw-bold">Remaining Budget</label>
-                                <h3 id="startingBudgetDisplay" class="fw-bold text-success">₱0.00</h3>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 p-0">
+                            <nav aria-label="breadcrumb ">
+                                <ol class="breadcrumb py-3 px-3">
+                                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="#">Library</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Data</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-12 bg-white p-0 px-3 py-3 mb-3">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <img id="viewUserImagePreview" class="photo"
+                                            src="https://images.unsplash.com/photo-1541647376583-8934aaf3448a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
+                                            alt="">
+                                        <p class="fw-bold h4 mt-3" id="viewbname"></p>
+                                        <p class="text-muted" id="viewcode"></p>
+                                        <p class="text-muted mb-3" id="viewbranch"></p>
+                                        <div class="d-flex ">
+                                            <div class="btn btn-primary follow me-2">QR Code</div>
+                                            <div class="btn btn-outline-primary message">Message</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 bg-white p-0 px-2 pb-3 mb-3">
+                                    <div class="d-flex justify-content-between border-bottom py-2 px-3">
+                                        <p><span class="fas fa-globe me-2"></span>Website</p>
+                                        <a href="#">https://bootdey.com</a>
+                                    </div>
+                                    <div class="d-flex justify-content-between border-bottom py-2 px-3">
+                                        <p><span class="fab fa-github-alt me-2"></span>Github</p>
+                                        <a href="">bootdey</a>
+                                    </div>
+                                    <div class="d-flex justify-content-between border-bottom py-2 px-3">
+                                        <p><span class="fab fa-twitter me-2"></span>Twitter</p>
+                                        <a href="">@bootdey</a>
+                                    </div>
+                                    <div class="d-flex justify-content-between border-bottom py-2 px-3">
+                                        <p><span class="fab fa-instagram me-2"></span>Instagram</p>
+                                        <a href="">bootdey</a>
+                                    </div>
+                                    <div class="d-flex justify-content-between py-2 px-3">
+                                        <p><span class="fab fa-facebook-f me-2"></span>facebook</p>
+                                        <a href="">bootdey</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Hub Name -->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <select class="form-control border-form-modal" id="editHubName" name="editHubName" placeholder="Hub Name">
-                                    <option selected disabled>Chose Hub Name</option>
-                                </select>
-                                <label for="editHubName">Hub Name-Code</label>
-                            </div>
-                        </div>
-
-                          <!-- Hub Name -->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="editloadname" name="editloadname" placeholder="Load Station Name">
-                                <label for="editloadname">Load Station Name</label>
-                            </div>
-                        </div>
-
-                        <!-- Owner Name-->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="editOwnerName" name="editOwnerName" placeholder="Owner Name" value="Existing Owner Name">
-                                <label for="editOwnerName">Owner Name</label>
-                            </div>
-                        </div>
-
-                        <!-- Hub Address -->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="editloadaddress" name="editloadaddress" placeholder="Load Station Address">
-                                <label for="editloadaddress">Load Station Address</label>
-                            </div>
-                        </div>
-
-                        <!-- Phone Number -->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="editPhoneNumber" name="editPhoneNumber" placeholder="Phone Number" value="Existing Phone Number">
-                                <label for="editPhoneNumber">Phone Number</label>
-                            </div>
-                        </div>
-
-                        <!-- Email Address -->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="email" class="form-control border-form-modal" id="editEmail" name="editEmail" placeholder="Email" value="Existing Email Address">
-                                <label for="editEmail">Email</label>
-                            </div>
-                        </div>
-
-                        <!-- Username -->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="editUsername" name="editUsername" placeholder="Username" value="existing_username">
-                                <label for="editUsername">Username</label>
-                            </div>
-                        </div>
-
-                        <!-- Password Field with Eye Icon -->
-                        <div class="col-md-6">
-                            <div class="form-floating position-relative">
-                                <input type="password" class="form-control border-form-modal" id="editPassword" name="editPassword" placeholder="Password" value="existing_password">
-                                <label for="editPassword">Password</label>
-                                <!-- Eye Icon -->
-                                <span class="position-absolute top-50 end-0 translate-middle-y me-3 toggle-password" id="togglePasswordEdit" style="cursor: pointer;">
-                                    <i class="fas fa-eye" id="eyeIconEdit"></i>
-                                </span>                                 
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <div class="text-center mb-3">
-                                <label for="editNotes">Notes</label>
-                                <textarea name="editNotes" id="editNotes" class="form-control border-form-modal" placeholder="Description" rows="3"></textarea>
+                        <div class="col-md-7 ps-md-4">
+                            <div class="row">
+                                <div class="col-12 bg-white px-3 mb-3 pb-3">
+                                    <div class="d-flex align-items-center justify-content-between border-bottom">
+                                        <p class="py-2">Owner Name</p>
+                                        <p class="py-2 text-muted" id="viewfname"></p>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between border-bottom">
+                                        <p class="py-2">Branch Name</p>
+                                        <p class="py-2 text-muted" id="viewbranch2"></p>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between border-bottom">
+                                        <p class="py-2">Merchant Phone</p>
+                                        <p class="py-2 text-muted" id="viewmobile"></p>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between border-bottom">
+                                        <p class="py-2">Merchant Email</p>
+                                        <p class="py-2 text-muted" id="viewemail"></p>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <p class="py-2">Merchant Address</p>
+                                        <p class="py-2 text-muted" id="viewaddress"></p>
+                                    </div>
+                                </div>
+                                <div class="col-12 bg-white px-3 pb-2">
+                                    <h6 class="d-flex align-items-center mb-3 fw-bold py-3"><i
+                                            class="text-warning me-2">merchant</i>Pin
+                                        Location</h6>
+                                        <div id="farmMap" style="height: 300px;"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <br>
-                </form>
+                </div>
             </div>
             <div class="modal-footer" id="modal-footer">
                 <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveEditLoadStationBtn">Save Changes</button>
+                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveEditHubBtn">Save Changes</button>
             </div>
         </div>
     </div>

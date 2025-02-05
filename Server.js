@@ -18,6 +18,10 @@ var AdminIndexRouter = require("./routes/AdminIndex");
 var AdminLoginRouter = require("./routes/AdminLogin");
 var AdminHubsRouter = require("./routes/AdminHubs");
 var AdminLoadingStationRouter = require("./routes/AdminLoadingStation");
+var AdminRidersRouter = require("./routes/AdminRiders");
+var AdminMerchantsRouter = require("./routes/AdminMerchants");
+var MerchantLoginRouter = require("./routes/MerchantLogin");
+var MerchantIndexRouter = require("./routes/MerchantIndex");
 //#endregion
 
 var app = express();
@@ -48,6 +52,10 @@ app.use("/", AdminIndexRouter);
 app.use("/AdminLogin", AdminLoginRouter);
 app.use("/AdminHubs", AdminHubsRouter);
 app.use("/AdminLoadingStation", AdminLoadingStationRouter);
+app.use("/AdminRiders", AdminRidersRouter);
+app.use("/AdminMerchants", AdminMerchantsRouter);
+app.use("/MerchantLogin", MerchantLoginRouter);
+app.use("/MerchantIndex", MerchantIndexRouter);
 //#endregion
 
 app.use(function (req, res, next) {

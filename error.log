@@ -174,3 +174,107 @@ Require stack:
 2025-02-05T02:24:21.609Z [error]: Not Found
 2025-02-05T02:24:40.101Z [error]: Not Found
 2025-02-05T07:01:29.968Z [error]: Not Found
+2025-02-05T10:12:13.430Z [error]: Not Found
+2025-02-05T10:57:45.279Z [error]: Not Found
+2025-02-05T10:57:45.967Z [error]: Not Found
+2025-02-05T10:58:29.597Z [error]: Not Found
+2025-02-05T10:58:29.668Z [error]: Not Found
+2025-02-05T10:59:58.011Z [error]: Not Found
+2025-02-05T10:59:58.099Z [error]: Not Found
+2025-02-05T11:01:26.286Z [error]: Not Found
+2025-02-05T11:01:26.305Z [error]: Not Found
+2025-02-05T11:10:47.927Z [error]: Not Found
+2025-02-05T11:27:57.880Z [error]: Not Found
+2025-02-05T12:25:33.701Z [error]: Not Found
+2025-02-05T12:25:35.977Z [error]: Not Found
+2025-02-05T12:25:43.311Z [error]: Not Found
+2025-02-05T12:25:46.671Z [error]: Not Found
+2025-02-05T12:25:46.720Z [error]: Not Found
+2025-02-05T12:43:09.477Z [error]: Not Found
+2025-02-05T12:43:09.842Z [error]: Not Found
+2025-02-05T12:44:00.009Z [error]: Not Found
+2025-02-05T12:44:00.625Z [error]: Not Found
+2025-02-05T12:46:50.680Z [error]: Not Found
+2025-02-05T12:46:50.693Z [error]: Not Found
+2025-02-05T12:52:05.854Z [error]: Not Found
+2025-02-05T12:52:12.211Z [error]: Not Found
+2025-02-05T13:27:48.592Z [error]: Not Found
+2025-02-05T13:35:55.769Z [error]: Not Found
+2025-02-05T13:37:29.525Z [error]: Not Found
+2025-02-05T13:39:24.611Z [error]: C:\Users\PC 3\Documents\Lagona_Express\lagona\views\layout\AdminMerchantsLayout.ejs:23
+    21|   <!--   Core JS Files   -->
+    22|   <%- include("../components/AdminScripts.ejs")%>
+ >> 23|   <%- include("../page/AdminMerchantsAdminMerchantsScript.ejs")%>
+    24| </body>
+    25| 
+    26| </html>
+
+Could not find the include file "../page/AdminMerchantsAdminMerchantsScript.ejs"
+2025-02-05T13:40:21.594Z [error]: C:\Users\PC 3\Documents\Lagona_Express\lagona\views\layout\AdminMerchantsLayout.ejs:23
+    21|   <!--   Core JS Files   -->
+    22|   <%- include("../components/AdminScripts.ejs")%>
+ >> 23|   <%- include("../page/AdminMerchantsAdminMerchantsScript.ejs")%>
+    24| </body>
+    25| 
+    26| </html>
+
+Could not find the include file "../page/AdminMerchantsAdminMerchantsScript.ejs"
+2025-02-05T14:28:56.873Z [error]: Not Found
+2025-02-05T14:28:57.511Z [error]: Not Found
+2025-02-05T14:29:35.166Z [error]: Not Found
+2025-02-05T14:29:35.210Z [error]: Not Found
+2025-02-05T14:31:38.187Z [error]: Not Found
+2025-02-05T14:31:38.216Z [error]: Not Found
+2025-02-05T14:39:27.597Z [error]: Not Found
+2025-02-05T14:39:43.696Z [error]: Not Found
+2025-02-05T14:40:53.418Z [error]: Not Found
+2025-02-05T14:41:23.644Z [error]: Not Found
+2025-02-05T14:41:29.080Z [error]: Not Found
+2025-02-05T14:41:49.558Z [error]: Not Found
+2025-02-05T14:46:40.834Z [error]: Not Found
+2025-02-05T14:49:26.266Z [error]: Not Found
+2025-02-05T14:50:48.319Z [error]: Not Found
+2025-02-05T14:50:49.057Z [error]: Not Found
+2025-02-05T14:55:06.665Z [error]: Not Found
+2025-02-05T15:14:30.452Z [error]: Not Found
+2025-02-05T15:14:30.985Z [error]: Not Found
+2025-02-05T15:14:37.984Z [error]: Not Found
+2025-02-05T15:14:38.037Z [error]: Not Found
+2025-02-05T15:14:52.664Z [error]: Not Found
+2025-02-05T15:14:52.711Z [error]: Not Found
+2025-02-05T15:27:54.388Z [error]: Not Found
+2025-02-05T15:27:58.910Z [error]: Not Found
+2025-02-05T15:28:03.095Z [error]: Not Found
+2025-02-05T15:28:18.898Z [error]: Not Found
+2025-02-05T16:11:43.068Z [error]: Not Found
+2025-02-05T16:12:16.088Z [error]: Not Found
+2025-02-05T16:44:19.701Z [error]: Not Found
+2025-02-05T16:44:20.215Z [error]: Not Found
+2025-02-05T16:55:41.666Z [error]: Not Found
+2025-02-05T16:55:42.359Z [error]: Not Found
+2025-02-05T17:00:18.731Z [error]: Not Found
+2025-02-05T17:00:19.324Z [error]: Not Found
+2025-02-05T17:00:22.674Z [error]: Not Found
+2025-02-05T17:00:22.729Z [error]: Not Found
+2025-02-05T17:00:30.719Z [error]: Not Found
+2025-02-05T17:00:30.749Z [error]: Not Found
+2025-02-05T17:07:16.475Z [error]: Not Found
+2025-02-05T17:07:17.045Z [error]: Not Found
+2025-02-05T17:07:39.017Z [error]: Not Found
+2025-02-05T17:07:39.035Z [error]: Not Found
+2025-02-05T17:07:41.921Z [error]: Not Found
+2025-02-05T17:07:41.952Z [error]: Not Found
+2025-02-05T17:09:26.139Z [error]: Not Found
+2025-02-05T17:09:26.163Z [error]: Not Found
+2025-02-05T17:09:31.239Z [error]: Not Found
+2025-02-05T17:09:31.281Z [error]: Not Found
+2025-02-05T17:10:23.528Z [error]: Not Found
+2025-02-05T17:10:23.546Z [error]: Not Found
+2025-02-05T17:10:27.236Z [error]: Not Found
+2025-02-05T17:10:27.249Z [error]: Not Found
+2025-02-05T17:14:03.684Z [error]: Not Found
+2025-02-05T17:14:03.722Z [error]: Not Found
+2025-02-05T17:14:29.033Z [error]: Not Found
+2025-02-05T17:14:29.094Z [error]: Not Found
+2025-02-05T17:17:45.038Z [error]: Not Found
+2025-02-05T17:19:48.993Z [error]: Not Found

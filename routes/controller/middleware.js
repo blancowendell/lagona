@@ -11,8 +11,52 @@ var roleacess = [
       {
         layout: "AdminLoadingStationLayout",
       },
+      {
+        layout: "AdminRidersLayout",
+      },
+      {
+        layout: "AdminMerchantsLayout",
+      },
       // {
-      //   layout: "AdminLoadingStationLayout",
+      //   layout: "master_studentlayout",
+      // },
+      // {
+      //   layout: "announcementslayout",
+      // },
+      // {
+      //   layout: "pendingapplicationlayout",
+      // },
+      // {
+      //   layout: "calendarlayout",
+      // },
+      // {
+      //   layout: "questionslayout",
+      // },
+      // {
+      //   layout: "scholarshiplayout",
+      // },
+      // {
+      //   layout: "approvedapplicationlayout",
+      // },
+      // {
+      //   layout: "master_gradeslayout",
+      // },
+    ],
+  },
+  {
+    role: "Merchant",
+    routes: [
+      {
+        layout: "MerchantIndexLayout",
+      },
+      // {
+      //   layout: "accesslayout",
+      // },
+      // {
+      //   layout: "adminuserslayout",
+      // },
+      // {
+      //   layout: "institutionslayout",
       // },
       // {
       //   layout: "courseslayout",
@@ -43,50 +87,6 @@ var roleacess = [
       // },
     ],
   },
-  // {
-  //   role: "MAYOR",
-  //   routes: [
-  //     {
-  //       layout: "indexlayout",
-  //     },
-  //     {
-  //       layout: "accesslayout",
-  //     },
-  //     {
-  //       layout: "adminuserslayout",
-  //     },
-  //     {
-  //       layout: "institutionslayout",
-  //     },
-  //     {
-  //       layout: "courseslayout",
-  //     },
-  //     {
-  //       layout: "master_studentlayout",
-  //     },
-  //     {
-  //       layout: "announcementslayout",
-  //     },
-  //     {
-  //       layout: "pendingapplicationlayout",
-  //     },
-  //     {
-  //       layout: "calendarlayout",
-  //     },
-  //     {
-  //       layout: "questionslayout",
-  //     },
-  //     {
-  //       layout: "scholarshiplayout",
-  //     },
-  //     {
-  //       layout: "approvedapplicationlayout",
-  //     },
-  //     {
-  //       layout: "master_gradeslayout",
-  //     },
-  //   ],
-  // },
   // {
   //   role: "STUDENT",
   //   routes: [
@@ -150,6 +150,51 @@ exports.AdminValidator = function (req, res, layout) {
       if (counter == roleacess.length) {
         if (!ismatch) {
           res.redirect("/AdminLogin");
+        }
+      }
+    });
+  }
+};
+
+exports.MerchantValidator = function (req, res, layout) {
+
+  let ismatch = false;
+  let counter = 0;
+  if (req.session.accesstype == "Merchant" && layout == "MerchantIndex") {
+    console.log("hit");
+    return res.render(`${layout}`, {
+      image: req.session.image,
+      merchant_id: req.session.merchant_id,
+      merchant_code: req.session.merchant_code,
+      fullname: req.session.fullname,
+      role_type: req.session.role_type,
+      status: req.session.status,
+    });
+  } else {
+    roleacess.forEach((key, item) => {
+      counter += 1;
+      var routes = key.routes;
+
+      routes.forEach((value, index) => {
+
+        if (key.role == req.session.role_type && value.layout == layout) {
+          console.log("Role: ", req.session.role_type, "Layout: ", layout);
+          ismatch = true;
+
+          return res.render(`${layout}`, {
+            image: req.session.image,
+            merchant_id: req.session.merchant_id,
+            merchant_code: req.session.merchant_code,
+            fullname: req.session.fullname,
+            role_type: req.session.role_type,
+            status: req.session.status,
+          });
+        }
+      });
+
+      if (counter == roleacess.length) {
+        if (!ismatch) {
+          res.redirect("/MerchantLogin");
         }
       }
     });

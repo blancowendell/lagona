@@ -52,4 +52,31 @@ exports.Decrypter = (hash, callback) => {
     }
 }
 
+exports.DecrypterString = (hash) => {
+    try {
+      let decipher = crypto.createDecipheriv(algorithm, Securitykey, initVector);
+      let decryptedData = decipher.update(hash, "hex", "utf8");
+      decryptedData += decipher.final("utf-8");
+  
+      return decryptedData;
+    } catch (error) {
+      throw error;
+    }
+  };
+  
+  
+  exports.EncrypterString = (password) => {
+    try {
+      let cipher = crypto.createCipheriv(algorithm, Securitykey, initVector);
+      let encryptedData = cipher.update(password, "utf-8", "hex");
+      encryptedData += cipher.final("hex");
+  
+      //callback(null, encryptedData);
+      return encryptedData;
+    } catch (error) {
+      throw error;
+      //callback(error, null);
+    }
+  };
+
   

@@ -1,12 +1,46 @@
 <script>
-  let load_station_id = "";
+  let base64String = "";
+  let merchant_id = "";
   $(document).ready(function () {
     LoadTable();
-    LoadHubList();
-    LoadHubListEdit();
+    initMap();
+
+
+    function initMap() {
+      const mapElement = document.getElementById("farmMap");
+      if (!mapElement) {
+        console.error("Map container not found!");
+        return;
+      }
+      const map = new google.maps.Map(mapElement, {
+        center: { lat: 13.41, lng: 122.56 },  
+        zoom: 6,  
+      });
+
+
+      // Add markers to the map
+      const markers = [
+        { position: { lat: -34.397, lng: 150.644 }, farm_id: "Farm 1" },
+        { position: { lat: -35.297, lng: 149.644 }, farm_id: "Farm 2" },
+      ];
+
+      markers.forEach((point) => {
+        new google.maps.Marker({
+          position: point.position,
+          map: map,
+          title: point.farm_id,
+          icon: {
+            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQx0y1Ensv9-dF8rpNkXhfAEfQnyWF4kXMoE_OyWbI8GQ&s", // Custom icon URL
+            scaledSize: new google.maps.Size(40, 40), 
+            origin: new google.maps.Point(0, 0), 
+            anchor: new google.maps.Point(20, 40), 
+          },
+        });
+      });
+    }
 
     function LoadTable() {
-      $("#dataTableLoadignStation").DataTable({
+      $("#dataTableMerchants").DataTable({
         destroy: true,
         processing: true,
         serverSide: true,
@@ -17,7 +51,7 @@
         scrollCollapse: true,
         serverMethod: "GET",
         ajax: {
-          url: "/AdminLoadingStation/load",
+          url: "/AdminMerchants/load",
           dataSrc: (json) => {
             var finalData = [];
             var data = json.data;
@@ -26,21 +60,19 @@
 
             $.each(data, (key, item) => {
               var action = `
-                                  <button id="editBtn" class="lagona_class-btn btn" name="editBtn" data-bs-toggle="modal" data-bs-target="#editLoadStationModal">
+                                  <button id="editBtn" class="lagona_class-btn btn" name="editBtn" data-bs-toggle="modal" data-bs-target="#editBusinessHubModal">
                                   <i class="fas fa-fw fa-pen"></i>
                                   </button>
-                                  <button id="topUpBtn" class="lagona_class-btn btn" name="topUpBtn" data-bs-toggle="modal" data-bs-target="#topUpModal">
+                                  <button id="viewBtn" class="lagona_class-btn btn" name="topUpBtn" data-bs-toggle="modal" data-bs-target="#viewMerchantModal">
                                   <i class="fas fa-fw fa-eye"></i>
                                   </button>
                               `;
 
               finalData.push({
-                station_id: item.station_id,
-                hub_code: item.hub_code,
-                owner_name: item.owner_name,
-                load_code: item.load_code,
-                load_address: item.load_address,
-                hub_name: item.hub_name,
+                merchant_id: item.merchant_id,
+                business_name: item.business_name,
+                business_branch: item.business_branch,
+                mobile: item.mobile,
                 status: item.status,
                 create_date: item.create_date,
                 action: action,
@@ -51,12 +83,10 @@
           },
         },
         columns: [
-          { data: "station_id" },
-          { data: "hub_code" },
-          { data: "owner_name" },
-          { data: "load_code" },
-          { data: "load_address" },
-          { data: "hub_name" },
+          { data: "merchant_id" },
+          { data: "business_name" },
+          { data: "business_branch" },
+          { data: "mobile" },
           { data: "status" },
           { data: "create_date" },
           { data: "action" },
@@ -99,86 +129,92 @@
       });
     }
 
-    function LoadHubList() {
-      $.ajax({
-        type: "GET",
-        url: "/AdminHubs/load",
-        success: function (result) {
-          var data = result.data;
-
-          $.each(data, function (key, item) {
-            var options = new Option(item.hub_id, item.hub_id);
-            $(options).html((item.hub_name) + ' - ' + (item.hub_code));
-            $("#addhubname").append(options);
-          });
-        },
-        error: function (result) {
-          alert("error: " + result.data);
-        },
-      });
-    }
-
-    $(document).on("click", "#saveLoadStationBtn", function () {
-      let hub_code = $("#addhubname").val();
-      let ownername = $("#addownername").val();
-      let load_station_name = $("#addloadname").val();
-      let load_station_address = $("#addlaodaddress").val();
+    $(document).on("click", "#saveMerchantBtn", function () {
+      let business_name = $("#addbusinessname").val();
+      let business_branch = $("#addbranch").val();
+      let merchant_address = $("#addmerchaddress").val();
+      let merchant_owner = $("#addowner").val();
+      let latitude = $("#addlatitude").val();
+      let longitude = $("#addlongitude").val();
+      let UploadQRCode = $("#addqrcode").val();
       let phone_number = $("#addcpnumber").val();
       let email = $("#addemail").val();
       let username = $("#addusername").val();
       let password = $("#addpassword").val();
-      let notes = $("#addnotes").val();
+      let logo = base64String;
 
       var message = "";
 
-      if (load_station_name === "") {
-        message += "Station Name is required ";
+
+      if (merchant_owner === "") {
+        message += "Merchant Owner is required ";
       }
 
-      if (ownername === "") {
-        message += "Owner Name is required ";
+      if (business_name === "") {
+        message += "Business Name is required ";
       }
 
-      if (load_station_address === "") {
-        message += "Load Address is required ";
+      if (business_branch === "") {
+        message += "Business Branch is required ";
       }
 
-      if (phone_number === "") {
-        message += "Phone Number is required ";
+      if (merchant_address === "") {
+        message += "Merchant Address is required ";
+      }
+      
+      if (latitude === "") {
+        message += "Latitude Address is required ";
       }
 
-      if (email === "") {
+      if (longitude === "") {   
+        message += "Longitude Address is required ";
+      }
+
+      if (UploadQRCode === "") {
+        message += "QR Code is required ";
+      }
+
+      if (email === "" || email === null) { 
         message += "Load Email is required ";
       }
 
-      if (username === "") {
+      if (logo === "") {
+        message += "Logo is required ";
+      }
+
+      if (username === "" || username === null) {
         message += "Load Username is required ";
       }
 
-      if (password === "") {
+      if (password === "" || password === null) {
         message += "Load Password is required ";
       }
 
-      if (notes === "") {
-        message += "Load Notes is required ";
+      if (phone_number === "" || phone_number === null) {
+        message += "Load Phone Number is required ";
       }
-      
+
+
       if (message !== "") {
         toastr.error(`Please fill up ${message}`, "Required");
       } else {
         $.ajax({
           type: "POST",
-          url: "/AdminLoadingStation/save",
+          url: "/AdminMerchants/save",
           data: {
-            hub_code: hub_code,
-            owner_name: ownername,
-            load_station_name: load_station_name,
-            load_station_address: load_station_address,
-            phone_number: phone_number,
+            business_name: business_name,
+            merchant_owner: merchant_owner,
+            business_branch: business_branch,
+            merchant_address: merchant_address,
+            latitude: latitude,
+            longitude: longitude,   
+            qr_code: UploadQRCode,
             email: email,
+            phone_number: phone_number,
+            logo: logo,
             username: username,
             password: password,
-            notes: notes,
+             
           },
           success: function (result) {
             if (result.msg == "success") {
@@ -197,7 +233,7 @@
       }
     });
 
-    $("#dataTableLoadignStation tbody").on("click", "tr", function () {
+    $("#dataTableMerchants tbody").on("click", "tr", function () {
       var dataRow = [];
       $(this)
         .closest("tr")
@@ -205,52 +241,39 @@
         .each(function () {
           dataRow.push($(this).text());
         });
-      load_station_id = dataRow[0];
+      merchant_id = dataRow[0];
       console.log(dataRow);
     });
 
-    function LoadHubListEdit() {
-      $.ajax({
-        type: "GET",
-        url: "/AdminHubs/load",
-        success: function (result) {
-          var data = result.data;
-
-          $.each(data, function (key, item) {
-            var options = new Option(item.hub_id, item.hub_id);
-            $(options).html((item.hub_name) + ' - ' + (item.hub_code));
-            $("#editHubName").append(options);
-          });
-        },
-        error: function (result) {
-          alert("error: " + result.data);
-        },
-      });
-    }
-
-    $(document).on("click", "#editBtn", function () {
+    $(document).on("click", "#viewBtn", function () {
       $.ajax({
         type: "POST",
-        url: "/AdminLoadingStation/getloadstation",
+        url: "/AdminMerchants/viewmerchant",
         data: {
-          load_station_id: load_station_id,
+            merchant_id: merchant_id,
         },
         success: function (result) {
           if (result.msg === "success") {
-            const existingData = result.data;
+            const existingData = result.data;            
 
             $.each(existingData, (key, item) => {
-              $("#editHubName").val(item.hub_id);
-              $("#editloadname").val(item.load_name);
-              $("#editOwnerName").val(item.owner_name);
-              $("#editloadaddress").val(item.load_address);
-              $("#editPhoneNumber").val(item.phone_number);
-              $("#editEmail").val(item.email);
-              let formattedBudget = formatPeso(item.budget);
-              $("#startingBudgetDisplay").text(formattedBudget);
-              $("#editUsername").val(item.username);
-              $("#editPassword").val(item.password);
-              $("#editNotes").val(item.notes);
+              $("#viewcode").text(item.merchant_code);
+              $("#viewfname").text(item.merchant_fullname);
+              $("#viewbname").text(item.business_name);
+              $("#viewbranch").text(item.business_branch);
+              $("#viewbranch2").text(item.business_branch);
+              $("#viewaddress").text(item.merchant_address);
+              $("#viewlocation").text(item.latitude + item.longitude);
+              $("#viewmobile").text(item.mobile);
+              $("#viewemail").text(item.email);
+              $("#viewuser").text(item.username);
+              $("#viewpassword").text(item.password);
+              $("#viewUserImagePreview").attr(
+                "src",
+                "data:image/jpg;base64," + item.logo
+              );
+              base64String = item.logo;
+              $("#viewstatus").text(item.status);
             });
           } else {
             toastr.error("Error fetching employee data", "Error");
@@ -265,50 +288,44 @@
       });
     });
 
-    $(document).on("click", "#saveEditLoadStationBtn", function () {
-      let id = load_station_id;
-      let hub_code = $("#editHubName").val();
-      let load_staion_name = $("#editloadname").val();
+    $(document).on("click", "#saveEditHubBtn", function () {
+      let id = hub_id;
+      let hubname = $("#editHubName").val();
       let ownername = $("#editOwnerName").val();
-      let load_station_address = $("#editloadaddress").val();
+      let hubaddress = $("#editHubAddress").val();
       let phonenumber = $("#editPhoneNumber").val();
       let email = $("#editEmail").val();
       let username = $("#editUsername").val();
       let password = $("#editPassword").val();
-      let notes = $("#editNotes").val();
 
       var message = "";
 
-      if (hub_code === "") {
+      if (hubname === "") {
         message += "Hub Name is required ";
       }
 
-      if (load_staion_name === "") {
-        message += "Station Name is required ";
-      }
-
-      if (ownername === "" || ownername === null) {
+      if (ownername === "") {
         message += "Owner Name is required ";
       }
 
-      if (load_station_address === "") {
-        message += "Load Address is required ";
+      if (hubaddress === "") {
+        message += "Hub Address is required ";
       }
 
       if (phonenumber === "") {
         message += "Phone Number is required ";
       }
 
-      if (email === "" || email === null) { 
-        message += "Load Email is required ";
+      if (email === "") {
+        message += "Email is required ";
       }
 
-      if (username === "" || username === null) {
-        message += "Load Username is required ";
+      if (username === "") {
+        message += "Username is required ";
       }
-      
-      if (password === "" || password === null) {
-        message += "Load Password is required ";
+
+      if (password === "") {
+        message += "Password is required ";
       }
 
       if (message !== "") {
@@ -316,18 +333,16 @@
       } else {
         $.ajax({
           type: "PUT",
-          url: "/AdminLoadingStation/edit",
+          url: "/AdminHubs/edit",
           data: {
-            load_id: id,            
-            hub_code: hub_code,
-            load_station_name: load_staion_name,
-            owner_name: ownername,
-            load_station_address: load_station_address,
-            phone_number: phonenumber,
+            hub_id: id,
+            hubname: hubname,
+            ownername: ownername,
+            hubaddress: hubaddress,
+            phonenumber: phonenumber,
             email: email,
             username: username,
             password: password,
-            notes: notes,
           },
           success: function (result) {
             if (result.msg == "success") {
@@ -349,26 +364,26 @@
     $(document).on("click", "#topUpBtn", function () {
       $.ajax({
         type: "POST",
-        url: "/AdminLoadingStation/getloadstation",
+        url: "/AdminHubs/gettopup",
         data: {
-          load_station_id: load_station_id,
+          hub_id: hub_id,
         },
         success: function (result) {
           if (result.msg === "success") {
             const existingData = result.data;
 
             $.each(existingData, (key, item) => {
-              $("#topuphubcode").html(`Top Up Load Station For - ${item.load_code}`);
-              console.log(item.load_code);
+              $("#topuphubcode").html(`Top Up Hub For - ${item.hub_code}`);
+              console.log(item.hub_code);
 
               let formattedBudget = formatPeso(item.budget);
               $("#remainingBalance").text(formattedBudget);
             });
             $.ajax({
               type: "POST",
-              url: "/AdminLoadingStation/gettopuphistory",
+              url: "/AdminHubs/gettopuphistory",
               data: {
-                load_station_id: load_station_id,
+                hub_id: hub_id,
               },
               success: function (historyResult) {
                 if (historyResult.msg === "success") {
@@ -408,11 +423,11 @@
 
     $(document).on("click", "#saveTopUpHubBtn", function () {
       console.log("click");
-      let id = load_station_id;
+      let id = hub_id;
       let amount = $("#topupamount").val();
 
       console.log(amount, "amount");
-      console.log(load_station_id, "load_station_id");
+      console.log(hub_id, "hub_id");
 
       var message = "";
 
@@ -450,9 +465,9 @@
 
             $.ajax({
               type: "POST",
-              url: "/AdminLoadingStation/topup",
+              url: "/AdminHubs/topup",
               data: {
-                load_station_id: id,
+                hub_id: id,
                 amount: amount,
               },
               success: function (result) {
@@ -541,5 +556,90 @@
         eyeIcon.removeClass("bx-hide").addClass("bx-show");
       }
     });
+
+
+    $(document).on("change", "#viewImage", function (e) {
+      const input = document.getElementById("viewImage");
+      const file = input.files[0];
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function () {
+        const preview = document.getElementById("viewUserImagePreview");
+        preview.src = reader.result;
+      };
+      imageUploadedOld();
+    });
+
+    function imageUploadedOld() {
+      const input = document.getElementById("viewImage");
+      const file = input.files[0];
+
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function () {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const targetWidth = 250;
+          const targetHeight = 250;
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+          base64String = canvas
+            .toDataURL()
+            .replace("data:image/png;base64,", ""); 
+
+          imageBase64Stringsep = base64String;
+        };
+
+      };
+      reader.readAsDataURL(file);
+    }
+
+    $(document).on("change", "#addmerchantimg", function (e) {
+      const input = document.getElementById("addmerchantimg");
+      const file = input.files[0];
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function () {
+        const preview = document.getElementById("userImagePreview");
+        preview.src = reader.result;
+      };
+      imageUploadedOld();
+    });
+
+    function imageUploadedOld() {
+      const input = document.getElementById("addmerchantimg");
+      const file = input.files[0];
+
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function () {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const targetWidth = 250;
+          const targetHeight = 250;
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+          base64String = canvas
+            .toDataURL()
+            .replace("data:image/png;base64,", ""); 
+
+          imageBase64Stringsep = base64String;
+        };
+
+      };
+      reader.readAsDataURL(file);
+    }
   });
 </script>
