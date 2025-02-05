@@ -9,10 +9,10 @@ var roleacess = [
         layout: "AdminHubsLayout",
       },
       {
-        layout: "JasProfilesLayout",
+        layout: "AdminLoadingStationLayout",
       },
       // {
-      //   layout: "institutionslayout",
+      //   layout: "AdminLoadingStationLayout",
       // },
       // {
       //   layout: "courseslayout",

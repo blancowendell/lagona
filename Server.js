@@ -17,6 +17,7 @@ const { logger, eventlogger } = require("./routes/utility/logger");
 var AdminIndexRouter = require("./routes/AdminIndex");
 var AdminLoginRouter = require("./routes/AdminLogin");
 var AdminHubsRouter = require("./routes/AdminHubs");
+var AdminLoadingStationRouter = require("./routes/AdminLoadingStation");
 //#endregion
 
 var app = express();
@@ -46,6 +47,7 @@ app.use((req, res, next) => {
 app.use("/", AdminIndexRouter);
 app.use("/AdminLogin", AdminLoginRouter);
 app.use("/AdminHubs", AdminHubsRouter);
+app.use("/AdminLoadingStation", AdminLoadingStationRouter);
 //#endregion
 
 app.use(function (req, res, next) {
