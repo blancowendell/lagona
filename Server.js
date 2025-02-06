@@ -22,8 +22,12 @@ var AdminRidersRouter = require("./routes/AdminRiders");
 var AdminMerchantsRouter = require("./routes/AdminMerchants");
 var MerchantLoginRouter = require("./routes/MerchantLogin");
 var MerchantIndexRouter = require("./routes/MerchantIndex");
+var MerchantProductsRouter = require("./routes/MerchantProducts");
+var MerchantCategoryRouter = require("./routes/MerchantCategory");
+var MerchantSizeRouter = require("./routes/MerchantSize");
 //#endregion
 
+const verifyJWT = require("./middleware/authenticator");
 var app = express();
 
 SetMongo(app);
@@ -48,14 +52,19 @@ app.use((req, res, next) => {
 });
 
 //#region ROUTES USE
-app.use("/", AdminIndexRouter);
 app.use("/AdminLogin", AdminLoginRouter);
+app.use("/MerchantLogin", MerchantLoginRouter);
+app.use(verifyJWT);
+
+app.use("/", AdminIndexRouter);
 app.use("/AdminHubs", AdminHubsRouter);
 app.use("/AdminLoadingStation", AdminLoadingStationRouter);
 app.use("/AdminRiders", AdminRidersRouter);
 app.use("/AdminMerchants", AdminMerchantsRouter);
-app.use("/MerchantLogin", MerchantLoginRouter);
 app.use("/MerchantIndex", MerchantIndexRouter);
+app.use("/MerchantProducts", MerchantProductsRouter);
+app.use("/MerchantCategory", MerchantCategoryRouter);
+app.use("/MerchantSize", MerchantSizeRouter);
 //#endregion
 
 app.use(function (req, res, next) {

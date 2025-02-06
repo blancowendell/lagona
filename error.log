@@ -278,3 +278,33 @@ Could not find the include file "../page/AdminMerchantsAdminMerchantsScript.ejs"
 2025-02-05T17:14:29.094Z [error]: Not Found
 2025-02-05T17:17:45.038Z [error]: Not Found
 2025-02-05T17:19:48.993Z [error]: Not Found
+2025-02-06T10:24:55.858Z [error]: Not Found
+2025-02-06T10:25:59.540Z [error]: Not Found
+2025-02-06T10:25:59.596Z [error]: Not Found
+2025-02-06T10:27:51.099Z [error]: Not Found
+2025-02-06T10:30:30.141Z [error]: Not Found
+2025-02-06T10:35:30.646Z [error]: Not Found
+2025-02-06T11:06:10.695Z [error]: UnauthorizedTemplate is not a function
+2025-02-06T11:06:29.789Z [error]: UnauthorizedTemplate is not a function
+2025-02-06T11:28:39.888Z [error]: Not Found
+2025-02-06T11:28:45.041Z [error]: Not Found
+2025-02-06T11:35:14.182Z [error]: Not Found
+2025-02-06T12:09:07.951Z [error]: Not Found
+2025-02-06T13:48:08.850Z [error]: Failed to lookup view "MerchantCategory" in views directory "C:\Users\PC 3\Documents\Lagona_Express\lagona\views\layout"
+2025-02-06T13:48:12.293Z [error]: Failed to lookup view "MerchantCategory" in views directory "C:\Users\PC 3\Documents\Lagona_Express\lagona\views\layout"
+2025-02-06T13:48:49.457Z [error]: Not Found
+2025-02-06T14:12:27.854Z [error]: Not Found
+2025-02-06T14:12:31.690Z [error]: Not Found
+2025-02-06T14:15:04.719Z [error]: Cannot set headers after they are sent to the client
+2025-02-06T14:18:32.688Z [error]: Cannot set headers after they are sent to the client
+2025-02-06T14:18:49.668Z [error]: Cannot set headers after they are sent to the client
+2025-02-06T14:21:43.351Z [error]: Cannot set headers after they are sent to the client
+2025-02-06T14:21:55.760Z [error]: Cannot set headers after they are sent to the client
+2025-02-06T14:22:21.327Z [error]: Not Found
+2025-02-06T14:22:24.440Z [error]: Cannot set headers after they are sent to the client
+2025-02-06T14:22:52.057Z [error]: Cannot set headers after they are sent to the client
+2025-02-06T14:23:02.004Z [error]: Cannot set headers after they are sent to the client
+2025-02-06T14:23:17.488Z [error]: Cannot set headers after they are sent to the client
+2025-02-06T14:27:52.605Z [error]: Cannot set headers after they are sent to the client
+2025-02-06T14:28:21.232Z [error]: Cannot set headers after they are sent to the client
+2025-02-06T14:28:29.617Z [error]: Cannot set headers after they are sent to the client

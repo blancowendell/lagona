@@ -1,0 +1,201 @@
+<div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                <h6>Menu Category</h6>
+                <!-- Dropdowns and Filter Button -->
+                <div class="d-flex align-items-center">
+                    <div class="me-2">
+                        <select class="form-select form-select-sm" id="filterDropdown1">
+                            <option value="">Select Option 1</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                        </select>
+                    </div>
+                    <div class="me-2">
+                        <select class="form-select form-select-sm" id="filterDropdown2">
+                            <option value="">Select Option 2</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                        </select>
+                    </div>
+                    <button class="btn lagona_class-btn btn-sm" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                        Add Category
+                    </button>                    
+                </div>
+            </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table align-items-center mb-0" id="dataTableCategories">
+                <thead>
+                    <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">ID</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Name</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Add Date</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Action</th>
+                    </tr>             
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addCategoryModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" id="modal-header">
+                <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
+                colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
+                <h3 class="modal-title" id="exampleModalLabel">Add Menu Category</h3>
+                <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <form>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="addCategoryName" name="addCategoryName" placeholder="Product Name">
+                                <label for="addCategoryName">Category Name</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <textarea class="form-control border-form-modal" id="addDescription" name="addDescription" placeholder="Description"></textarea>
+                                <label for="addDescription">Category Description</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveCategoryBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editCategoryModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" id="modal-header">
+                <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
+                colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
+                <h3 class="modal-title" id="exampleModalLabel">Edit Menu Category</h3>
+                <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <form>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="editCategoryName" name="editCategoryName" placeholder="Product Name">
+                                <label for="editCategoryName">Category Name</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <textarea class="form-control border-form-modal" id="editDescription" name="editDescription" placeholder="Description" style="height: 150px;"></textarea>
+                                <label for="editDescription">Category Description</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn lagona_class-btn btn-modal-save" id="editsaveCategoryBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Top Up Modal -->
+<div class="modal fade" id="topUpModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" id="modal-header">
+                <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
+                    colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
+                <h3 class="modal-title" id="topuphubcode"></h3>
+                <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <form>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="text-center mb-3">
+                                <label class="fw-bold">Remaining Budget</label>
+                                <h3 id="remainingBalance" class="fw-bold text-success">₱0.00</h3>
+                            </div>
+                        </div>
+
+                        <!-- Top Up Amount -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-moda" id="topupamount" name="topupamount" placeholder="Top Up Amount"
+                                    oninput="formatPrice(event, this)">
+                                <label for="topupamount">Enter Amount Here</label>
+                            </div>
+                        </div>
+
+                        <!-- Add Amount Button -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveTopUpHubBtn">Add Amount</button>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <h5 class="fw-bold text-center mt-3">Top-Up History</h5>
+                            
+                            <div class="input-group mb-3">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="searchTopUpHistory"
+                                    placeholder="Search by Reference Code or Amount"
+                                    aria-label="Search"
+                                />
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            </div>
+                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                <table class="table table-bordered table-striped text-center">
+                                    <thead class="lagona_class-btn">
+                                        <tr>
+                                            <th>Reference Code</th>
+                                            <th>Amount</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="topUpHistoryBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>                        
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

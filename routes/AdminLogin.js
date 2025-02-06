@@ -1,7 +1,7 @@
 const mysql = require("./repository/lagonaDb");
 //const moment = require('moment');
 var express = require("express");
-// const { UserValidator } = require("./controller/middleware");
+const jwt = require("jsonwebtoken");
 const {
   JsonErrorResponse,
   JsonSuccess,
@@ -17,7 +17,7 @@ const {
 } = require("./repository/customhelper");
 const { DataModeling } = require("./model/lagonaDb");
 const { AdminLogin } = require("./repository/helper");
-const { Encrypter } = require("./repository/crytography");
+const { EncrypterString, Encrypter } = require("./repository/crytography");
 var router = express.Router();
 //const currentDate = moment();
 
@@ -56,15 +56,21 @@ router.post("/login", (req, res) => {
         .then((result) => {
           if (result.length !== 0) {
             const user = result[0];
-
-            console.log(result,'result');
-            
-
             if (
               user.status === "Active"
             ) {
               let data = AdminLogin(result);
                 data.forEach((user) => {
+                  req.session.jwt = EncrypterString(
+                    jwt.sign(
+                      JSON.stringify({
+                        admin_id: user.admin_id,
+                        fullname: user.fullname,
+                      }),
+                      process.env._SECRET_KEY
+                    ),
+                    {}
+                  );
                   req.session.admin_id = user.admin_id;
                   req.session.fullname = user.fullname;
                   req.session.role_type = user.role_type;
