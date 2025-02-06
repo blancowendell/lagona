@@ -1,0 +1,113 @@
+<div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                <h6>Menu Size</h6>
+                <!-- Dropdowns and Filter Button -->
+                <div class="d-flex align-items-center">
+                    <div class="me-2">
+                        <select class="form-select form-select-sm" id="filterDropdown1">
+                            <option value="">Select Option 1</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                        </select>
+                    </div>
+                    <div class="me-2">
+                        <select class="form-select form-select-sm" id="filterDropdown2">
+                            <option value="">Select Option 2</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                        </select>
+                    </div>
+                    <button class="btn lagona_class-btn btn-sm" data-bs-toggle="modal" data-bs-target="#addSizeModal">
+                        Add Size
+                    </button>                    
+                </div>
+            </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table align-items-center mb-0" id="dataTableSizes">
+                <thead>
+                    <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">ID</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Name</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Add Date</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Action</th>
+                    </tr>             
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addSizeModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-small">
+        <div class="modal-content">
+            <div class="modal-header" id="modal-header">
+                <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
+                colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
+                <h3 class="modal-title" id="exampleModalLabel">Add Menu Size</h3>
+                <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <form>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="addSizeName" name="addSizeName" placeholder="Product Name">
+                                <label for="addSizeName">Size Name</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveSizeBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editSizeModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-small">
+        <div class="modal-content">
+            <div class="modal-header" id="modal-header">
+                <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
+                colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
+                <h3 class="modal-title" id="exampleModalLabel">Edit Menu Size</h3>
+                <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <form>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="editSizeName" name="editSizeName" placeholder="Product Name">
+                                <label for="editSizeName">Size Name</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn lagona_class-btn btn-modal-save" id="editsaveSizeBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

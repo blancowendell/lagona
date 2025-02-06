@@ -1,0 +1,462 @@
+<script>
+    let base64String = "";
+    let size_id = "";
+    $(document).ready(function () {
+      LoadTable();
+  
+      function LoadTable() {
+        $("#dataTableSizes").DataTable({
+          destroy: true,
+          processing: true,
+          serverSide: true,
+          paging: false,
+          searching: false,
+          info: false,
+          scrollY: 600,
+          scrollCollapse: true,
+          serverMethod: "GET",
+          ajax: {
+            url: "/MerchantSize/load",
+            dataSrc: (json) => {
+              var finalData = [];
+              var data = json.data;
+  
+              console.log(data);
+  
+              $.each(data, (key, item) => {
+                var action = `
+                    <button id="editBtn" class="lagona_class-btn btn" name="editBtn" data-bs-toggle="modal" data-bs-target="#editSizeModal">
+                    <i class="fas fa-fw fa-pen"></i>
+                    </button>
+                `;
+  
+                finalData.push({
+                  size_id: item.size_id,
+                  size_name: item.size_name,
+                  create_date: item.create_date,
+                  action: action,
+                });
+              });
+  
+              return finalData;
+            },
+          },
+          columns: [
+            { data: "size_id" },
+            { data: "size_name" },
+            { data: "create_date" },
+            { data: "action" },
+          ],
+          createdRow: function (row, data, dataIndex) {
+            $("td", row).each(function () {
+              this.style.textAlign = "center";
+              this.style.verticalAlign = "middle";
+              this.style.fontSize = "14px";
+            });
+          },
+          initComplete: function () {
+            $("#dataTableStrandsType thead th").css({
+              "font-size": "14px",
+              "font-weight": "bold",
+              "text-align": "center",
+            });
+          },
+        });
+      }
+  
+      $(document).on("click", "#saveSizeBtn", function () {
+        let sizename = $("#addSizeName").val();
+  
+        var message = "";
+  
+  
+        if (sizename === "") {
+          message += "Name is required ";
+        }
+
+  
+        if (message !== "") {
+          toastr.error(`Please fill up ${message}`, "Required");
+        } else {
+          $.ajax({
+            type: "POST",
+            url: "/MerchantSize/save",
+            data: {
+              sizename: sizename,
+            },
+            success: function (result) {
+              if (result.msg == "success") {
+                toastr.success("Saved Successfully", "Success");
+                setTimeout(function () {
+                  window.location.reload();
+                }, 1000);
+              } else {
+                toastr.warning("Data already exists!", "Warning");
+              }
+            },
+            error: function (err) {
+              toastr.warning("Data already exists!", "Warning");
+            },
+          });
+        }
+      });
+  
+      $("#dataTableSizes tbody").on("click", "tr", function () {
+        var dataRow = [];
+        $(this)
+          .closest("tr")
+          .find("td")
+          .each(function () {
+            dataRow.push($(this).text());
+          });
+          size_id = dataRow[0];
+        console.log(dataRow);
+      });
+  
+      $(document).on("click", "#editBtn", function () {
+        $.ajax({
+          type: "POST",
+          url: "/MerchantSize/viewsize",
+          data: {
+            size_id: size_id,
+          },
+          success: function (result) {
+            if (result.msg === "success") {
+              const existingData = result.data;            
+  
+              $.each(existingData, (key, item) => {
+                $("#editSizeName").val(item.size_name);
+              });
+            } else {
+              toastr.error("Error fetching employee data", "Error");
+            }
+          },
+          error: function (err) {
+            toastr.error(
+              "An error occurred while fetching employee data",
+              "Error"
+            );
+          },
+        });
+      });
+  
+      $(document).on("click", "#editsaveSizeBtn", function () {
+        let id = size_id;
+        let sizename = $("#editSizeName").val();
+  
+        var message = "";
+  
+        if (sizename === "") {
+          message += "Size Name is required ";
+        }
+  
+        if (message !== "") {
+          toastr.error(`Please fill up ${message}`, "Required");
+        } else {
+          $.ajax({
+            type: "PUT",
+            url: "/MerchantSize/edit",
+            data: {
+              size_id: id,
+              sizename: sizename,
+            },
+            success: function (result) {
+              if (result.msg == "success") {
+                toastr.success("Saved Successfully", "Success");
+                setTimeout(function () {
+                  window.location.reload();
+                }, 1000);
+              } else {
+                toastr.warning("Data already exists!", "Warning");
+              }
+            },
+            error: function (err) {
+              toastr.warning("Data already exists!", "Warning");
+            },
+          });
+        }
+      });
+  
+      $(document).on("click", "#topUpBtn", function () {
+        $.ajax({
+          type: "POST",
+          url: "/AdminHubs/gettopup",
+          data: {
+            hub_id: hub_id,
+          },
+          success: function (result) {
+            if (result.msg === "success") {
+              const existingData = result.data;
+  
+              $.each(existingData, (key, item) => {
+                $("#topuphubcode").html(`Top Up Hub For - ${item.hub_code}`);
+                console.log(item.hub_code);
+  
+                let formattedBudget = formatPeso(item.budget);
+                $("#remainingBalance").text(formattedBudget);
+              });
+              $.ajax({
+                type: "POST",
+                url: "/AdminHubs/gettopuphistory",
+                data: {
+                  hub_id: hub_id,
+                },
+                success: function (historyResult) {
+                  if (historyResult.msg === "success") {
+                    const historyData = historyResult.data;
+                    $("#topUpHistoryBody").empty();
+                    $.each(historyData, (index, item) => {
+                      const row = `
+                      <tr>
+                        <td>${item.reference_code}</td>
+                        <td>${formatPeso(item.amount)}</td>
+                        <td>${item.format_create_date}</td>
+                        <td>${item.status}</td>
+                      </tr>
+                    `;
+                      $("#topUpHistoryBody").append(row);
+                    });
+                  } else {
+                    toastr.error("Error fetching top-up history", "Error");
+                  }
+                },
+                error: function (err) {
+                  toastr.error(
+                    "An error occurred while fetching top-up history",
+                    "Error"
+                  );
+                },
+              });
+            } else {
+              toastr.error("Error fetching hub data", "Error");
+            }
+          },
+          error: function (err) {
+            toastr.error("An error occurred while fetching hub data", "Error");
+          },
+        });
+      });
+  
+      $(document).on("click", "#saveTopUpHubBtn", function () {
+        console.log("click");
+        let id = hub_id;
+        let amount = $("#topupamount").val();
+  
+        console.log(amount, "amount");
+        console.log(hub_id, "hub_id");
+  
+        var message = "";
+  
+        let numericAmount = parseFloat(amount.replace(/[^\d.-]/g, ""));
+        if (amount === "" || isNaN(numericAmount) || numericAmount <= 0) {
+          message += "Valid amount is required. ";
+        }
+  
+        if (id === "") {
+          message += "Hub Undefined";
+        }
+  
+        if (message !== "") {
+          toastr.error(`Please fill up ${message}`, "Required");
+        } else {
+          Swal.fire({
+            title: "Are you sure?",
+            text: `You are about to top up ${amount} to the hub. Do you want to proceed?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, top up it!",
+            cancelButtonText: "Cancel",
+            reverseButtons: true,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                title: "Processing...",
+                text: "Please wait while we top up the amount.",
+                icon: "info",
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+                allowOutsideClick: false,
+              });
+  
+              $.ajax({
+                type: "POST",
+                url: "/AdminHubs/topup",
+                data: {
+                  hub_id: id,
+                  amount: amount,
+                },
+                success: function (result) {
+                  if (result.msg == "success") {
+                    toastr.success("Saved Successfully", "Success");
+                    // Close the SweetAlert loading after 2 seconds and reload the page
+                    setTimeout(function () {
+                      Swal.close(); // Close the loading SweetAlert
+                      window.location.reload();
+                    }, 2000);
+                  } else {
+                    toastr.warning("Data already exists!", "Warning");
+                    Swal.close(); // Close the SweetAlert if error occurs
+                  }
+                },
+                error: function (err) {
+                  toastr.warning("An error occurred!", "Error");
+                  Swal.close(); // Close the SweetAlert if error occurs
+                },
+              });
+            } else {
+              console.log("Top-up cancelled");
+            }
+          });
+        }
+      });
+  
+      $("#searchTopUpHistory").on("input", function () {
+        var query = $(this).val().toLowerCase();
+        $("#topUpHistoryBody tr").each(function () {
+          var referenceCode = $(this).find("td:eq(0)").text().toLowerCase();
+          var amount = $(this).find("td:eq(1)").text().toLowerCase();
+  
+          if (referenceCode.includes(query) || amount.includes(query)) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      });
+  
+      function searchTable() {
+        var input, filter, found, table, tr, td, i, j;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("dataTableStudents");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+          td = tr[i].getElementsByTagName("td");
+          for (j = 0; j < td.length; j++) {
+            if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+              found = true;
+            }
+          }
+          if (found) {
+            tr[i].style.display = "";
+            found = false;
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+  
+      $(".toggle-password").on("click", function () {
+        const passwordField = $("#addpassword");
+        const eyeIcon = $("#eyeIcon");
+        const fieldType =
+          passwordField.attr("type") === "password" ? "text" : "password";
+        passwordField.attr("type", fieldType);
+        if (fieldType === "password") {
+          eyeIcon.removeClass("bx-show").addClass("bx-hide");
+        } else {
+          eyeIcon.removeClass("bx-hide").addClass("bx-show");
+        }
+      });
+  
+      $(".toggle-password").on("click", function () {
+        const passwordField = $("#editPassword");
+        const eyeIcon = $("#eyeIconEdit");
+        const fieldType =
+          passwordField.attr("type") === "password" ? "text" : "password";
+        passwordField.attr("type", fieldType);
+        if (fieldType === "password") {
+          eyeIcon.removeClass("bx-show").addClass("bx-hide");
+        } else {
+          eyeIcon.removeClass("bx-hide").addClass("bx-show");
+        }
+      });
+  
+  
+      $(document).on("change", "#viewImage", function (e) {
+        const input = document.getElementById("viewImage");
+        const file = input.files[0];
+  
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function () {
+          const preview = document.getElementById("viewUserImagePreview");
+          preview.src = reader.result;
+        };
+        imageUploadedOld();
+      });
+  
+      function imageUploadedOld() {
+        const input = document.getElementById("viewImage");
+        const file = input.files[0];
+  
+        var reader = new FileReader();
+  
+        reader.onload = function (e) {
+          const img = new Image();
+          img.src = e.target.result;
+  
+          img.onload = function () {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const targetWidth = 250;
+            const targetHeight = 250;
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+            base64String = canvas
+              .toDataURL()
+              .replace("data:image/png;base64,", ""); 
+  
+            imageBase64Stringsep = base64String;
+          };
+  
+        };
+        reader.readAsDataURL(file);
+      }
+  
+      $(document).on("change", "#addProductImage", function (e) {
+        const input = document.getElementById("addProductImage");
+        const file = input.files[0];
+  
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function () {
+          const preview = document.getElementById("productImagePreview");
+          preview.src = reader.result;
+        };
+        imageUploadedOld();
+      });
+  
+      function imageUploadedOld() {
+        const input = document.getElementById("addProductImage");
+        const file = input.files[0];
+  
+        var reader = new FileReader();
+  
+        reader.onload = function (e) {
+          const img = new Image();
+          img.src = e.target.result;
+  
+          img.onload = function () {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const targetWidth = 250;
+            const targetHeight = 250;
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+            base64String = canvas
+              .toDataURL()
+              .replace("data:image/png;base64,", ""); 
+  
+            imageBase64Stringsep = base64String;
+          };
+  
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+  

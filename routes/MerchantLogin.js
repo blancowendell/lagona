@@ -1,7 +1,7 @@
 const mysql = require("./repository/lagonaDb");
 //const moment = require('moment');
 var express = require("express");
-// const { UserValidator } = require("./controller/middleware");
+const jwt = require("jsonwebtoken");
 const {
   JsonErrorResponse,
   JsonSuccess,
@@ -17,7 +17,7 @@ const {
 } = require("./repository/customhelper");
 const { DataModeling } = require("./model/lagonaDb");
 const { AdminLogin, MerchantLogin } = require("./repository/helper");
-const { Encrypter } = require("./repository/crytography");
+const { Encrypter, EncrypterString } = require("./repository/crytography");
 var router = express.Router();
 //const currentDate = moment();
 
@@ -63,8 +63,17 @@ router.post("/login", (req, res) => {
           });
 
           let data = MerchantLogin(result);
-
           data.forEach((user) => {
+            req.session.jwt = EncrypterString(
+              jwt.sign(
+                JSON.stringify({
+                  merchant_id: user.merchant_id,
+                  fullname: user.fullname,
+                }),
+                process.env._SECRET_KEY
+              ),
+              {}
+            );
             req.session.merchant_id = user.merchant_id;
             req.session.merchant_code = user.merchant_code;
             req.session.fullname = user.fullname;

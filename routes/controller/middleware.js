@@ -49,15 +49,15 @@ var roleacess = [
       {
         layout: "MerchantIndexLayout",
       },
-      // {
-      //   layout: "accesslayout",
-      // },
-      // {
-      //   layout: "adminuserslayout",
-      // },
-      // {
-      //   layout: "institutionslayout",
-      // },
+      {
+        layout: "MerchantProductsLayout",
+      },
+      {
+        layout: "MerchantCategoryLayout",
+      },
+      {
+        layout: "MerchantProductsLayout",
+      },
       // {
       //   layout: "courseslayout",
       // },
