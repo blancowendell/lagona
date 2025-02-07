@@ -463,6 +463,7 @@ Could not find the include file "../page/MerchantSoloMerchantSoloScript.ejs"
 2025-02-07T15:53:08.072Z [error]: Not Found
 2025-02-07T15:57:44.471Z [error]: Not Found
 2025-02-07T15:57:44.504Z [error]: Not Found
+<<<<<<< HEAD
 =======
 2025-02-07T03:57:16.316Z [error]: Not Found
 2025-02-07T03:57:43.867Z [error]: Not Found
@@ -488,3 +489,7 @@ Could not find the include file "../page/MerchantSoloMerchantSoloScript.ejs"
 2025-02-07T16:14:30.078Z [error]: Not Found
 2025-02-07T16:14:51.378Z [error]: Not Found
 2025-02-07T16:16:58.994Z [error]: Not Found
+=======
+2025-02-07T16:08:13.096Z [error]: Not Found
+2025-02-07T16:19:37.214Z [error]: Not Found
+>>>>>>> fe2fab6da78e7efc4c8a0c0e659dcb5bd5778048
