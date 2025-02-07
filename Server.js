@@ -90,7 +90,7 @@ app.use(function (err, req, res, next) {
   logger.error(err.message); 
 
   res.status(err.status || 500);
-  res.render("error");
+  res.render("Error");
 });
 
 module.exports = app;
