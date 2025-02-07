@@ -1,0 +1,219 @@
+<div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                <h6>Items</h6>
+                <!-- Dropdowns and Filter Button -->
+                <div class="d-flex align-items-center">
+                    <div class="me-2">
+                        <select class="form-select form-select-sm" id="filterDropdown1">
+                            <option value="">Select Option 1</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                        </select>
+                    </div>
+                    <div class="me-2">
+                        <select class="form-select form-select-sm" id="filterDropdown2">
+                            <option value="">Select Option 2</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                        </select>
+                    </div>
+                    <button class="btn lagona_class-btn btn-sm" data-bs-toggle="modal" data-bs-target="#addItemsModal">
+                        Add Items
+                    </button>                    
+                </div>
+            </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table align-items-center mb-0" id="dataTableItems">
+                <thead>
+                    <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">ID</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Items Image</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Items Name</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Category</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Size</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Unit Price</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Status</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Register Date</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Action</th>
+                    </tr>             
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addItemsModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" id="modal-header">
+                <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
+                colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
+                <h3 class="modal-title" id="exampleModalLabel">Add Items</h3>
+                <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <form>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="text-center mb-3">
+                                <img id="userImagePreview" src="/img/userimage.jpg" alt="User Image" class="img-thumbnail rounded" style="width: 200px; height: 200px; object-fit: cover;">
+                                <br><br>
+                                <input type="file" class="form-control" id="additemimage" name="additemimage" accept="image/*">
+                                <label for="additemimage" class="form-label">Upload Items Image</label>
+                            </div>
+                        </div>
+
+                        <!-- Hub Name -->
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select border-form-modal" id="addcategory" name="addcategory">
+                                    <option selected disabled>Chose Category</option>
+                                </select>    
+                                <label for="addcategory">Category</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select border-form-modal" id="addsize" name="addsize">
+                                    <option selected disabled>Chose Size</option>
+                                </select> 
+                                <label for="addsize">Item Size</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="additemname" name="additemname" placeholder="Business Name">
+                                <label for="additemname">Item Name</label>
+                            </div>
+                        </div>
+
+                        <!-- Owner Name-->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-moda" id="topupamount" name="topupamount" placeholder="Top Up Amount"
+                                    oninput="formatPrice(event, this)">
+                                <label for="topupamount">Enter Amount Here</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <textarea class="form-control border-form-modal" id="addDescription" name="addDescription" placeholder="Description" style="height: 150px;"></textarea>
+                                <label for="addDescription">Description</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveItemsBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editItemsModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" id="modal-header">
+                <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
+                colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
+                <h3 class="modal-title" id="exampleModalLabel">Edit Items</h3>
+                <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <form>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="text-center mb-3">
+                                <img id="viewUserImagePreview" src="/img/userimage.jpg" alt="User Image" class="img-thumbnail rounded" style="width: 200px; height: 200px; object-fit: cover;">
+                                <br><br>
+                                <input type="file" class="form-control" id="edititemimage" name="edititemimage" accept="image/*">
+                                <label for="edititemimage" class="form-label">Edit Items Image</label>
+                            </div>
+                        </div>
+
+                        <!-- Hub Name -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select border-form-modal" id="editcategory" name="editcategory">
+                                    <option selected disabled>Chose Category</option>
+                                </select>    
+                                <label for="editcategory">Category</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select border-form-modal" id="editsize" name="editsize">
+                                    <option selected disabled>Chose Size</option>
+                                </select> 
+                                <label for="editsize">Item Size</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="edititemname" name="edititemname" placeholder="Business Name">
+                                <label for="edititemname">Item Name</label>
+                            </div>
+                        </div>
+
+                        <!-- Owner Name-->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-moda" id="edittopupamount" name="edittopupamount" placeholder="Top Up Amount"
+                                    oninput="formatPrice(event, this)">
+                                <label for="edittopupamount">Enter Amount Here</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select border-form-modal" id="editAvailability" name="editAvailability">
+                                    <option value="Active" class="text-success">Available</option>
+                                    <option value="Inactive" class="text-danger">Not Available</option>
+                                </select>
+                                <label for="editAvailability">Availability</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <textarea class="form-control border-form-modal" id="editDescription" name="editDescription" placeholder="Description" style="height: 150px;"></textarea>
+                                <label for="editDescription">Description</label>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn lagona_class-btn btn-modal-save" id="editItemsBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

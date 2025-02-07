@@ -11,7 +11,7 @@ exports.SetMongo = (app) => {
   });
 
   const store = new MongoDBSession({
-    uri: "mongodb://localhost:27017/ISMS",
+    uri: "mongodb://localhost:27017/LAGONA",
     collection: "LAGONASessions",
   });
 

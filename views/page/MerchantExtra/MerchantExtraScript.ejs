@@ -1,11 +1,11 @@
 <script>
     let base64String = "";
-    let merchant_id = "";
+    let extra_id = "";
     $(document).ready(function () {
       LoadTable();
-  
+
       function LoadTable() {
-        $("#dataTableCategories").DataTable({
+        $("#dataTableExtras").DataTable({
           destroy: true,
           processing: true,
           serverSide: true,
@@ -16,7 +16,7 @@
           scrollCollapse: true,
           serverMethod: "GET",
           ajax: {
-            url: "/MerchantCategory/load",
+            url: "/MerchantExtra/load",
             dataSrc: (json) => {
               var finalData = [];
               var data = json.data;
@@ -25,14 +25,23 @@
   
               $.each(data, (key, item) => {
                 var action = `
-                    <button id="editBtn" class="lagona_class-btn btn" name="editBtn" data-bs-toggle="modal" data-bs-target="#editCategoryModal">
+                    <button id="editBtn" class="lagona_class-btn btn" name="editBtn" data-bs-toggle="modal" data-bs-target="#editcomboModal">
                     <i class="fas fa-fw fa-pen"></i>
                     </button>
                 `;
-  
+
+                var imgElement = document.createElement("img");
+                imgElement.src = "data:image/jpg;base64," + item.extra_image;
+                imgElement.alt = "Profile Image";
+                imgElement.style.width = "90px";
+                imgElement.style.height = "90px";
+
                 finalData.push({
-                  category_id: item.category_id,
-                  category_name: item.category_name,
+                  extra_id: item.extra_id,
+                  extra_image: imgElement.outerHTML,
+                  extra_name: item.extra_name,
+                  extra_price: item.extra_price,
+                  is_available: item.is_available,
                   created_at: item.created_at,
                   action: action,
                 });
@@ -42,8 +51,22 @@
             },
           },
           columns: [
-            { data: "category_id" },
-            { data: "category_name" },
+            { data: "extra_id" },
+            { data: "extra_image" },
+            { data: "extra_name" },
+            {
+              data: "extra_price",
+              render: function (data, type, row) {
+                return (
+                  "₱" +
+                  parseFloat(data).toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
+                );
+              },
+            },
+            { data: "is_available" },
             { data: "created_at" },
             { data: "action" },
           ],
@@ -64,30 +87,44 @@
         });
       }
   
-      $(document).on("click", "#saveCategoryBtn", function () {
-        let categoryname = $("#addCategoryName").val();
-        let description = $("#addDescription").val();
+      $(document).on("click", "#saveComboBtn", function () {
+        let combo_name = $("#addcomboname").val();
+        let logo = base64String;
+        let combo_price = $("#topupamount").val();
+        let combo_description = $("#addDescription").val();
   
         var message = "";
   
   
-        if (categoryname === "") {
-          message += "Name is required ";
+        if (combo_name === "") {
+          message += "Merchant Owner is required ";
         }
   
-        if (description === "") {
-          message += "Description is required ";
+        if (logo === "") {
+          message += "Business Name is required ";
         }
+  
+        if (combo_price === "") {
+          message += "Business Branch is required ";
+        }
+  
+        if (combo_description === "") {
+          message += "Merchant Address is required ";
+        }
+  
   
         if (message !== "") {
           toastr.error(`Please fill up ${message}`, "Required");
         } else {
+          combo_price = combo_price.replace(/,/g, "").replace("₱", "");
           $.ajax({
             type: "POST",
-            url: "/MerchantCategory/save",
+            url: "/MerchantExtra/save",
             data: {
-              categoryname: categoryname,
-              description: description,
+              combo_name: combo_name,
+              combo_description: combo_description,
+              combo_price: parseFloat(combo_price),
+              logo: logo,
             },
             success: function (result) {
               if (result.msg == "success") {
@@ -106,7 +143,7 @@
         }
       });
   
-      $("#dataTableCategories tbody").on("click", "tr", function () {
+      $("#dataTableExtras tbody").on("click", "tr", function () {
         var dataRow = [];
         $(this)
           .closest("tr")
@@ -114,24 +151,31 @@
           .each(function () {
             dataRow.push($(this).text());
           });
-          category_id = dataRow[0];
+          extra_id = dataRow[0];
         console.log(dataRow);
       });
   
       $(document).on("click", "#editBtn", function () {
         $.ajax({
           type: "POST",
-          url: "/MerchantCategory/viewcategory",
+          url: "/MerchantExtra/getextra",
           data: {
-              category_id: category_id,
+            extra_id: extra_id,
           },
           success: function (result) {
             if (result.msg === "success") {
               const existingData = result.data;            
   
               $.each(existingData, (key, item) => {
-                $("#editCategoryName").val(item.category_name);
-                $("#editDescription").text(item.category_description);        
+                $("#editcomboname").val(item.extra_name);
+                $("#editDescription").val(item.description);
+                $("#edittopupamount").val(formatCurrencyValue(item.extra_price));
+                $("#editAvailability").val(item.is_available);
+                $("#viewUserImagePreview").attr(
+                  "src",
+                  "data:image/jpg;base64," + item.extra_image
+                );
+                base64String = item.extra_image;
               });
             } else {
               toastr.error("Error fetching employee data", "Error");
@@ -146,39 +190,61 @@
         });
       });
   
-      $(document).on("click", "#editsaveCategoryBtn", function () {
-        let id = category_id;
-        let categoryname = $("#editCategoryName").val();
-        let description = $("#editDescription").val();
+      $(document).on("click", "#editsaveComboBtn", function () {
+        let id = extra_id;
+        let combo_name = $("#editcomboname").val();
+        let logo = base64String;
+        let combo_price = $("#edittopupamount").val();
+        let combo_description = $("#editDescription").val();
+        let combo_availability = $("#editAvailability").val();
+
+        console.log(logo,'img');
+        
   
         var message = "";
-  
-        if (categoryname === "") {
-          message += "Category Name is required ";
+
+        if (combo_name === "") {
+          message += "Combo Name is required ";
         }
 
-        
-        if (description === "") {
-          message += "Description is required ";
+        if (logo === "") {
+          message += "Combo Image is required ";
         }
+
+        if (combo_price === "") {
+          message += "Combo Price is required ";
+        }
+
+        if (combo_description === "") {
+          message += "Combo Description is required ";
+        }
+
+        if (combo_availability === "") {
+          message += "Combo Availability is required ";
+        }
+
   
         if (message !== "") {
           toastr.error(`Please fill up ${message}`, "Required");
         } else {
+          combo_price = combo_price.replace(/,/g, "").replace("₱", "");
           $.ajax({
             type: "PUT",
-            url: "/MerchantCategory/edit",
+            url: "/MerchantExtra/edit",
             data: {
-              category_id: id,
-              categoryname: categoryname,
-              description: description,
+              combo_id: id,
+              combo_name: combo_name,
+              combo_price: parseFloat(combo_price),
+              logo: logo,
+              combo_description: combo_description,
+              combo_availability: combo_availability,
             },
             success: function (result) {
               if (result.msg == "success") {
                 toastr.success("Saved Successfully", "Success");
                 setTimeout(function () {
                   window.location.reload();
-                }, 500);
+                }, 1000);
               } else {
                 toastr.warning("Data already exists!", "Warning");
               }
@@ -189,7 +255,7 @@
           });
         }
       });
-  
+
       function searchTable() {
         var input, filter, found, table, tr, td, i, j;
         input = document.getElementById("myInput");
@@ -239,8 +305,8 @@
       });
   
   
-      $(document).on("change", "#viewImage", function (e) {
-        const input = document.getElementById("viewImage");
+      $(document).on("change", "#editaddimage", function (e) {
+        const input = document.getElementById("editaddimage");
         const file = input.files[0];
   
         const reader = new FileReader();
@@ -253,7 +319,7 @@
       });
   
       function imageUploadedAdd() {
-        const input = document.getElementById("viewImage");
+        const input = document.getElementById("editaddimage");
         const file = input.files[0];
   
         var reader = new FileReader();
@@ -281,21 +347,21 @@
         reader.readAsDataURL(file);
       }
   
-      $(document).on("change", "#addProductImage", function (e) {
-        const input = document.getElementById("addProductImage");
+      $(document).on("change", "#addimage", function (e) {
+        const input = document.getElementById("addimage");
         const file = input.files[0];
   
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = function () {
-          const preview = document.getElementById("productImagePreview");
+          const preview = document.getElementById("userImagePreview");
           preview.src = reader.result;
         };
         imageUploadedOld();
       });
   
       function imageUploadedOld() {
-        const input = document.getElementById("addProductImage");
+        const input = document.getElementById("addimage");
         const file = input.files[0];
   
         var reader = new FileReader();

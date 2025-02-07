@@ -31,11 +31,13 @@ module.exports = router;
 
 router.get("/load", (req, res) => {
   try {
+    let merchant_id = req.session.merchant_id;
     let sql = `SELECT
     *,
       DATE_FORMAT(mc_created_at, '%Y-%m-%d %H:%i:%s') as mc_created_at
     FROM 
-    menu_category`;
+    menu_category
+    WHERE mc_category_merchant_id = '${merchant_id}'`;
 
     Select(sql, (err, result) => {
       if (err) {
@@ -57,12 +59,15 @@ router.get("/load", (req, res) => {
 router.post("/save", (req, res) => {
   try {
     let createddate = GetCurrentDatetime();
+    let merchant_id = req.session.merchant_id;
+
     const {
       categoryname,
       description,
     } = req.body;
 
     let sql = InsertStatement("menu_category", "mc", [
+      "category_merchant_id",
       "category_name",
       "category_description",
       "created_at",
@@ -70,6 +75,7 @@ router.post("/save", (req, res) => {
 
     let data = [
       [
+        merchant_id,
         categoryname,
         description,
         createddate,
@@ -77,8 +83,8 @@ router.post("/save", (req, res) => {
     ];
 
     let checkStatement = SelectStatement(
-      "select * from menu_category where mc_category_name=?",
-      [categoryname]
+      "select * from menu_category where mc_category_name=? and mc_category_merchant_id=?",
+      [categoryname ,merchant_id]
     );
 
     Check(checkStatement)

@@ -308,3 +308,157 @@ Could not find the include file "../page/AdminMerchantsAdminMerchantsScript.ejs"
 2025-02-06T14:27:52.605Z [error]: Cannot set headers after they are sent to the client
 2025-02-06T14:28:21.232Z [error]: Cannot set headers after they are sent to the client
 2025-02-06T14:28:29.617Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T03:58:11.370Z [error]: Not Found
+2025-02-07T03:59:00.114Z [error]: Not Found
+2025-02-07T03:59:00.158Z [error]: Not Found
+2025-02-07T09:47:14.646Z [error]: Not Found
+2025-02-07T09:59:10.612Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T10:16:20.126Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T10:16:44.916Z [error]: Not Found
+2025-02-07T10:38:22.706Z [error]: Not Found
+2025-02-07T10:45:19.168Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T11:03:17.041Z [error]: Not Found
+2025-02-07T11:03:57.286Z [error]: Not Found
+2025-02-07T11:04:32.708Z [error]: Not Found
+2025-02-07T11:08:34.441Z [error]: Not Found
+2025-02-07T11:08:36.938Z [error]: Not Found
+2025-02-07T11:08:39.864Z [error]: Not Found
+2025-02-07T11:09:07.776Z [error]: Failed to lookup view "MerchantItemLyout" in views directory "C:\Users\PC 3\Documents\Lagona_Express\lagona\views\layout"
+2025-02-07T11:10:11.157Z [error]: Failed to lookup view "MerchantItemLyout" in views directory "C:\Users\PC 3\Documents\Lagona_Express\lagona\views\layout"
+2025-02-07T11:10:15.785Z [error]: Failed to lookup view "MerchantItemLyout" in views directory "C:\Users\PC 3\Documents\Lagona_Express\lagona\views\layout"
+2025-02-07T11:11:22.429Z [error]: Not Found
+2025-02-07T11:11:39.601Z [error]: Failed to lookup view "MerchantItemLyout" in views directory "C:\Users\PC 3\Documents\Lagona_Express\lagona\views\layout"
+2025-02-07T11:16:52.917Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T11:17:05.360Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T11:17:13.919Z [error]: Not Found
+2025-02-07T11:26:23.350Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T11:26:24.798Z [error]: Not Found
+2025-02-07T11:45:39.480Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T11:45:44.017Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T11:45:50.620Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T11:45:54.849Z [error]: Not Found
+2025-02-07T12:41:59.595Z [error]: Not Found
+2025-02-07T12:42:01.661Z [error]: Not Found
+2025-02-07T12:42:35.009Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T12:52:22.855Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T12:52:36.184Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T12:52:39.920Z [error]: Not Found
+2025-02-07T13:04:45.077Z [error]: C:\Users\PC 3\Documents\Lagona_Express\lagona\views\layout\MerchantExtraLayout.ejs:23
+    21|   <!--   Core JS Files   -->
+    22|   <%- include("../components/MerchantScripts.ejs")%>
+ >> 23|   <%- include("../page/MerchantSoloMerchantSoloScript.ejs")%>
+    24| </body>
+    25| 
+    26| </html>
+
+Could not find the include file "../page/MerchantSoloMerchantSoloScript.ejs"
+2025-02-07T13:18:45.764Z [error]: Not Found
+2025-02-07T13:18:47.897Z [error]: Not Found
+2025-02-07T13:18:50.934Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T13:18:52.669Z [error]: Not Found
+2025-02-07T13:58:43.654Z [error]: Not Found
+2025-02-07T13:58:49.792Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T13:59:03.474Z [error]: Not Found
+2025-02-07T13:59:06.323Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T13:59:19.247Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T15:26:16.308Z [error]: Not Found
+2025-02-07T15:27:49.488Z [error]: Not Found
+2025-02-07T15:28:56.411Z [error]: Not Found
+2025-02-07T15:34:47.159Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T15:35:05.167Z [error]: Not Found
+2025-02-07T15:38:41.237Z [error]: Not Found
+2025-02-07T15:38:42.095Z [error]: Not Found
+2025-02-07T15:39:29.155Z [error]: Not Found
+2025-02-07T15:39:29.200Z [error]: Not Found
+2025-02-07T15:42:17.100Z [error]: Not Found
+2025-02-07T15:42:17.113Z [error]: Not Found
+2025-02-07T15:42:40.747Z [error]: Not Found
+2025-02-07T15:42:40.808Z [error]: Not Found
+2025-02-07T15:42:49.426Z [error]: Not Found
+2025-02-07T15:42:49.470Z [error]: Not Found
+2025-02-07T15:44:02.467Z [error]: Not Found
+2025-02-07T15:44:02.521Z [error]: Not Found
+2025-02-07T15:44:13.653Z [error]: Not Found
+2025-02-07T15:44:13.694Z [error]: Not Found
+2025-02-07T15:44:54.643Z [error]: Not Found
+2025-02-07T15:44:54.683Z [error]: Not Found
+2025-02-07T15:45:36.172Z [error]: Not Found
+2025-02-07T15:45:36.206Z [error]: Not Found
+2025-02-07T15:45:39.409Z [error]: Not Found
+2025-02-07T15:45:39.456Z [error]: Not Found
+2025-02-07T15:45:41.680Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T15:45:42.028Z [error]: Not Found
+2025-02-07T15:45:42.061Z [error]: Not Found
+2025-02-07T15:45:44.090Z [error]: Not Found
+2025-02-07T15:45:44.137Z [error]: Not Found
+2025-02-07T15:45:47.876Z [error]: Not Found
+2025-02-07T15:45:47.919Z [error]: Not Found
+2025-02-07T15:45:58.869Z [error]: Not Found
+2025-02-07T15:45:58.908Z [error]: Not Found
+2025-02-07T15:47:15.094Z [error]: Not Found
+2025-02-07T15:47:16.351Z [error]: Not Found
+2025-02-07T15:47:16.393Z [error]: Not Found
+2025-02-07T15:47:21.175Z [error]: Not Found
+2025-02-07T15:47:21.216Z [error]: Not Found
+2025-02-07T15:47:34.064Z [error]: Not Found
+2025-02-07T15:47:34.110Z [error]: Not Found
+2025-02-07T15:47:49.477Z [error]: Not Found
+2025-02-07T15:47:49.522Z [error]: Not Found
+2025-02-07T15:49:34.162Z [error]: Not Found
+2025-02-07T15:49:34.234Z [error]: Not Found
+2025-02-07T15:49:37.712Z [error]: Not Found
+2025-02-07T15:49:37.744Z [error]: Not Found
+2025-02-07T15:49:51.411Z [error]: Not Found
+2025-02-07T15:49:51.456Z [error]: Not Found
+2025-02-07T15:50:24.064Z [error]: Not Found
+2025-02-07T15:50:24.111Z [error]: Not Found
+2025-02-07T15:50:26.714Z [error]: Not Found
+2025-02-07T15:50:26.762Z [error]: Not Found
+2025-02-07T15:50:41.237Z [error]: Not Found
+2025-02-07T15:50:41.521Z [error]: Not Found
+2025-02-07T15:50:41.565Z [error]: Not Found
+2025-02-07T15:50:43.395Z [error]: Not Found
+2025-02-07T15:50:43.449Z [error]: Not Found
+2025-02-07T15:50:53.902Z [error]: Not Found
+2025-02-07T15:50:53.987Z [error]: Not Found
+2025-02-07T15:50:55.073Z [error]: Not Found
+2025-02-07T15:50:55.124Z [error]: Not Found
+2025-02-07T15:51:03.939Z [error]: Not Found
+2025-02-07T15:51:03.971Z [error]: Not Found
+2025-02-07T15:51:05.086Z [error]: Not Found
+2025-02-07T15:51:05.132Z [error]: Not Found
+2025-02-07T15:51:06.966Z [error]: Not Found
+2025-02-07T15:51:07.019Z [error]: Not Found
+2025-02-07T15:51:07.639Z [error]: Not Found
+2025-02-07T15:51:07.691Z [error]: Not Found
+2025-02-07T15:51:08.283Z [error]: Not Found
+2025-02-07T15:51:08.338Z [error]: Not Found
+2025-02-07T15:51:08.961Z [error]: Not Found
+2025-02-07T15:51:11.968Z [error]: Not Found
+2025-02-07T15:51:12.009Z [error]: Not Found
+2025-02-07T15:51:13.277Z [error]: Not Found
+2025-02-07T15:51:13.332Z [error]: Not Found
+2025-02-07T15:51:14.473Z [error]: Not Found
+2025-02-07T15:51:14.529Z [error]: Not Found
+2025-02-07T15:51:15.186Z [error]: Not Found
+2025-02-07T15:51:15.230Z [error]: Not Found
+2025-02-07T15:51:15.757Z [error]: Not Found
+2025-02-07T15:51:15.811Z [error]: Not Found
+2025-02-07T15:51:29.871Z [error]: Not Found
+2025-02-07T15:51:29.928Z [error]: Not Found
+2025-02-07T15:51:33.773Z [error]: Not Found
+2025-02-07T15:51:33.807Z [error]: Not Found
+2025-02-07T15:51:35.924Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T15:51:36.289Z [error]: Not Found
+2025-02-07T15:51:36.339Z [error]: Not Found
+2025-02-07T15:51:39.329Z [error]: Not Found
+2025-02-07T15:51:39.373Z [error]: Not Found
+2025-02-07T15:52:51.198Z [error]: Not Found
+2025-02-07T15:52:51.204Z [error]: Not Found
+2025-02-07T15:52:51.603Z [error]: Not Found
+2025-02-07T15:52:54.288Z [error]: Not Found
+2025-02-07T15:52:54.361Z [error]: Not Found
+2025-02-07T15:53:08.031Z [error]: Not Found
+2025-02-07T15:53:08.072Z [error]: Not Found
+2025-02-07T15:57:44.471Z [error]: Not Found
+2025-02-07T15:57:44.504Z [error]: Not Found

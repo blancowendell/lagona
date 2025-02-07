@@ -6,6 +6,8 @@ const MessageStatus = {
     DUPENTRY: "dupentry",
     EXIST: "exist",
     NOENTRY: "noentry",
+    EXISTEMAIL: "Enail Already Exist",
+    EXISTMOBILE: "Mobile Number Already Exist",
   };
   
   function JsonSuccess() {

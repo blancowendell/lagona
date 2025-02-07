@@ -18,7 +18,7 @@ var roleacess = [
         layout: "AdminMerchantsLayout",
       },
       // {
-      //   layout: "master_studentlayout",
+      //   layout: "MerchantItemLyout",
       // },
       // {
       //   layout: "announcementslayout",
@@ -58,18 +58,18 @@ var roleacess = [
       {
         layout: "MerchantProductsLayout",
       },
-      // {
-      //   layout: "courseslayout",
-      // },
-      // {
-      //   layout: "master_studentlayout",
-      // },
-      // {
-      //   layout: "announcementslayout",
-      // },
-      // {
-      //   layout: "pendingapplicationlayout",
-      // },
+      {
+        layout: "MerchantComboLayout",
+      },
+      {
+        layout: "MerchantSoloLayout",
+      },
+      {
+        layout: "MerchantItemLayout",
+      },
+      {
+        layout: "MerchantExtraLayout",
+      },
       // {
       //   layout: "calendarlayout",
       // },

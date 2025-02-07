@@ -9,7 +9,7 @@ Decrypter(process.env._PASSWORD_ADMIN, (err, encrypted) => {
   password = encrypted;
 });
 
-Decrypter("7a230f308a8d2056813affcc0ae3d3b5", (err, encrypted) => {
+Decrypter("faa24d747e9fc5e9d98953d077be055e1e3d14ec438dacbd13254286791c1ae3", (err, encrypted) => {
   if (err) console.error("Error: ", err);
   console.log(encrypted);
 });
@@ -19,7 +19,7 @@ Decrypter("7a230f308a8d2056813affcc0ae3d3b5", (err, encrypted) => {
 //   console.log(encrypted);
 // });
 
-Encrypter("manasarias", (err, encrypted) => {
+Encrypter("dev2025zetaSoft", (err, encrypted) => {
   if (err) console.error("Error: ", err);
   console.log(encrypted);
 });
