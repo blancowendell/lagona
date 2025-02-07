@@ -308,6 +308,7 @@ Could not find the include file "../page/AdminMerchantsAdminMerchantsScript.ejs"
 2025-02-06T14:27:52.605Z [error]: Cannot set headers after they are sent to the client
 2025-02-06T14:28:21.232Z [error]: Cannot set headers after they are sent to the client
 2025-02-06T14:28:29.617Z [error]: Cannot set headers after they are sent to the client
+<<<<<<< Updated upstream
 2025-02-07T03:58:11.370Z [error]: Not Found
 2025-02-07T03:59:00.114Z [error]: Not Found
 2025-02-07T03:59:00.158Z [error]: Not Found
@@ -462,3 +463,28 @@ Could not find the include file "../page/MerchantSoloMerchantSoloScript.ejs"
 2025-02-07T15:53:08.072Z [error]: Not Found
 2025-02-07T15:57:44.471Z [error]: Not Found
 2025-02-07T15:57:44.504Z [error]: Not Found
+=======
+2025-02-07T03:57:16.316Z [error]: Not Found
+2025-02-07T03:57:43.867Z [error]: Not Found
+2025-02-07T04:02:36.393Z [error]: Not Found
+2025-02-07T04:03:05.987Z [error]: Not Found
+2025-02-07T04:05:11.662Z [error]: Not Found
+2025-02-07T04:05:14.601Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T04:05:18.444Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T04:05:50.705Z [error]: Not Found
+2025-02-07T04:39:01.145Z [error]: Not Found
+2025-02-07T04:40:41.705Z [error]: Not Found
+2025-02-07T04:42:35.495Z [error]: Not Found
+2025-02-07T04:43:14.376Z [error]: Not Found
+2025-02-07T04:43:17.858Z [error]: Not Found
+2025-02-07T06:17:36.802Z [error]: Not Found
+2025-02-07T09:41:00.902Z [error]: Not Found
+2025-02-07T09:41:28.752Z [error]: Not Found
+2025-02-07T09:41:37.644Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T09:41:49.191Z [error]: Cannot set headers after they are sent to the client
+2025-02-07T09:42:08.588Z [error]: Not Found
+>>>>>>> Stashed changes
+2025-02-07T16:13:44.231Z [error]: Not Found
+2025-02-07T16:14:30.078Z [error]: Not Found
+2025-02-07T16:14:51.378Z [error]: Not Found
+2025-02-07T16:16:58.994Z [error]: Not Found
