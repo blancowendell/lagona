@@ -17,6 +17,14 @@
 
 <script>
 
+function formatCurrencyValue(amount) {
+    var formattedAmount = new Intl.NumberFormat("en-PH", {
+      style: "currency",
+      currency: "PHP",
+    }).format(amount);
+    return formattedAmount;
+  }
+
   // Function to show a spinner inside a toast
   function showSpinnerToast(message, title) {
     toastr.info('<i class="fa fa-spinner fa-spin"></i> ' + message, title, { timeOut: 0, extendedTimeOut: 0 });

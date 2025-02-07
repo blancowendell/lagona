@@ -1,11 +1,15 @@
 <script>
     let base64String = "";
-    let merchant_id = "";
+    let item_id = "";
     $(document).ready(function () {
       LoadTable();
+      LoadCategory();
+      LoadSize();
+      LoadCategoryEdit();
+      LoadSizeEdit();
   
       function LoadTable() {
-        $("#dataTableCategories").DataTable({
+        $("#dataTableItems").DataTable({
           destroy: true,
           processing: true,
           serverSide: true,
@@ -16,7 +20,7 @@
           scrollCollapse: true,
           serverMethod: "GET",
           ajax: {
-            url: "/MerchantCategory/load",
+            url: "/MerchantItem/load",
             dataSrc: (json) => {
               var finalData = [];
               var data = json.data;
@@ -24,15 +28,26 @@
               console.log(data);
   
               $.each(data, (key, item) => {
+
                 var action = `
-                    <button id="editBtn" class="lagona_class-btn btn" name="editBtn" data-bs-toggle="modal" data-bs-target="#editCategoryModal">
+                    <button id="editBtn" class="lagona_class-btn btn" name="editBtn" data-bs-toggle="modal" data-bs-target="#editItemsModal">
                     <i class="fas fa-fw fa-pen"></i>
-                    </button>
                 `;
+
+                var imgElement = document.createElement("img");
+                imgElement.src = "data:image/jpg;base64," + item.item_image;
+                imgElement.alt = "Profile Image";
+                imgElement.style.width = "90px";
+                imgElement.style.height = "90px";
   
                 finalData.push({
-                  category_id: item.category_id,
-                  category_name: item.category_name,
+                  item_id: item.item_id,
+                  item_image: imgElement.outerHTML,
+                  item_name: item.item_name,
+                  category: item.category,
+                  size: item.size,
+                  item_price: item.item_price,
+                  is_available: item.is_available,
                   created_at: item.created_at,
                   action: action,
                 });
@@ -42,8 +57,24 @@
             },
           },
           columns: [
-            { data: "category_id" },
-            { data: "category_name" },
+            { data: "item_id" },
+            { data: "item_name" },
+            { data: "item_image" },
+            { data: "category" },
+            { data: "size" },
+            {
+              data: "item_price",
+              render: function (data, type, row) {
+                return (
+                  "₱" +
+                  parseFloat(data).toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
+                );
+              },
+            },
+            { data: "is_available" },
             { data: "created_at" },
             { data: "action" },
           ],
@@ -63,31 +94,95 @@
           },
         });
       }
-  
-      $(document).on("click", "#saveCategoryBtn", function () {
-        let categoryname = $("#addCategoryName").val();
+
+      function LoadCategory() {
+        $.ajax({
+          type: "GET",
+          url: "/MerchantCategory/load",
+          success: function (result) {
+            var data = result.data;
+
+            $.each(data, function (key, item) {
+              var options = new Option(item.category_id, item.category_id);
+              $(options).html(item.category_name);
+              $("#addcategory").append(options);
+            });
+          },
+          error: function (result) {
+            alert("error: " + result.data);
+          },
+        });
+      }
+
+      function LoadSize() {
+        $.ajax({
+          type: "GET",
+          url: "/MerchantSize/load",
+          success: function (result) {
+            var data = result.data;
+
+            $.each(data, function (key, item) {
+              var options = new Option(item.size_id, item.size_id);
+              $(options).html(item.size_name);
+              $("#addsize").append(options);
+            });
+          },
+          error: function (result) {
+            alert("error: " + result.data);
+          },
+        });
+      }
+
+      $(document).on("click", "#saveItemsBtn", function () {
+        let size = $("#addsize").val();
+        let category = $("#addcategory").val();
+        let item_name = $("#additemname").val();
+        let item_amount = $("#topupamount").val();
         let description = $("#addDescription").val();
+        let image = base64String;
   
         var message = "";
   
   
-        if (categoryname === "") {
-          message += "Name is required ";
+        if (size === "") {
+          message += "Merchant Owner is required ";
         }
   
-        if (description === "") {
-          message += "Description is required ";
+        if (category === "") {
+          message += "Business Name is required ";
         }
+  
+        if (item_name === "") {
+          message += "Business Branch is required ";
+        }
+  
+        if (item_amount === "") {
+          message += "Merchant Address is required ";
+        }
+        
+        if (description === "") {
+          message += "Latitude Address is required ";
+        }
+  
+        if (image === "") {   
+          message += "Longitude Address is required ";
+        }
+  
   
         if (message !== "") {
           toastr.error(`Please fill up ${message}`, "Required");
         } else {
+          item_amount = item_amount.replace(/,/g, "").replace("₱", "");
           $.ajax({
             type: "POST",
-            url: "/MerchantCategory/save",
+            url: "/MerchantItem/save",
             data: {
-              categoryname: categoryname,
+              size: size,
+              category: category,
+              item_name: item_name,
+              item_amount: parseFloat(item_amount),
               description: description,
+              image: image,
             },
             success: function (result) {
               if (result.msg == "success") {
@@ -106,7 +201,46 @@
         }
       });
   
-      $("#dataTableCategories tbody").on("click", "tr", function () {
+      function LoadSizeEdit() {
+        $.ajax({
+          type: "GET",
+          url: "/MerchantSize/load",
+          success: function (result) {
+            var data = result.data;
+
+            $.each(data, function (key, item) {
+              var options = new Option(item.size_id, item.size_id);
+              $(options).html(item.size_name);
+              $("#editsize").append(options);
+            });
+          },
+          error: function (result) {
+            alert("error: " + result.data);
+          },
+        });
+      }
+
+      function LoadCategoryEdit() {
+        $.ajax({
+          type: "GET",
+          url: "/MerchantCategory/load",
+          success: function (result) {
+            var data = result.data;
+
+            $.each(data, function (key, item) {
+              var options = new Option(item.category_id, item.category_id);
+              $(options).html(item.category_name);
+              $("#editcategory").append(options);
+            });
+          },
+          error: function (result) {
+            alert("error: " + result.data);
+          },
+        });
+      }
+
+
+      $("#dataTableItems tbody").on("click", "tr", function () {
         var dataRow = [];
         $(this)
           .closest("tr")
@@ -114,24 +248,33 @@
           .each(function () {
             dataRow.push($(this).text());
           });
-          category_id = dataRow[0];
+        item_id = dataRow[0];
         console.log(dataRow);
       });
   
       $(document).on("click", "#editBtn", function () {
         $.ajax({
           type: "POST",
-          url: "/MerchantCategory/viewcategory",
+          url: "/MerchantItem/getitem",
           data: {
-              category_id: category_id,
+            item_id: item_id,
           },
           success: function (result) {
             if (result.msg === "success") {
               const existingData = result.data;            
   
               $.each(existingData, (key, item) => {
-                $("#editCategoryName").val(item.category_name);
-                $("#editDescription").text(item.category_description);        
+                $("#edititemname").val(item.item_name);
+                $("#editsize").val(item.size);
+                $("#editcategory").val(item.category_id);
+                $("#editDescription").val(item.description);
+                $("#edittopupamount").val(formatCurrencyValue(item.item_price));
+                $("#editAvailability").val(item.is_available);
+                $("#viewUserImagePreview").attr(
+                  "src",
+                  "data:image/jpg;base64," + item.item_image
+                );
+                base64String = item.item_image;
               });
             } else {
               toastr.error("Error fetching employee data", "Error");
@@ -146,32 +289,61 @@
         });
       });
   
-      $(document).on("click", "#editsaveCategoryBtn", function () {
-        let id = category_id;
-        let categoryname = $("#editCategoryName").val();
+      $(document).on("click", "#editItemsBtn", function () {
+        let id = item_id;
+        let item_name = $("#edititemname").val();
+        let size = $("#editsize").val();
+        let category_id = $("#editcategory").val();
         let description = $("#editDescription").val();
+        let item_price = $("#edittopupamount").val();
+        let is_available = $("#editAvailability").val();
+        let item_image = base64String;
   
         var message = "";
   
-        if (categoryname === "") {
-          message += "Category Name is required ";
-        }
-
-        
-        if (description === "") {
-          message += "Description is required ";
+        if (item_name === "") {
+          message += "Hub Name is required ";
         }
   
+        if (size === "") {
+          message += "Owner Name is required ";
+        }
+  
+        if (category_id === "") {
+          message += "Hub Address is required ";
+        }
+  
+        if (description === "") {
+          message += "Phone Number is required ";
+        }
+  
+        if (item_price === "") {
+          message += "Email is required ";
+        }
+  
+        if (is_available === "") {
+          message += "Username is required ";
+        }
+  
+        if (item_image === "") {
+          message += "Password is required ";
+        }
+        item_price = item_price.replace(/,/g, "").replace("₱", "");
         if (message !== "") {
           toastr.error(`Please fill up ${message}`, "Required");
         } else {
           $.ajax({
             type: "PUT",
-            url: "/MerchantCategory/edit",
+            url: "/MerchantItem/edit",
             data: {
-              category_id: id,
-              categoryname: categoryname,
+              item_id: id,
+              item_name: item_name,
+              size: size,
+              category_id: category_id,
               description: description,
+              item_price: parseFloat(item_price),
+              is_available: is_available,
+              item_image: item_image,
             },
             success: function (result) {
               if (result.msg == "success") {
@@ -188,6 +360,20 @@
             },
           });
         }
+      });
+  
+      $("#searchTopUpHistory").on("input", function () {
+        var query = $(this).val().toLowerCase();
+        $("#topUpHistoryBody tr").each(function () {
+          var referenceCode = $(this).find("td:eq(0)").text().toLowerCase();
+          var amount = $(this).find("td:eq(1)").text().toLowerCase();
+  
+          if (referenceCode.includes(query) || amount.includes(query)) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
       });
   
       function searchTable() {
@@ -239,8 +425,8 @@
       });
   
   
-      $(document).on("change", "#viewImage", function (e) {
-        const input = document.getElementById("viewImage");
+      $(document).on("change", "#edititemimage", function (e) {
+        const input = document.getElementById("edititemimage");
         const file = input.files[0];
   
         const reader = new FileReader();
@@ -249,11 +435,11 @@
           const preview = document.getElementById("viewUserImagePreview");
           preview.src = reader.result;
         };
-        imageUploadedAdd();
+        imageUploadedOld();
       });
   
-      function imageUploadedAdd() {
-        const input = document.getElementById("viewImage");
+      function imageUploadedOld() {
+        const input = document.getElementById("edititemimage");
         const file = input.files[0];
   
         var reader = new FileReader();
@@ -281,21 +467,21 @@
         reader.readAsDataURL(file);
       }
   
-      $(document).on("change", "#addProductImage", function (e) {
-        const input = document.getElementById("addProductImage");
+      $(document).on("change", "#additemimage", function (e) {
+        const input = document.getElementById("additemimage");
         const file = input.files[0];
   
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = function () {
-          const preview = document.getElementById("productImagePreview");
+          const preview = document.getElementById("userImagePreview");
           preview.src = reader.result;
         };
-        imageUploadedOld();
+        imageUploadedAdd();
       });
   
-      function imageUploadedOld() {
-        const input = document.getElementById("addProductImage");
+      function imageUploadedAdd() {
+        const input = document.getElementById("additemimage");
         const file = input.files[0];
   
         var reader = new FileReader();

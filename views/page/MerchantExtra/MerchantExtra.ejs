@@ -1,0 +1,176 @@
+<div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                <h6>Extra's</h6>
+                <!-- Dropdowns and Filter Button -->
+                <div class="d-flex align-items-center">
+                    <div class="me-2">
+                        <select class="form-select form-select-sm" id="filterDropdown1">
+                            <option value="">Select Option 1</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                        </select>
+                    </div>
+                    <div class="me-2">
+                        <select class="form-select form-select-sm" id="filterDropdown2">
+                            <option value="">Select Option 2</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                        </select>
+                    </div>
+                    <button class="btn lagona_class-btn btn-sm" data-bs-toggle="modal" data-bs-target="#addextraModal">
+                        Add Extra
+                    </button>                    
+                </div>
+            </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table align-items-center mb-0" id="dataTableExtras">
+                <thead>
+                    <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">ID</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Extra Image</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Name</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Unit Price</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Status</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Register Date</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Action</th>
+                    </tr>             
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addextraModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" id="modal-header">
+                <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
+                colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
+                <h3 class="modal-title" id="exampleModalLabel">Add Extra</h3>
+                <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <form>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="text-center mb-3">
+                                <img id="userImagePreview" src="/img/userimage.jpg" alt="User Image" class="img-thumbnail rounded" style="width: 200px; height: 200px; object-fit: cover;">
+                                <br><br>
+                                <input type="file" class="form-control" id="addimage" name="addimage" accept="image/*">
+                                <label for="addimage" class="form-label">Upload Extra Image</label>
+                            </div>
+                        </div>
+
+                        <!-- Hub Name -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="addcomboname" name="addcomboname" placeholder="Business Name">
+                                <label for="addcomboname">Extra Name</label>
+                            </div>
+                        </div>
+
+                        <!-- Owner Name-->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-moda" id="topupamount" name="topupamount" placeholder="Top Up Amount"
+                                    oninput="formatPrice(event, this)">
+                                <label for="topupamount">Enter Amount Here</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <textarea class="form-control border-form-modal" id="addDescription" name="addDescription" placeholder="Description"></textarea>
+                                <label for="addDescription">Combo Description</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveComboBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editcomboModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" id="modal-header">
+                <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
+                colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
+                <h3 class="modal-title" id="exampleModalLabel">Edit Combo Meal</h3>
+                <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <form>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="text-center mb-3">
+                                <img id="viewUserImagePreview" src="/img/userimage.jpg" alt="User Image" class="img-thumbnail rounded" style="width: 200px; height: 200px; object-fit: cover;">
+                                <br><br>
+                                <input type="file" class="form-control" id="editaddimage" name="editaddimage" accept="image/*">
+                                <label for="editaddimage" class="form-label">Upload Meal Image</label>
+                            </div>
+                        </div>
+
+                        <!-- Hub Name -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="editcomboname" name="editcomboname" placeholder="Business Name">
+                                <label for="editcomboname">Combo Meal Name</label>
+                            </div>
+                        </div>
+
+                        <!-- Owner Name-->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-moda" id="edittopupamount" name="edittopupamount" placeholder="Top Up Amount"
+                                    oninput="formatPrice(event, this)">
+                                <label for="edittopupamount">Enter Amount Here</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <textarea class="form-control border-form-modal" id="editDescription" name="editDescription" placeholder="Description"></textarea>
+                                <label for="editDescription">Combo Description</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select border-form-modal" id="editAvailability" name="editAvailability">
+                                    <option value="Active" class="text-success">Available</option>
+                                    <option value="Inactive" class="text-danger">Not Available</option>
+                                </select>
+                                <label for="editAvailability">Availability</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn lagona_class-btn btn-modal-save" id="editsaveComboBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -25,6 +25,11 @@ var MerchantIndexRouter = require("./routes/MerchantIndex");
 var MerchantProductsRouter = require("./routes/MerchantProducts");
 var MerchantCategoryRouter = require("./routes/MerchantCategory");
 var MerchantSizeRouter = require("./routes/MerchantSize");
+var MerchantComboRouter = require("./routes/MerchantCombo");
+var MerchantSoloRouter = require("./routes/MerchantSolo");
+var MerchantItemRouter = require("./routes/MerchantItem");
+var MerchantExtraRouter = require("./routes/MerchantExtra");
+var MobileApiRouter = require("./routes/MobileApi");
 //#endregion
 
 const verifyJWT = require("./middleware/authenticator");
@@ -54,6 +59,8 @@ app.use((req, res, next) => {
 //#region ROUTES USE
 app.use("/AdminLogin", AdminLoginRouter);
 app.use("/MerchantLogin", MerchantLoginRouter);
+app.use("/MobileApi", MobileApiRouter);
+
 app.use(verifyJWT);
 
 app.use("/", AdminIndexRouter);
@@ -65,6 +72,10 @@ app.use("/MerchantIndex", MerchantIndexRouter);
 app.use("/MerchantProducts", MerchantProductsRouter);
 app.use("/MerchantCategory", MerchantCategoryRouter);
 app.use("/MerchantSize", MerchantSizeRouter);
+app.use("/MerchantCombo", MerchantComboRouter);
+app.use("/MerchantSolo", MerchantSoloRouter);
+app.use("/MerchantItem", MerchantItemRouter);
+app.use("/MerchantExtra", MerchantExtraRouter);
 //#endregion
 
 app.use(function (req, res, next) {

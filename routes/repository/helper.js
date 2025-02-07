@@ -111,6 +111,26 @@ exports.UserLogin = (result, callback) => {
   }
 };
 
+
+exports.CustomerLogin = (result, callback) => {
+  try {
+    const CustomerData = [];
+
+    result.forEach((row) => {
+      CustomerData.push({
+        cus_id: row.cus_id,
+        cus_fullname: row.cus_fullname,
+        role_type: row.role_type,
+      });
+    });
+
+    return CustomerData;
+  } catch (error) {
+    console.log(error);
+    callback(error);
+  }
+};
+
 exports.MerchantLogin = (result, callback) => {
   try {
     const MerchantData = [];
