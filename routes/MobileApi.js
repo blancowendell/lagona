@@ -556,6 +556,123 @@ router.post("/getMenuSoloImage", (req, res) => {
   }
 });
 
+router.post("/getCombo", (req, res) => {
+  try {
+    let merchant_id = req.body.merchant_id;
+    let sql = `
+    SELECT
+    mc_combo_id,
+    mc_combo_name,
+    mc_description,
+    mc_price
+    FROM menu_combo
+    WHERE mc_is_available = 'Active'
+    AND mc_merchant_id = '${merchant_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mc_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/geComboImage", (req, res) => {
+  try {
+    let combo_id = req.body.combo_id;
+    let sql = `
+    SELECT
+    mc_combo_id,
+    mc_meal_image
+    FROM menu_combo
+    WHERE mc_combo_id = '${combo_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mc_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/getExtra", (req, res) => {
+  try {
+    let merchant_id = req.body.merchant_id;
+    let sql = `
+    SELECT
+    me_extra_id,
+    me_extra_name,
+    me_description,
+    me_extra_price
+    FROM menu_extras
+    WHERE me_is_available = 'Active'
+    AND me_merchant_id = '${merchant_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "me_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/geExtraImage", (req, res) => {
+  try {
+    let combo_id = req.body.combo_id;
+    let sql = `
+    SELECT
+    me_extra_id,
+    me_extra_image
+    FROM menu_extras
+    WHERE me_extra_id = '${combo_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "me_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
 
 
 
