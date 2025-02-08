@@ -4,9 +4,9 @@ const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "DIGISAKA API Documentation",
+      title: "LAGONA-EXPRESS API Documentation",
       version: "1.0.0",
-      description: "API documentation for DIGISAKA",
+      description: "API documentation for Mobile App",
     },
   },
   apis: ["./document/*.js"], 
@@ -15,16 +15,17 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 module.exports = swaggerDocs;
 
-//#region EMPLOYEE API
+
+//#region getMenuSoloImage
 
 /**
  * @swagger
- * /employee/save:
+ * /MobileApi/getMenuSoloImage:
  *   post:
- *     summary: Save a new employee record
- *     description: Adds a new employee record to the database, generates an ID, username, and password, and encrypts the password before saving the user record.
+ *     summary: Retrieve an image of a solo menu item
+ *     description: Returns the image URL of a solo menu item based on the provided item ID.
  *     tags:
- *       - Employee
+ *       - Menu
  *     requestBody:
  *       required: true
  *       content:
@@ -32,217 +33,302 @@ module.exports = swaggerDocs;
  *           schema:
  *             type: object
  *             properties:
- *               firstname:
+ *               item_id:
  *                 type: string
- *                 description: First name of the employee.
- *                 example: "John"
- *               middlename:
- *                 type: string
- *                 description: Middle name of the employee.
- *                 example: "Michael"
- *               lastname:
- *                 type: string
- *                 description: Last name of the employee.
- *                 example: "Doe"
- *               birthday:
- *                 type: string
- *                 format: date
- *                 description: Date of birth of the employee.
- *                 example: "1990-01-01"
- *               gender:
- *                 type: string
- *                 description: Gender of the employee.
- *                 example: "Male"
- *               civilstatus:
- *                 type: string
- *                 description: Civil status of the employee.
- *                 example: "Single"
- *               phone:
- *                 type: string
- *                 description: Phone number of the employee.
- *                 example: "+1234567890"
- *               email:
- *                 type: string
- *                 description: Email address of the employee.
- *                 example: "john.doe@example.com"
- *               hiredate:
- *                 type: string
- *                 format: date
- *                 description: Date when the employee was hired.
- *                 example: "2024-01-01"
- *               jobstatus:
- *                 type: string
- *                 description: Job status of the employee (e.g., "apprentice", "permanent").
- *                 example: "apprentice"
- *               ercontactname:
- *                 type: string
- *                 description: Emergency contact name of the employee.
- *                 example: "Jane Doe"
- *               ercontactphone:
- *                 type: string
- *                 description: Emergency contact phone number of the employee.
- *                 example: "+0987654321"
- *               departmentName:
- *                 type: string
- *                 description: Name of the department the employee belongs to.
- *                 example: "HR"
- *               positionName:
- *                 type: string
- *                 description: Position name of the employee.
- *                 example: "Manager"
- *               address:
- *                 type: string
- *                 description: Address of the employee.
- *                 example: "123 Main St, City, Country"
- *               profilePicturePath:
- *                 type: string
- *                 description: The profile picture needs to be converted to base64 and sent here.
- *                 example: "ashdausihdagsdiknasdiashdasoidhsyduashdaoisuhdasuasduha"
+ *                 example: "1"
+ *                 description: The unique identifier of the solo menu item.
  *     responses:
  *       200:
- *         description: Success message indicating the result.
+ *         description: Successfully retrieved the solo menu item image.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 msg:
+ *                 status:
  *                   type: string
- *                   description: Status of the operation.
  *                   example: "success"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     solo_id:
+ *                       type: integer
+ *                       example: 1
+ *                     meal_image:
+ *                       type: string
+ *                       example: "https://example.com/images/solo1.jpg"
  *       400:
- *         description: Bad request due to invalid data.
+ *         description: Invalid request or missing parameters.
  *       500:
  *         description: Server error.
  */
-
 //#endregion
 
-//#region TRAINING API
 
+//#region getMenuSolo
 /**
  * @swagger
- * /trainings/load:
- *   get:
- *     summary: Retrieve training details
- *     description: Fetches a list of training sessions along with associated employee details.
+ * /MobileApi/getMenuSolo:
+ *   post:
+ *     summary: Retrieve available solo menu items for a merchant
+ *     description: Returns a list of active solo menu items based on the provided merchant ID.
  *     tags:
- *       - Training
+ *       - Menu
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               merchant_id:
+ *                 type: string
+ *                 example: "1"
+ *                 description: The unique identifier of the merchant.
  *     responses:
  *       200:
- *         description: A successful response with training details.
+ *         description: Successfully retrieved solo menu items.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 msg:
+ *                 status:
  *                   type: string
- *                   example: success
+ *                   example: "success"
  *                 data:
  *                   type: array
  *                   items:
  *                     type: object
  *                     properties:
- *                       mt_trainingid:
+ *                       solo_id:
  *                         type: integer
- *                         description: The unique ID of the training.
- *                         example: 101
- *                       mt_name:
+ *                         example: 1
+ *                       solo_name:
  *                         type: string
- *                         description: The name of the training session.
- *                         example: Leadership Workshop
- *                       me_id:
- *                         type: integer
- *                         description: The ID of the employee associated with the training.
- *                         example: 2001
- *                       mt_employeeid:
+ *                         example: "Solo Meal 1"
+ *                       description:
  *                         type: string
- *                         description: The employee's full name.
- *                         example: John Doe
- *                       mt_startdate:
- *                         type: string
- *                         format: date
- *                         description: Start date of the training.
- *                         example: "2024-11-01"
- *                       mt_enddate:
- *                         type: string
- *                         format: date
- *                         description: End date of the training.
- *                         example: "2024-11-03"
- *                       mt_location:
- *                         type: string
- *                         description: Location of the training.
- *                         example: New York Office
- *                       mt_status:
- *                         type: string
- *                         description: Current status of the training.
- *                         example: Scheduled
+ *                         example: "A delicious solo meal"
+ *                       price:
+ *                         type: number
+ *                         example: 9.99
+ *       400:
+ *         description: Invalid request or missing parameters.
  *       500:
- *         description: Internal server error.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 msg:
- *                   type: string
- *                   example: "An error occurred while processing your request."
+ *         description: Server error.
  */
+//#endregion
+
+
+//#region getCombo
 
 /**
  * @swagger
- * /trainings/save:
+ * /MobileApi/getCombo:
  *   post:
- *     summary: Save a new training record
- *     description: Adds a new training record for an employee if it doesn't already exist.
+ *     summary: Retrieve available menu combos for a merchant
+ *     description: Returns a list of active menu combos based on the provided merchant ID.
  *     tags:
- *       - Training
+ *       - Menu
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         application/x-www-form-urlencoded:
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               merchant_id:
  *                 type: string
- *                 description: Name of the training session.
- *                 example: "Leadership Workshop"
- *               employeeid:
- *                 type: string
- *                 description: ID of the employee attending the training.
- *                 example: "EMP12345"
- *               startdate:
- *                 type: string
- *                 format: date
- *                 description: Start date of the training session.
- *                 example: "2024-11-01"
- *               enddate:
- *                 type: string
- *                 format: date
- *                 description: End date of the training session.
- *                 example: "2024-11-07"
- *               location:
- *                 type: string
- *                 description: Location of the training session.
- *                 example: "Conference Room B"
+ *                 example: "1"
+ *                 description: The unique identifier of the merchant.
  *     responses:
  *       200:
- *         description: Success message indicating the result.
+ *         description: Successfully retrieved menu combos.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 msg:
+ *                 status:
  *                   type: string
- *                   description: Status of the operation.
  *                   example: "success"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       combo_id:
+ *                         type: integer
+ *                         example: 1
+ *                       combo_name:
+ *                         type: string
+ *                         example: "Combo 1"
+ *                       description:
+ *                         type: string
+ *                         example: "A delicious meal for the whole family"
+ *                       price:
+ *                         type: number
+ *                         example: 19.99
  *       400:
- *         description: Bad request due to invalid data.
+ *         description: Invalid request or missing parameters.
  *       500:
  *         description: Server error.
  */
 
+
+//#endregion
+
+
+//#region geComboImage
+/**
+ * @swagger
+ * /MobileApi/geComboImage:
+ *   post:
+ *     summary: Retrieve meal image for a specific combo
+ *     description: Returns the image URL for the specified combo ID.
+ *     tags:
+ *       - Menu
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               combo_id:
+ *                 type: string
+ *                 example: "1"
+ *                 description: The unique identifier of the combo.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the combo image.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       combo_id:
+ *                         type: integer
+ *                         example: 1
+ *                       meal_image:
+ *                         type: string
+ *                         example: "https://example.com/images/combo1.jpg"
+ *       400:
+ *         description: Invalid request or missing parameters.
+ *       500:
+ *         description: Server error.
+ */
+//#endregion
+
+
+//#region getExtra
+/**
+ * @swagger
+ * /MobileApi/getExtra:
+ *   post:
+ *     summary: Retrieve available menu extras for a merchant
+ *     description: Returns a list of active menu extras based on the provided merchant ID.
+ *     tags:
+ *       - Menu
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               merchant_id:
+ *                 type: string
+ *                 example: "1"
+ *                 description: The unique identifier of the merchant.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved menu extras.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       extra_id:
+ *                         type: integer
+ *                         example: 1
+ *                       extra_name:
+ *                         type: string
+ *                         example: "Cheese"
+ *                       description:
+ *                         type: string
+ *                         example: "Extra cheese for your meal"
+ *                       extra_price:
+ *                         type: number
+ *                         example: 2.99
+ *       400:
+ *         description: Invalid request or missing parameters.
+ *       500:
+ *         description: Server error.
+ */
+//#endregion
+
+
+//#region geExtraImage
+/**
+ * @swagger
+ * /MobileApi/geExtraImage:
+ *   post:
+ *     summary: Retrieve an extra item image
+ *     description: Returns the image of an extra item based on the provided extra ID.
+ *     tags:
+ *       - Menu
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               combo_id:
+ *                 type: string
+ *                 example: "1"
+ *                 description: The unique identifier of the extra item.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the extra item image.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     extra_id:
+ *                       type: integer
+ *                       example: 1
+ *                     extra_image:
+ *                       type: string
+ *                       example: "https://example.com/images/extra1.jpg"
+ *       400:
+ *         description: Invalid request or missing parameters.
+ *       500:
+ *         description: Server error.
+ */
 //#endregion
