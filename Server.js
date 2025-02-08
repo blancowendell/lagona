@@ -1,5 +1,4 @@
 // In Server.js
-
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
@@ -9,8 +8,21 @@ const { SetMongo } = require("./routes/controller/mongoose");
 const cors = require("cors");
 const swaggerDocs = require("./document/swagger");
 const swaggerUi = require("swagger-ui-express");
+const basicAuth = require("basic-auth");
 
-// Import logger and eventlogger from the logger file
+
+function swaggerAuth(req, res, next) {
+  const user = basicAuth(req);
+  const username = "admin";
+  const password = "markcute"; 
+
+  if (!user || user.name !== username || user.pass !== password) {
+    res.set("WWW-Authenticate", 'Basic realm="Swagger API Docs"');
+    return res.status(401).send("Authentication required.");
+  }
+  next();
+}
+
 const { logger, eventlogger } = require("./routes/utility/logger");
 
 //#region ROUTES IMPORT
@@ -52,7 +64,8 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "assets")));
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use("/api-docs", swaggerAuth, swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 
 // Use eventlogger to log requests
 app.use((req, res, next) => {
