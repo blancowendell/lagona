@@ -154,6 +154,37 @@ router.get("/loadMerchant", (req, res) => {
   }
 });
 
+router.post("/loadMerchantDetail", (req, res) => {
+  try {
+    let merchant_id = req.body.merchant_id;
+    let sql = `
+        SELECT
+        mm_merchant_id,
+        mm_merchant_code,
+        mm_business_name,
+        mm_business_branch
+        FROM master_merchant
+        WHERE mm_status = 'Active'
+        AND mm_merchant_id = '${merchant_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mm_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
 router.post("/loadLogoMerchant", (req, res) => {
   try {
     let merchant_id = req.body.merchant_id;
@@ -239,68 +270,6 @@ router.post("/getTypeMerch", (req, res) => {
     res.json(JsonErrorResponse(error));
   }
 });
-
-// router.post("/loginCustomer", (req, res) => {
-//   try {
-//     const { username, password } = req.body;
-//     let role_type = "Customer";
-
-//     Encrypter(password, (err, encrypted) => {
-//       if (err) return console.error("Error: ", err);
-
-//       let sql = `SELECT
-//         mc_customer_id as cus_id,
-//         CONCAT(mc_first_name,' ',mc_last_name) as cus_fullname,
-//         mc_status as status
-//         FROM master_customer
-//         WHERE mc_username = '${username}'
-//         AND mc_password = '${encrypted}'`;
-
-//       mysql.mysqlQueryPromise(sql)
-//         .then((result) => {
-//           if (result.length === 0) {
-//             return res.json({ msg: "incorrect" });
-//           }
-
-//           const user = result[0];
-
-//           if (user.status !== "Active") {
-//             return res.json({ msg: "inactive" });
-//           }
-//           result.forEach((row) => {
-//             row.role_type = role_type;
-//           });
-
-//           let data = CustomerLogin(result);
-//           data.forEach((user) => {
-//             req.session.jwt = EncrypterString(
-//               jwt.sign(
-//                 JSON.stringify({
-//                     cus_id: user.cus_id,
-//                     cus_fullname: user.cus_fullname,
-//                 }),
-//                 process.env._SECRET_KEY
-//               ),
-//               {}
-//             );
-//             req.session.cus_id = user.cus_id;
-//             req.session.cus_fullname = user.cus_fullname;
-//             req.session.role_type = user.role_type;
-//           });
-
-//           console.log(data);
-
-//           return res.json({ msg: "success", data: data });
-//         })
-//         .catch((error) => {
-//           return res.json({ msg: "error", data: error });
-//         });
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.json(JsonErrorResponse(error));
-//   }
-// });
 
 router.post("/loginCustomer", (req, res) => {
   try {
@@ -438,6 +407,154 @@ router.post("/addAddress", verifyJWT, (req, res) => {
     res.json(JsonErrorResponse(error));
   }
 });
+
+router.get("/getSize", (req, res) => {
+  try {
+    let sql = `
+    SELECT
+    *
+    FROM menu_size`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "ms_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/getItem", (req, res) => {
+  try {
+    let merchant_id = req.body.merchant_id;
+    let sql = `
+    SELECT
+    mi_item_id,
+    mi_item_name,
+    ms_size_name as mi_name,
+    mc_category_name as mi_category,
+    mi_item_price,
+    mi_description
+    FROM menu_item
+    INNER JOIN menu_size ON menu_item.mi_size = ms_size_id
+    INNER JOIN menu_category ON menu_item.mi_category_id = mc_category_id
+    WHERE mi_is_available = 'Active'
+    AND mi_merchant_id = '${merchant_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mi_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/getItemImage", (req, res) => {
+  try {
+    let item_id = req.body.item_id;
+    let sql = `
+    SELECT
+    mi_item_id,
+    mi_item_image
+    FROM menu_item
+    WHERE mi_item_id = '${item_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mi_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/getMenuSolo", (req, res) => {
+  try {
+    let merchant_id = req.body.merchant_id;
+    let sql = `
+    SELECT
+    ms_solo_id,
+    ms_solo_name,
+    ms_description,
+    ms_price
+    FROM menu_solo
+    WHERE ms_is_available = 'Active'
+    AND ms_merchant_id = '${merchant_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "ms_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/getMenuSoloImage", (req, res) => {
+  try {
+    let item_id = req.body.item_id;
+    let sql = `
+    SELECT
+    ms_solo_id,
+    ms_meal_image
+    FROM menu_solo
+    WHERE ms_solo_id = '${item_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "ms_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
 
 
 
