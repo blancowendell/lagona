@@ -17,9 +17,9 @@ var roleacess = [
       {
         layout: "AdminMerchantsLayout",
       },
-      // {
-      //   layout: "MerchantItemLyout",
-      // },
+      {
+        layout: "AdminShareholdersLayout",
+      },
       // {
       //   layout: "announcementslayout",
       // },
@@ -70,12 +70,12 @@ var roleacess = [
       {
         layout: "MerchantExtraLayout",
       },
-      // {
-      //   layout: "calendarlayout",
-      // },
-      // {
-      //   layout: "questionslayout",
-      // },
+      {
+        layout: "MerchantInventoryLayout",
+      },
+      {
+        layout: "MerchantOrdersLayout",
+      },
       // {
       //   layout: "scholarshiplayout",
       // },

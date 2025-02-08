@@ -210,6 +210,36 @@ router.post("/getCategoryMerch", (req, res) => {
   }
 });
 
+router.post("/getTypeMerch", (req, res) => {
+  try {
+    let type = req.body.type;
+    let sql = `
+        SELECT 
+        mm_merchant_id,
+        mm_merchant_code,
+        mm_business_name,
+        mm_business_branch
+        FROM master_merchant
+        WHERE mm_merchant_type = '${type}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mm_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
 // router.post("/loginCustomer", (req, res) => {
 //   try {
 //     const { username, password } = req.body;
@@ -408,6 +438,7 @@ router.post("/addAddress", verifyJWT, (req, res) => {
     res.json(JsonErrorResponse(error));
   }
 });
+
 
 //#region FUNCTION
 function Check(sql) {
