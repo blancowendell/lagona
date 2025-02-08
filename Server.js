@@ -63,9 +63,7 @@ app.use((req, res, next) => {
 app.use("/AdminLogin", AdminLoginRouter);
 app.use("/MerchantLogin", MerchantLoginRouter);
 app.use("/MobileApi", MobileApiRouter);
-
 app.use(verifyJWT);
-
 app.use("/", AdminIndexRouter);
 app.use("/AdminHubs", AdminHubsRouter);
 app.use("/AdminLoadingStation", AdminLoadingStationRouter);
