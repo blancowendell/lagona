@@ -162,7 +162,8 @@ router.post("/loadMerchantDetail", (req, res) => {
         mm_merchant_id,
         mm_merchant_code,
         mm_business_name,
-        mm_business_branch
+        mm_business_branch,
+        mm_logo
         FROM master_merchant
         WHERE mm_status = 'Active'
         AND mm_merchant_id = '${merchant_id}'`;
