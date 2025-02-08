@@ -132,10 +132,38 @@ router.get("/loadMerchant", (req, res) => {
         mm_merchant_id,
         mm_merchant_code,
         mm_business_name,
-        mm_business_branch,
-        mm_logo
+        mm_business_branch
         FROM master_merchant
         WHERE mm_status = 'Active'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mm_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/loadLogoMerchant", (req, res) => {
+  try {
+    let merchant_id = req.body.merchant_id;
+    let sql = `
+        SELECT
+        mm_merchant_id,
+        mm_logo
+        FROM master_merchant
+        WHERE mm_status = 'Active'
+        AND mm_merchant_id = '${merchant_id}'`;
 
     Select(sql, (err, result) => {
       if (err) {
