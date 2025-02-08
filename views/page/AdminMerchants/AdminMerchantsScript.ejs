@@ -141,6 +141,7 @@
       let email = $("#addemail").val();
       let username = $("#addusername").val();
       let password = $("#addpassword").val();
+      let merchant_type = $("#addmerchtype").val();
       let logo = base64String;
 
       var message = "";
@@ -194,6 +195,10 @@
         message += "Load Phone Number is required ";
       }
 
+      if (merchant_type === "" || merchant_type === null) {
+        message += "Load Merchant Type is required ";
+      }
+
 
       if (message !== "") {
         toastr.error(`Please fill up ${message}`, "Required");
@@ -203,6 +208,7 @@
           url: "/AdminMerchants/save",
           data: {
             business_name: business_name,
+            merchant_type: merchant_type,
             merchant_owner: merchant_owner,
             business_branch: business_branch,
             merchant_address: merchant_address,
@@ -214,14 +220,13 @@
             logo: logo,
             username: username,
             password: password,
-             
           },
           success: function (result) {
             if (result.msg == "success") {
               toastr.success("Saved Successfully", "Success");
               setTimeout(function () {
                 window.location.reload();
-              }, 1000);
+              }, 500);
             } else {
               toastr.warning("Data already exists!", "Warning");
             }

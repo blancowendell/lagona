@@ -65,6 +65,7 @@ router.post("/save", (req, res) => {
     let createddate = GetCurrentDatetime();
     let create_by = req.session.fullname;
     const {
+      merchant_type,
       business_name,
       merchant_owner,
       business_branch,
@@ -83,6 +84,7 @@ router.post("/save", (req, res) => {
     let encrypted = EncrypterString(password);
 
     let sql = InsertStatement("master_merchant", "mm", [
+      "merchant_type",
       "merchant_code",
       "merchant_fullname",
       "business_name",
@@ -103,6 +105,7 @@ router.post("/save", (req, res) => {
 
     let data = [
       [
+        merchant_type,
         merchant_code,
         merchant_owner,
         business_name,
@@ -123,8 +126,8 @@ router.post("/save", (req, res) => {
     ];
 
     let checkStatement = SelectStatement(
-      "select * from master_merchant where mm_business_name=? and mm_business_branch=?",
-      [business_name, business_branch]
+      "select * from master_merchant where mm_business_name=? and mm_business_branch=? and mm_merchant_type=?",
+      [business_name, business_branch, merchant_type]
     );
 
     Check(checkStatement)
