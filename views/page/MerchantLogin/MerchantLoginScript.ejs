@@ -8,58 +8,6 @@
       }
     });
 
-    //   $(document).on("click", "#loginBtn", function () {
-    //     let username = $("#username").val();
-    //     let password = $("#password").val();
-
-    //     var message = "";
-
-    //     if (username === "") {
-    //       message += "Username ";
-    //     }
-
-    //     if (password === "") {
-    //       message += "Password";
-    //     }
-
-    //     if (message !== "") {
-    //       toastr.error(`Please fill up ${message}`, "Required");
-    //     } else {
-    //       $.ajax({
-    //         type: "POST",
-    //         url: "/MerchantLogin/login",
-    //         data: {
-    //           username: username,
-    //           password: password,
-    //         },
-    //         success: function (result) {
-    //           if (result.msg === "success") {
-    //             toastr.success("Login Successful!", "Success");
-    //             setTimeout(() => {
-    //               if (result.data[0]) {
-    //                 location.replace("/MerchantLogin");
-    //               } else {
-    //                 location.replace("/MerchantIndex");
-    //               }
-    //             }, 1000);
-    //           } else if (result.msg === "inactive") {
-    //             toastr.error(
-    //               "Your account is inactive. Please be guided accordingly.",
-    //             );
-    //           } else if (result.msg === "incorrect") {
-    //             toastr.error(
-    //               "Incorrect Credentials. Please try again!",
-    //               "Incorrect"
-    //             );
-    //           }
-    //         },
-    //         error: function (err) {
-    //           toastr.error("An error occurred while saving data.", "Error");
-    //         },
-    //       });
-    //     }
-    //   });
-
     $(document).on("click", "#loginBtn", function () {
       let username = $("#username").val();
       let password = $("#password").val();
@@ -88,7 +36,7 @@
               } else {
                 location.replace("/MerchantLogin");
               }
-            }, 1000);
+            }, 500);
           } else if (result.msg === "inactive") {
             toastr.error(
               "Your account is inactive. Please be guided accordingly."
