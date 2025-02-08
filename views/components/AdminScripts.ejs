@@ -171,7 +171,7 @@ function formatCurrencyValue(amount) {
           setTimeout(() => {
             window.location.reload();
             location.replace("/AdminLogin");
-          }, 1500); // Wait for the toast to display before redirecting
+          }, 500); // Wait for the toast to display before redirecting
         },
         error: function (err) {
           toastr.error("There was an error while logging out.", "Error");
