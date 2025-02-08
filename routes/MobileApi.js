@@ -154,13 +154,14 @@ router.get("/loadMerchant", (req, res) => {
   }
 });
 
-router.get("/loadLogoMerchant", (req, res) => {
+router.post("/loadLogoMerchant", (req, res) => {
   try {
     let merchant_id = req.body.merchant_id;
     let sql = `
         SELECT
         mm_merchant_id,
         mm_logo
+        FROM master_merchant
         WHERE mm_status = 'Active'
         AND mm_merchant_id = '${merchant_id}'`;
 
