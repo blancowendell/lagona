@@ -213,141 +213,165 @@ router.post("/getmerchant", (req, res) => {
 });
 
 router.put("/edit", (req, res) => {
-    try {
+  try {
       const {
-        business_name,
-        business_branch,
-        merchant_address,
-        merchant_owner,
-        latitude,
-        longitude,
-        qr_code,
-        email,
-        phone_number,
-        logo,
-        username,
-        password,
-        merchant_type,
-        merchant_id,
+          business_name,
+          business_branch,
+          merchant_address,
+          merchant_owner,
+          latitude,
+          longitude,
+          qr_code,
+          email,
+          phone_number,
+          logo,
+          username,
+          password,
+          merchant_type,
+          merchant_id,
       } = req.body;
-  
+
       let data = [];
       let columns = [];
-      let arguments = []
+      let arguments = [];
 
       let encrypted = EncrypterString(password);
-  
-      if (merchant_type) {
-        data.push(merchant_type);
-        columns.push("merchant_type");
+
+      // Function to escape apostrophes
+      function escapeString(value) {
+          return value ? value.replace(/'/g, "''") : value;
       }
-  
+
+      if (merchant_type) {
+          data.push(escapeString(merchant_type));
+          columns.push("merchant_type");
+      }
+
       if (merchant_owner) {
-        data.push(merchant_owner);
-        columns.push("merchant_fullname");
+          data.push(escapeString(merchant_owner));
+          columns.push("merchant_fullname");
       }
 
       if (business_name) {
-        data.push(business_name);
-        columns.push("business_name");
-      }
-  
-      if (business_branch) {
-        data.push(business_branch);
-        columns.push("business_branch");
+          data.push(escapeString(business_name));
+          columns.push("business_name");
       }
 
+      if (business_branch) {
+          data.push(escapeString(business_branch));
+          columns.push("business_branch");
+      }
 
       if (merchant_address) {
-        data.push(merchant_address);
-        columns.push("merchant_address");
+          data.push(escapeString(merchant_address));
+          columns.push("merchant_address");
       }
-  
 
       if (latitude) {
-        data.push(latitude);
-        columns.push("latitude");
+          data.push(latitude);
+          columns.push("latitude");
       }
-  
+
       if (longitude) {
-        data.push(longitude);
-        columns.push("longitude");
+          data.push(longitude);
+          columns.push("longitude");
       }
-  
 
       if (phone_number) {
-        data.push(phone_number);
-        columns.push("mobile");
+          data.push(escapeString(phone_number));
+          columns.push("mobile");
       }
-  
+
       if (email) {
-        data.push(email);
-        columns.push("email");
+          data.push(escapeString(email));
+          columns.push("email");
       }
-  
 
       if (username) {
-        data.push(username);
-        columns.push("username");
-      }
-  
-      if (encrypted) {
-        data.push(encrypted);
-        columns.push("password");
+          data.push(escapeString(username));
+          columns.push("username");
       }
 
+      if (encrypted) {
+          data.push(encrypted);
+          columns.push("password");
+      }
 
       if (logo) {
-        data.push(logo);
-        columns.push("logo");
+          data.push(escapeString(logo));
+          columns.push("logo");
       }
-
 
       if (qr_code) {
-        data.push(qr_code);
-        columns.push("payment_qr_code");
+          data.push(escapeString(qr_code));
+          columns.push("payment_qr_code");
       }
-    
+
       if (merchant_id) {
-        data.push(merchant_id);
-        arguments.push("merchant_id");
+          data.push(merchant_id);
+          arguments.push("merchant_id");
       }
-  
+
       let updateStatement = UpdateStatement(
-        "master_merchant",
-        "mm",
-        columns,
-        arguments
+          "master_merchant",
+          "mm",
+          columns,
+          arguments
       );
+
       let checkStatement = SelectStatement(
-        "select * from master_merchant where mm_merchant_id = ? and mm_business_name = ? and mm_merchant_type = ? and mm_merchant_fullname = ? and mm_business_branch = ? and mm_merchant_address = ? and mm_latitude = ? and mm_longitude = ? and mm_mobile = ? and mm_email = ? and mm_username = ? and mm_password = ? and mm_logo = ? and mm_payment_qr_code = ?",
-        [merchant_id, business_name, merchant_type, merchant_owner, business_branch, merchant_address, latitude, longitude, phone_number, email, username, encrypted, logo, qr_code]
+          `SELECT * FROM master_merchant WHERE mm_merchant_id = ? 
+          AND mm_business_name = ? 
+          AND mm_merchant_type = ? 
+          AND mm_merchant_fullname = ? 
+          AND mm_business_branch = ? 
+          AND mm_merchant_address = ? 
+          AND mm_latitude = ? 
+          AND mm_longitude = ? 
+          AND mm_mobile = ? 
+          AND mm_email = ? 
+          AND mm_username = ? 
+          AND mm_password = ? 
+          AND mm_logo = ? 
+          AND mm_payment_qr_code = ?`,
+          [
+              merchant_id,
+              escapeString(business_name),
+              escapeString(merchant_type),
+              escapeString(merchant_owner),
+              escapeString(business_branch),
+              escapeString(merchant_address),
+              latitude,
+              longitude,
+              escapeString(phone_number),
+              escapeString(email),
+              escapeString(username),
+              encrypted,
+              escapeString(logo),
+              escapeString(qr_code)
+          ]
       );
-  
+
       Check(checkStatement)
-        .then((result) => {
-          if (result != 0) {
-            return res.json(JsonWarningResponse(MessageStatus.EXIST));
-          } else {
-            Update(updateStatement, data, (err, result) => {
-              if (err) console.error("Error: ", err);
-              res.json(JsonSuccess());
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          res.json(JsonErrorResponse(error));
-        });
-    } catch (error) {
+          .then((result) => {
+              if (result != 0) {
+                  return res.json(JsonWarningResponse(MessageStatus.EXIST));
+              } else {
+                  Update(updateStatement, data, (err, result) => {
+                      if (err) console.error("Error: ", err);
+                      res.json(JsonSuccess());
+                  });
+              }
+          })
+          .catch((error) => {
+              console.log(error);
+              res.json(JsonErrorResponse(error));
+          });
+  } catch (error) {
       console.log(error);
       res.json(JsonErrorResponse(error));
-    }
+  }
 });
-
-
-
-
 
 
 
