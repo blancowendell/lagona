@@ -4,25 +4,9 @@
         <div class="card mb-4">
             <div class="card-header pb-0 d-flex justify-content-between align-items-center">
                 <h6>Riders</h6>
-                <!-- Dropdowns and Filter Button -->
                 <div class="d-flex align-items-center">
-                    <!-- <div class="me-2">
-                        <select class="form-select form-select-sm" id="filterDropdown1">
-                            <option value="">Select Option 1</option>
-                            <option value="option1">Option 1</option>
-                            <option value="option2">Option 2</option>
-                        </select>
-                    </div>
-                    <div class="me-2">
-                        <select class="form-select form-select-sm" id="filterDropdown2">
-                            <option value="">Select Option 2</option>
-                            <option value="option1">Option 1</option>
-                            <option value="option2">Option 2</option>
-                        </select>
-                    </div> -->
-                    <!-- <button class="btn lagona_class-btn btn-sm" data-bs-toggle="modal" data-bs-target="#addLoadStationModal">
-                        Add
-                    </button>-->
+                    <input type="text"  id="myInput" class="form-control form-control-sm" 
+                           placeholder="Search Riders..." style="width: 200px;">
                 </div>
             </div>
           <div class="card-body px-0 pt-0 pb-2">
@@ -50,128 +34,6 @@
     </div>
 </div>
 
-<!-- Add Modal -->
-<div class="modal fade" id="addLoadStationModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header" id="modal-header">
-                <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
-                colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
-                <h3 class="modal-title" id="exampleModalLabel">Add Load Station</h3>
-                <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
-            </div>
-            <div class="modal-body" id="modal-body">
-                <form>
-                    <div class="row g-3">
-                        <!-- <div class="col-12">
-                            <div class="text-center mb-3">
-                                <img id="userImagePreview" src="/img/userimage.jpg" alt="User Image" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
-                                <br><br>
-                                <input type="file" class="form-control" id="edituserimage" name="edituserimage" accept="image/*">
-                                <label for="edituserimage" class="form-label">Upload Profile Image</label>
-                            </div>
-                        </div> -->
-
-                        <!-- Hub Name -->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <select class="form-control border-form-modal" id="addhubname" name="addhubname" placeholder="Hub Name">
-                                    <option selected disabled>Chose Hub Name</option>
-                                </select>
-                                <label for="addhubname">Hub Name</label>
-                            </div>
-                        </div>
-
-
-                        <!-- Owner Name-->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="addloadname" name="addloadname" placeholder="Load Name">
-                                <label for="addloadname">Load Station Name</label>
-                            </div>
-                        </div>
-
-                        <!-- Owner Name-->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="addownername" name="addownername" placeholder="Owner Name">
-                                <label for="addownername">Owner Name</label>
-                            </div>
-                        </div>
-
-                        <!-- Hub Address -->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="addlaodaddress" name="addlaodaddress" placeholder="Load Address">
-                                <label for="addlaodaddress">Load Address</label>
-                            </div>
-                        </div>
-
-                        <!-- Hub Address -->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="addcpnumber" name="addcpnumber" placeholder="Phone Number">
-                                <label for="addcpnumber">Phone Number</label>
-                            </div>
-                        </div>
-
-                        <!-- Email Address -->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="email" class="form-control border-form-modal" id="addemail" name="addemail" placeholder="Email">
-                                <label for="addemail">Email</label>
-                            </div>
-                        </div>
-
-                        <!-- School Name -->
-                        <!-- <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-form-moda" id="addstartbudget" name="addstartbudget" placeholder="Starting Budget"
-                                oninput="formatPrice(event, this)">
-                                <label for="addstartbudget">Starting Budget</label>
-                            </div>
-                        </div> -->
-                        
-
-                         <!-- Username -->
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="addusername" name="addusername" placeholder="Username">
-                                <label for="addusername">Username</label>
-                            </div>
-                        </div>
-
-                        <!-- Password Field with Eye Icon -->
-                        <div class="col-md-6">
-                            <div class="form-floating position-relative">
-                                <input type="password" class="form-control border-form-modal" id="addpassword" name="addpassword" placeholder="Password">
-                                <label for="addpassword">Password</label>
-                                <!-- Eye Icon -->
-                                <span class="position-absolute top-50 end-0 translate-middle-y me-3 toggle-password" id="togglePassword" style="cursor: pointer;">
-                                    <i class="fas fa-eye" id="eyeIcon"></i>
-                                </span>                                
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <div class="text-center mb-3">
-                                <label for="addnotes">Notes</label>
-                                <textarea name="addnotes" id="addnotes" class="form-control border-form-modal" placeholder="Description" rows="3"></textarea>
-                            </div>
-                        </div>
-
-                    </div>
-                    <br>
-                </form>
-            </div>
-            <div class="modal-footer" id="modal-footer">
-                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveLoadStationBtn">Save</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Edit Modal -->
 <div class="modal fade" id="editLoadStationModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -179,57 +41,74 @@
             <div class="modal-header" id="modal-header">
                 <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
                 colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
-                <h3 class="modal-title" id="editModalLabel">Edit Load Station</h3>
+                <h3 class="modal-title" id="editModalLabel">View Rider</h3>
                 <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
             </div>
             <div class="modal-body" id="modal-body">
                 <form>
                     <div class="row g-3">
-                        <div class="col-12">
+                         <div class="col-md-6">
+                            <div class="text-center mb-3">
+                                <img id="userImagePreview" src="/img/userimage.jpg" alt="User Image" class="img-thumbnail rounded" style="width: 150px; height: 150px; object-fit: cover;">
+                                <br><br>
+                                <input type="file" class="form-control" id="edituserimage" name="edituserimage" accept="image/*">
+                                <label for="edituserimage" class="form-label">Upload Profile Image</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
                             <div class="text-center mb-3">
                                 <label class="fw-bold">Remaining Budget</label>
                                 <h3 id="startingBudgetDisplay" class="fw-bold text-success">₱0.00</h3>
                             </div>
                         </div>
 
-                        <!-- Hub Name -->
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-floating">
-                                <select class="form-control border-form-modal" id="editHubName" name="editHubName" placeholder="Hub Name">
-                                    <option selected disabled>Chose Hub Name</option>
-                                </select>
-                                <label for="editHubName">Hub Name-Code</label>
+                                <input type="text" class="form-control border-form-modal" id="editfname" name="editfname" placeholder="Load Station Name">
+                                <label for="editfname">Frist Name</label>
                             </div>
                         </div>
 
                           <!-- Hub Name -->
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="editloadname" name="editloadname" placeholder="Load Station Name">
-                                <label for="editloadname">Load Station Name</label>
+                                <input type="text" class="form-control border-form-modal" id="edtimname" name="edtimname" placeholder="Load Station Name">
+                                <label for="edtimname">Middle Name</label>
                             </div>
                         </div>
 
-                        <!-- Owner Name-->
-                        <div class="col-md-6">
+
+                        <div class="col-md-3">
                             <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="editOwnerName" name="editOwnerName" placeholder="Owner Name" value="Existing Owner Name">
-                                <label for="editOwnerName">Owner Name</label>
+                                <input type="text" class="form-control border-form-modal" id="editlname" name="editlname" placeholder="Load Station Name">
+                                <label for="editlname">Last Name</label>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <select class="form-control border-form-modal" id="editgender" name="editgender" placeholder="Hub Name">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                                <label for="editgender">Gender</label>
                             </div>
                         </div>
 
                         <!-- Hub Address -->
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="editloadaddress" name="editloadaddress" placeholder="Load Station Address">
-                                <label for="editloadaddress">Load Station Address</label>
+                                <input type="text" class="form-control border-form-modal" id="editdaddress" name="editdaddress" placeholder="Load Station Address">
+                                <label for="editdaddress">Address</label>
                             </div>
                         </div>
 
                         <!-- Phone Number -->
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="editPhoneNumber" name="editPhoneNumber" placeholder="Phone Number" value="Existing Phone Number">
+                                <input type="text" class="form-control border-form-modal" id="editPhoneNumber" name="editPhoneNumber" placeholder="Phone Number">
                                 <label for="editPhoneNumber">Phone Number</label>
                             </div>
                         </div>
@@ -237,7 +116,7 @@
                         <!-- Email Address -->
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="email" class="form-control border-form-modal" id="editEmail" name="editEmail" placeholder="Email" value="Existing Email Address">
+                                <input type="email" class="form-control border-form-modal" id="editEmail" name="editEmail" placeholder="Email">
                                 <label for="editEmail">Email</label>
                             </div>
                         </div>
@@ -245,7 +124,7 @@
                         <!-- Username -->
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control border-form-modal" id="editUsername" name="editUsername" placeholder="Username" value="existing_username">
+                                <input type="text" class="form-control border-form-modal" id="editUsername" name="editUsername" placeholder="Username">
                                 <label for="editUsername">Username</label>
                             </div>
                         </div>
@@ -253,7 +132,7 @@
                         <!-- Password Field with Eye Icon -->
                         <div class="col-md-6">
                             <div class="form-floating position-relative">
-                                <input type="password" class="form-control border-form-modal" id="editPassword" name="editPassword" placeholder="Password" value="existing_password">
+                                <input type="password" class="form-control border-form-modal" id="editPassword" name="editPassword" placeholder="Password">
                                 <label for="editPassword">Password</label>
                                 <!-- Eye Icon -->
                                 <span class="position-absolute top-50 end-0 translate-middle-y me-3 toggle-password" id="togglePasswordEdit" style="cursor: pointer;">
@@ -262,99 +141,92 @@
                             </div>
                         </div>
 
-                        <div class="col-12">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-control border-form-modal" id="editvehicle" name="editvehicle" placeholder="Hub Name">
+                                    <option value="Bicycle">Bicycle</option>
+                                    <option value="Motorcycle">Motorcycle</option>
+                                    <option value="Tricycle">Tricycle</option>
+                                    <option value="4-Wheeler">4-Wheeler</option>
+                                </select>
+                                <label for="editvehicle">Vehicle Type</label>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-control border-form-modal" id="editrstatus" name="editrstatus" placeholder="Hub Name">
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="Active">Active</option>
+                                </select>
+                                <label for="editrstatus">Rider Status</label>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="edtidlcode" name="edtidlcode" placeholder="Username">
+                                <label for="edtidlcode">Driver Liscense Number</label>
+                            </div>
+                        </div>
+
+                        <!-- <div class="col-12">
                             <div class="text-center mb-3">
                                 <label for="editNotes">Notes</label>
                                 <textarea name="editNotes" id="editNotes" class="form-control border-form-modal" placeholder="Description" rows="3"></textarea>
                             </div>
-                        </div>
-                    </div>
-                    <br>
-                </form>
-            </div>
-            <div class="modal-footer" id="modal-footer">
-                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveEditLoadStationBtn">Save Changes</button>
-            </div>
-        </div>
-    </div>
-</div>
+                        </div> -->
 
-
-<!--Top Up Modal -->
-<div class="modal fade" id="topUpModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header" id="modal-header">
-                <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
-                    colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
-                <h3 class="modal-title" id="topuphubcode"></h3>
-                <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
-            </div>
-            <div class="modal-body" id="modal-body">
-                <form>
-                    <div class="row g-3">
-                        <div class="col-12">
+                        <div class="col-md-6">
                             <div class="text-center mb-3">
-                                <label class="fw-bold">Remaining Budget</label>
-                                <h3 id="remainingBalance" class="fw-bold text-success">₱0.00</h3>
+                                <img id="orPreview" src="/img/userimage.jpg" alt="User Image" class="img-thumbnail rounded" style="width: 400px; height: 400px; object-fit: cover;">
+                                <br><br>
+                                <input type="file" class="form-control" id="uploador" name="uploador" accept="image/*">
+                                <label for="uploador" class="form-label">Upload OR Image</label>
                             </div>
                         </div>
 
-                        <!-- Top Up Amount -->
+
                         <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-form-moda" id="topupamount" name="topupamount" placeholder="Top Up Amount"
-                                    oninput="formatPrice(event, this)">
-                                <label for="topupamount">Enter Amount Here</label>
+                            <div class="text-center mb-3">
+                                <img id="crPreview" src="/img/userimage.jpg" alt="User Image" class="img-thumbnail rounded" style="width: 400px; height: 400px; object-fit: cover;">
+                                <br><br>
+                                <input type="file" class="form-control" id="uploadcr" name="uploadcr" accept="image/*">
+                                <label for="uploadcr" class="form-label">Upload CR Image</label>
                             </div>
                         </div>
 
-                        <!-- Add Amount Button -->
                         <div class="col-md-6">
-                            <div class="form-floating">
-                                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveTopUpHubBtn">Add Amount</button>
+                            <div class="text-center mb-3">
+                                <img id="licensePreview" src="/img/userimage.jpg" alt="User Image" class="img-thumbnail rounded" style="width: 400px; height: 400px; object-fit: cover;">
+                                <br><br>
+                                <input type="file" class="form-control" id="uploadlicense" name="uploadlicense" accept="image/*">
+                                <label for="uploadlicense" class="form-label">Upload License Image</label>
                             </div>
                         </div>
 
-                        <div class="col-12">
-                            <h5 class="fw-bold text-center mt-3">Top-Up History</h5>
-                            
-                            <div class="input-group mb-3">
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    id="searchTopUpHistory"
-                                    placeholder="Search by Reference Code or Amount"
-                                    aria-label="Search"
-                                />
-                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <div class="col-md-6">
+                            <div class="text-center mb-3">
+                                <img id="vehiclePreview" src="/img/userimage.jpg" alt="User Image" class="img-thumbnail rounded" style="width: 400px; height: 400px; object-fit: cover;">
+                                <br><br>
+                                <input type="file" class="form-control" id="uplaodVehicle" name="uplaodVehicle" accept="image/*">
+                                <label for="uplaodVehicle" class="form-label">Upload Vehicle Image</label>
                             </div>
-                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                                <table class="table table-bordered table-striped text-center">
-                                    <thead class="lagona_class-btn">
-                                        <tr>
-                                            <th>Reference Code</th>
-                                            <th>Amount</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="topUpHistoryBody">
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>                        
+                        </div>
                     </div>
                     <br>
                 </form>
             </div>
             <div class="modal-footer" id="modal-footer">
                 <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveRiderBtn">Save Changes</button>
             </div>
         </div>
     </div>
 </div>
+
 
 
 
