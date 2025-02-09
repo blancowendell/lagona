@@ -32,7 +32,6 @@
                     <tr>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">ID</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Business Name</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Branch</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Phone Number</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Status</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Register Date</th>
@@ -184,7 +183,8 @@
     </div>
 </div>
 
-<!-- Edit Modal -->
+
+<!-- View Modal -->
 <div class="modal fade" id="viewMerchantModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -290,14 +290,14 @@
 </div>
 
 
-<!--Top Up Modal -->
-<div class="modal fade" id="topUpModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+<!-- Edit Modal -->
+<div class="modal fade" id="editMerchantModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header" id="modal-header">
                 <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
-                    colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
-                <h3 class="modal-title" id="topuphubcode"></h3>
+                colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
+                <h3 class="modal-title" id="exampleModalLabel">Edit Merchant</h3>
                 <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
             </div>
             <div class="modal-body" id="modal-body">
@@ -305,65 +305,126 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <div class="text-center mb-3">
-                                <label class="fw-bold">Remaining Budget</label>
-                                <h3 id="remainingBalance" class="fw-bold text-success">₱0.00</h3>
+                                <img id="editImagePreview" src="/img/userimage.jpg" alt="User Image" class="img-thumbnail rounded" style="width: 200px; height: 200px; object-fit: cover;">
+                                <br><br>
+                                <input type="file" class="form-control" id="editmerchantimg" name="editmerchantimg" accept="image/*">
+                                <label for="editmerchantimg" class="form-label">Upload Merchant Image</label>
                             </div>
                         </div>
 
-                        <!-- Top Up Amount -->
+                        <!-- Hub Name -->
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control border-form-moda" id="topupamount" name="topupamount" placeholder="Top Up Amount"
-                                    oninput="formatPrice(event, this)">
-                                <label for="topupamount">Enter Amount Here</label>
+                                <input type="text" class="form-control border-form-modal" id="editbusinessname" name="editbusinessname" placeholder="Business Name">
+                                <label for="editbusinessname">Business Name</label>
                             </div>
                         </div>
 
-                        <!-- Add Amount Button -->
+
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <button type="button" class="btn lagona_class-btn btn-modal-save" id="saveTopUpHubBtn">Add Amount</button>
+                                <select class="form-select border-form-modal" id="editmerchtype" name="editmerchtype">
+                                    <option value="Restaurant">Restaurant</option>
+                                    <option value="Convinience Store">Convinience Store</option>
+                                    <option value="Fast Food">Fast Food</option>
+                                </select>
+                                <label for="editmerchtype">Merchant Type</label>
                             </div>
                         </div>
 
-                        <div class="col-12">
-                            <h5 class="fw-bold text-center mt-3">Top-Up History</h5>
-                            
-                            <div class="input-group mb-3">
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    id="searchTopUpHistory"
-                                    placeholder="Search by Reference Code or Amount"
-                                    aria-label="Search"
-                                />
-                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <!-- Owner Name-->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="editbranch" name="editbranch" placeholder="Branch Name">
+                                <label for="editbranch">Business Branch</label>
                             </div>
-                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                                <table class="table table-bordered table-striped text-center">
-                                    <thead class="lagona_class-btn">
-                                        <tr>
-                                            <th>Reference Code</th>
-                                            <th>Amount</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="topUpHistoryBody">
-                                    </tbody>
-                                </table>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="editowner" name="editowner" placeholder="Merchant Owner">
+                                <label for="editowner">Business Owner</label>
                             </div>
-                        </div>                        
+                        </div>
+
+                        <!-- Hub Address -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="editmerchaddress" name="editmerchaddress" placeholder="Merchant Address">
+                                <label for="editmerchaddress">Merchant Address</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="editlatitude" name="editlatitude" placeholder="Latitude Address">
+                                <label for="editlatitude">Latitude Address</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="editlongitude" name="editlongitude" placeholder="Longitude Address">
+                                <label for="editlongitude">Longitude Address</label>
+                            </div>
+                        </div>
+
+                        <!-- Hub Address -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="editcpnumber" name="editcpnumber" placeholder="Phone Number">
+                                <label for="editcpnumber">Phone Number</label>
+                            </div>
+                        </div>
+
+                        <!-- Email Address -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="email" class="form-control border-form-modal" id="editemail" name="editemail" placeholder="Email">
+                                <label for="editemail">Email</label>
+                            </div>
+                        </div>
+
+                        <!-- Qr Code -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="file" class="form-control" id="editqrcode" name="editqrcode" accept="image/*">
+                                <label for="editqrcode">Upload QR Code</label>
+                            </div>
+                        </div>
+
+                         <!-- Username -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control border-form-modal" id="editusername" name="editusername" placeholder="Username">
+                                <label for="editusername">Username</label>
+                            </div>
+                        </div>
+
+                        <!-- Password Field with Eye Icon -->
+                        <div class="col-md-6">
+                            <div class="form-floating position-relative">
+                                <input type="password" class="form-control border-form-modal" id="editpassword" name="editpassword" placeholder="Password">
+                                <label for="editpassword">Password</label>
+                                <!-- Eye Icon -->
+                                <span class="position-absolute top-50 end-0 translate-middle-y me-3 toggle-password" id="togglePassword" style="cursor: pointer;">
+                                    <i class="fas fa-eye" id="eyeIconEdit"></i>
+                                </span>                                
+                            </div>
+                        </div>
+
                     </div>
                     <br>
                 </form>
             </div>
             <div class="modal-footer" id="modal-footer">
                 <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn lagona_class-btn btn-modal-save" id="editMerchantBtn">Save</button>
             </div>
         </div>
     </div>
 </div>
+
 
 
 
