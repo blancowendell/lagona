@@ -154,6 +154,36 @@ router.get("/loadMerchant", (req, res) => {
   }
 });
 
+router.get("/loadMerchantLimit", (req, res) => {
+  try {
+    let sql = `
+        SELECT
+        mm_merchant_id,
+        mm_merchant_code,
+        mm_business_name,
+        mm_business_branch
+        FROM master_merchant
+        WHERE mm_status = 'Active'
+        LIMIT 10`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mm_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
 router.post("/loadMerchantDetail", (req, res) => {
   try {
     let merchant_id = req.body.merchant_id;
@@ -673,6 +703,120 @@ router.post("/geExtraImage", (req, res) => {
     res.json(JsonErrorResponse(error));
   }
 });
+
+router.post("/getCompleteItem", (req, res) => {
+  try {
+    let item_id = req.body.item_id;
+    let sql = `
+        SELECT
+        *
+        FROM menu_item
+        WHERE mi_is_available = 'Active'
+        AND mi_item_id = '${item_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mi_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/getCompleteSolo", (req, res) => {
+  try {
+    let solo_id = req.body.solo_id;
+    let sql = `
+        SELECT
+        *
+        FROM menu_solo
+        WHERE ms_is_available = 'Active'
+        AND ms_solo_id = '${solo_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "ms_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/getCompleteCombo", (req, res) => {
+  try {
+    let combo_id = req.body.combo_id;
+    let sql = `
+        SELECT
+        *
+        FROM menu_combo
+        WHERE mc_is_available = 'Active'
+        AND mc_combo_id = '${combo_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mc_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/getCompleteExtra", (req, res) => {
+  try {
+    let extra_id = req.body.extra_id;
+    let sql = `
+        SELECT
+        *
+        FROM menu_extras
+        WHERE me_is_available = 'Active'
+        AND me_extra_id = '${extra_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "me_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+
 
 
 
