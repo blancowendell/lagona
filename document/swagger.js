@@ -15,6 +15,7 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 module.exports = swaggerDocs;
 
+//Customer Api 2025-02-08
 
 //#region getMenuSoloImage
 
@@ -334,19 +335,30 @@ module.exports = swaggerDocs;
 //#endregion
 
 
-//#region loadMerchantLimit
+//Customer Api 2025-02-11
 
+//#region loadMerchantLimit
 /**
  * @swagger
  * /MobileApi/loadMerchantLimit:
- *   get:
- *     summary: Retrieve a list of active merchants (limited to 10)
- *     description: Fetches merchants from the `master_merchant` table where `mm_status` is 'Active'. The result is limited to 10 merchants.
+ *   post:
+ *     summary: Retrieve a list of merchants with a limit
+ *     description: Fetches up to 10 merchants from the `master_merchant` table based on the provided `type` if they are active.
  *     tags:
  *       - Customer Api 2025-02-11
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *                 example: "Restaurant"
  *     responses:
  *       200:
- *         description: Successfully retrieved merchant data.
+ *         description: Successfully retrieved merchant list.
  *         content:
  *           application/json:
  *             schema:
@@ -359,34 +371,14 @@ module.exports = swaggerDocs;
  *                   type: array
  *                   items:
  *                     type: object
- *                     properties:
- *                       merchant_id:
- *                         type: integer
- *                         example: 1
- *                       merchant_code:
- *                         type: string
- *                         example: "M12345"
- *                       business_name:
- *                         type: string
- *                         example: "ABC Store"
- *                       business_branch:
- *                         type: string
- *                         example: "Downtown Branch"
+ *                     example:
+ *                       merchant_id: "1"
+ *                       merchant_code: "M123"
+ *                       business_name: "Burger House"
+ *                       business_branch: "Downtown"
  *       500:
  *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                   example: error
- *                 message:
- *                   type: string
- *                   example: "Internal server error"
  */
-
 //#endregion
 
 
