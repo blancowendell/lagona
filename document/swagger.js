@@ -568,3 +568,97 @@ module.exports = swaggerDocs;
  */
 
 //#endregion
+
+
+//#region getItem
+
+/**
+ * @swagger
+ * /MobileApi/getItem:
+ *   post:
+ *     summary: Retrieve available menu items for a merchant
+ *     description: Fetches all active menu items from the `menu_item` table based on `merchant_id`.
+ *     tags:
+ *       - Customer Api 2025-02-11
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               merchant_id:
+ *                 type: string
+ *                 example: "1001"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved menu items.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     example:
+ *                       item_id: "10"
+ *                       item_name: "Cheese Burger"
+ *                       name: "Regular"
+ *                       category: "Burgers"
+ *                       item_price: 5.99
+ *                       description: "Juicy grilled burger with melted cheese"
+ *       500:
+ *         description: Internal server error
+ */
+
+//#endregion
+
+
+//#region getItemImage
+
+/**
+ * @swagger
+ * /MobileApi/getItemImage:
+ *   post:
+ *     summary: Retrieve an item image
+ *     description: Fetches the image of a specific menu item from the `menu_item` table based on `item_id`.
+ *     tags:
+ *       - Customer Api 2025-02-11
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               item_id:
+ *                 type: string
+ *                 example: "10"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved item image.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     example:
+ *                       item_id: "10"
+ *                       item_image: "https://example.com/images/cheese_burger.jpg"
+ *       500:
+ *         description: Internal server error
+ */
+
+//#endregion
