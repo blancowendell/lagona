@@ -154,8 +154,9 @@ router.get("/loadMerchant", (req, res) => {
   }
 });
 
-router.get("/loadMerchantLimit", (req, res) => {
+router.post("/loadMerchantLimit", (req, res) => {
   try {
+    let type = req.body.type;
     let sql = `
         SELECT
         mm_merchant_id,
@@ -164,6 +165,7 @@ router.get("/loadMerchantLimit", (req, res) => {
         mm_business_branch
         FROM master_merchant
         WHERE mm_status = 'Active'
+        AND mm_merchant_type = '${type}'
         LIMIT 10`;
 
     Select(sql, (err, result) => {
