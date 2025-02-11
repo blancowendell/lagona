@@ -25,7 +25,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve an image of a solo menu item
  *     description: Returns the image URL of a solo menu item based on the provided item ID.
  *     tags:
- *       - Menu
+ *       - Customer Api 2025-02-08
  *     requestBody:
  *       required: true
  *       content:
@@ -73,7 +73,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve available solo menu items for a merchant
  *     description: Returns a list of active solo menu items based on the provided merchant ID.
  *     tags:
- *       - Menu
+ *       - Customer Api 2025-02-08
  *     requestBody:
  *       required: true
  *       content:
@@ -130,7 +130,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve available menu combos for a merchant
  *     description: Returns a list of active menu combos based on the provided merchant ID.
  *     tags:
- *       - Menu
+ *       - Customer Api 2025-02-08
  *     requestBody:
  *       required: true
  *       content:
@@ -188,7 +188,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve meal image for a specific combo
  *     description: Returns the image URL for the specified combo ID.
  *     tags:
- *       - Menu
+ *       - Customer Api 2025-02-08
  *     requestBody:
  *       required: true
  *       content:
@@ -238,7 +238,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve available menu extras for a merchant
  *     description: Returns a list of active menu extras based on the provided merchant ID.
  *     tags:
- *       - Menu
+ *       - Customer Api 2025-02-08
  *     requestBody:
  *       required: true
  *       content:
@@ -294,7 +294,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve an extra item image
  *     description: Returns the image of an extra item based on the provided extra ID.
  *     tags:
- *       - Menu
+ *       - Customer Api 2025-02-08
  *     requestBody:
  *       required: true
  *       content:
@@ -331,4 +331,248 @@ module.exports = swaggerDocs;
  *       500:
  *         description: Server error.
  */
+//#endregion
+
+
+//#region loadMerchantLimit
+
+/**
+ * @swagger
+ * /MobileApi/loadMerchantLimit:
+ *   get:
+ *     summary: Retrieve a list of active merchants (limited to 10)
+ *     description: Fetches merchants from the `master_merchant` table where `mm_status` is 'Active'. The result is limited to 10 merchants.
+ *     tags:
+ *       - Customer Api 2025-02-11
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved merchant data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       merchant_id:
+ *                         type: integer
+ *                         example: 1
+ *                       merchant_code:
+ *                         type: string
+ *                         example: "M12345"
+ *                       business_name:
+ *                         type: string
+ *                         example: "ABC Store"
+ *                       business_branch:
+ *                         type: string
+ *                         example: "Downtown Branch"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: "Internal server error"
+ */
+
+//#endregion
+
+
+//#region getCompleteItem
+
+/**
+ * @swagger
+ * /MobileApi/getCompleteItem:
+ *   post:
+ *     summary: Retrieve a complete menu item
+ *     description: Fetches a specific menu item from the `menu_item` table based on `item_id` if it is available.
+ *     tags:
+ *       - Customer Api 2025-02-11
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               item_id:
+ *                 type: string
+ *                 example: "123"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved item details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     example:
+ *                       item_id: "123"
+ *                       name: "Burger"
+ *                       price: 5.99
+ *                       is_available: "Active"
+ *       500:
+ *         description: Internal server error
+ */
+
+//#endregion
+
+
+//#region getCompleteSolo
+
+/**
+ * @swagger
+ * /MobileApi/getCompleteSolo:
+ *   post:
+ *     summary: Retrieve a complete solo meal
+ *     description: Fetches a specific solo meal from the `menu_solo` table based on `solo_id` if it is available.
+ *     tags:
+ *       - Customer Api 2025-02-11
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               solo_id:
+ *                 type: string
+ *                 example: "456"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved solo meal details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     example:
+ *                       solo_id: "456"
+ *                       name: "Chicken Meal"
+ *                       price: 7.99
+ *                       is_available: "Active"
+ *       500:
+ *         description: Internal server error
+ */
+
+//#endregion
+
+
+//#region getCompleteCombo
+
+/**
+ * @swagger
+ * /MobileApi/getCompleteCombo:
+ *   post:
+ *     summary: Retrieve a complete combo meal
+ *     description: Fetches a specific combo meal from the `menu_combo` table based on `combo_id` if it is available.
+ *     tags:
+ *       - Customer Api 2025-02-11
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               combo_id:
+ *                 type: string
+ *                 example: "789"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved combo meal details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     example:
+ *                       combo_id: "789"
+ *                       name: "Family Meal"
+ *                       price: 19.99
+ *                       is_available: "Active"
+ *       500:
+ *         description: Internal server error
+ */
+
+//#endregion
+
+
+//#region getCompleteExtra
+
+/**
+ * @swagger
+ * /MobileApi/getCompleteExtra:
+ *   post:
+ *     summary: Retrieve a complete extra item
+ *     description: Fetches a specific extra item from the `menu_extras` table based on `extra_id` if it is available.
+ *     tags:
+ *       - Customer Api 2025-02-11
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               extra_id:
+ *                 type: string
+ *                 example: "321"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved extra item details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     example:
+ *                       extra_id: "321"
+ *                       name: "Cheese Slice"
+ *                       price: 0.99
+ *                       is_available: "Active"
+ *       500:
+ *         description: Internal server error
+ */
+
 //#endregion
