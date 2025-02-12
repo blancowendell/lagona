@@ -58,8 +58,8 @@
           },
           columns: [
             { data: "item_id" },
-            { data: "item_name" },
             { data: "item_image" },
+            { data: "item_name" },
             { data: "category" },
             { data: "size" },
             {
@@ -145,27 +145,27 @@
   
   
         if (size === "") {
-          message += "Merchant Owner is required ";
+          message += "Size is required ";
         }
   
         if (category === "") {
-          message += "Business Name is required ";
+          message += "Category is required ";
         }
   
         if (item_name === "") {
-          message += "Business Branch is required ";
+          message += "Item Name is required ";
         }
   
         if (item_amount === "") {
-          message += "Merchant Address is required ";
+          message += "Amount is required ";
         }
         
         if (description === "") {
-          message += "Latitude Address is required ";
+          message += "Description is required ";
         }
   
         if (image === "") {   
-          message += "Longitude Address is required ";
+          message += "Image is required ";
         }
   
   
@@ -302,31 +302,31 @@
         var message = "";
   
         if (item_name === "") {
-          message += "Hub Name is required ";
+          message += "Item Name is required ";
         }
   
         if (size === "") {
-          message += "Owner Name is required ";
+          message += "Size is required ";
         }
   
         if (category_id === "") {
-          message += "Hub Address is required ";
+          message += "Category is required ";
         }
   
         if (description === "") {
-          message += "Phone Number is required ";
+          message += "Description is required ";
         }
   
         if (item_price === "") {
-          message += "Email is required ";
+          message += "Amount is required ";
         }
   
         if (is_available === "") {
-          message += "Username is required ";
+          message += "Status is required ";
         }
   
         if (item_image === "") {
-          message += "Password is required ";
+          message += "Image is required ";
         }
         item_price = item_price.replace(/,/g, "").replace("₱", "");
         if (message !== "") {
