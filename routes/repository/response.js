@@ -6,8 +6,11 @@ const MessageStatus = {
     DUPENTRY: "dupentry",
     EXIST: "exist",
     NOENTRY: "noentry",
-    EXISTEMAIL: "Enail Already Exist",
+    EXISTEMAIL: "Email Already Exist",
     EXISTMOBILE: "Mobile Number Already Exist",
+    EXISTMERCHANT: "Merchant Already Exist",
+    EXISTRIDER: "Rider Already Exist",
+    NOTEXISTEMAIL: "Youre Email is not Exist in our Database",
   };
   
   function JsonSuccess() {

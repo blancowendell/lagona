@@ -144,6 +144,10 @@ exports.GetCurrentDatetime = () => {
   return moment().format("YYYY-MM-DD HH:mm");
 };
 
+exports.GetCurrentDatetimeAdd1Hour = () => {
+  return moment().add(1, "hours").format("YYYY-MM-DD HH:mm");
+};
+
 exports.GetCurrentDatetimeSecconds = () => {
   return moment().format("YYYY-MM-DD HH:mm:ss");
 };
