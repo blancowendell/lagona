@@ -1197,6 +1197,9 @@ router.post("/verifyOtpRider", async (req, res) => {
         WHERE mr_email = '${email}'
         AND mr_rider_otp = '${otp}'`;
 
+      if (result.length === 0) {
+        return res.json(JsonWarningResponse("Invalid OTP or email"));
+      }
 
     Select(sql, (err, result) => {
       if (err) {
