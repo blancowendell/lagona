@@ -86,6 +86,7 @@ router.post("/viewOrderDetails", (req, res) => {
         console.error(err);
         res.json(JsonErrorResponse(err));
       }
+      console.log(result);
       if (result != 0) {
         let data = DataModeling(result, "od_");
         res.json(JsonDataResponse(data));
@@ -100,6 +101,35 @@ router.post("/viewOrderDetails", (req, res) => {
 });
 
 
+router.get("/viewRiderStatus", (req, res) => {
+  try {
+    let sql = `    SELECT
+    mm_prio_rider as mm_rider,
+    CONCAT(mr_first_name,' ',mr_last_name) as mm_fullname,
+    mr_rider_selfie as mm_image,
+    mr_rider_code as mm_rider_code
+    FROM master_merchant 
+    INNER JOIN master_rider ON master_merchant.mm_prio_rider = mr_rider_id
+    WHERE mr_rider_id = mm_prio_rider
+    AND mr_rider_status = 'Available'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mm_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
 
 
 

@@ -1,511 +1,260 @@
 <script>
-    let base64String = "";
-    let item_id = "";
-    $(document).ready(function () {
-      LoadTable();
-      LoadCategory();
-      LoadSize();
-      LoadCategoryEdit();
-      LoadSizeEdit();
-  
-      function LoadTable() {
-        $("#dataTableOrders").DataTable({
-          destroy: true,
-          processing: true,
-          serverSide: true,
-          paging: false,
-          searching: false,
-          info: false,
-          scrollY: 600,
-          scrollCollapse: true,
-          serverMethod: "GET",
-          ajax: {
-            url: "/MerchantOrders/getPendingOrders",
-            dataSrc: (json) => {
-              var finalData = [];
-              var data = json.data;
-  
-              console.log(data);
-  
-              $.each(data, (key, item) => {
+  let base64String = "";
+  let order_id = "";
+  $(document).ready(function () {
+    LoadTable();
 
-                var action = `
-                    <button id="viewBtn" class="lagona_class-btn btn" name="editBtn" data-bs-toggle="modal" data-bs-target="#viewOrderModal">
+    function LoadTable() {
+      $("#dataTableOrders").DataTable({
+        destroy: true,
+        processing: true,
+        serverSide: true,
+        paging: false,
+        searching: false,
+        info: false,
+        scrollY: 600,
+        scrollCollapse: true,
+        serverMethod: "GET",
+        ajax: {
+          url: "/MerchantOrders/getPendingOrders",
+          dataSrc: (json) => {
+            var finalData = [];
+            var data = json.data;
+
+            console.log(data);
+
+            $.each(data, (key, item) => {
+
+              var action = `
+                    <button id="viewBtn" class="lagona_class-btn btn" name="viewBtn">
                     <i class="fas fa-fw fa-eye"></i>
                     <button id="editBtn" class="lagona_class-btn btn" name="editBtn" data-bs-toggle="modal" data-bs-target="#editItemsModal">
                     <i class="fas fa-fw fa-pen"></i>
                 `;
 
-                // var imgElement = document.createElement("img");
-                // imgElement.src = "data:image/jpg;base64," + item.item_image;
-                // imgElement.alt = "Profile Image";
-                // imgElement.style.width = "90px";
-                // imgElement.style.height = "90px";
-  
-                finalData.push({
-                  order_id: item.order_id,
-                  order_code: item.order_code,
-                  fullname: item.fullname,
-                  order_type: item.order_type,
-                  order_status: item.order_status,
-                  order_total: item.order_total,
-                  action: action,
-                });
+              // var imgElement = document.createElement("img");
+              // imgElement.src = "data:image/jpg;base64," + item.item_image;
+              // imgElement.alt = "Profile Image";
+              // imgElement.style.width = "90px";
+              // imgElement.style.height = "90px";
+
+              finalData.push({
+                order_id: item.order_id,
+                order_code: item.order_code,
+                fullname: item.fullname,
+                order_type: item.order_type,
+                order_status: item.order_status,
+                order_total: item.order_total,
+                action: action,
               });
-  
-              return finalData;
-            },
-          },
-          columns: [
-            { data: "order_id" },
-            { data: "order_code" },
-            { data: "fullname" },
-            { data: "order_type" },
-            { data: "order_status" },
-            {
-              data: "order_total",
-              render: function (data, type, row) {
-                return (
-                  "₱" +
-                  parseFloat(data).toLocaleString("en-US", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })
-                );
-              },
-            },
-            { data: "action" },
-          ],
-          createdRow: function (row, data, dataIndex) {
-            $("td", row).each(function () {
-              this.style.textAlign = "center";
-              this.style.verticalAlign = "middle";
-              this.style.fontSize = "14px";
             });
-          },
-          initComplete: function () {
-            $("#dataTableStrandsType thead th").css({
-              "font-size": "14px",
-              "font-weight": "bold",
-              "text-align": "center",
-            });
-          },
-        });
-      }
 
-      function LoadCategory() {
-        $.ajax({
-          type: "GET",
-          url: "/MerchantCategory/load",
-          success: function (result) {
-            var data = result.data;
-
-            $.each(data, function (key, item) {
-              var options = new Option(item.category_id, item.category_id);
-              $(options).html(item.category_name);
-              $("#addcategory").append(options);
-            });
+            return finalData;
           },
-          error: function (result) {
-            alert("error: " + result.data);
-          },
-        });
-      }
-
-      function LoadSize() {
-        $.ajax({
-          type: "GET",
-          url: "/MerchantSize/load",
-          success: function (result) {
-            var data = result.data;
-
-            $.each(data, function (key, item) {
-              var options = new Option(item.size_id, item.size_id);
-              $(options).html(item.size_name);
-              $("#addsize").append(options);
-            });
-          },
-          error: function (result) {
-            alert("error: " + result.data);
-          },
-        });
-      }
-
-      $(document).on("click", "#saveItemsBtn", function () {
-        let size = $("#addsize").val();
-        let category = $("#addcategory").val();
-        let item_name = $("#additemname").val();
-        let item_amount = $("#topupamount").val();
-        let description = $("#addDescription").val();
-        let image = base64String;
-  
-        var message = "";
-  
-  
-        if (size === "") {
-          message += "Size is required ";
-        }
-  
-        if (category === "") {
-          message += "Category is required ";
-        }
-  
-        if (item_name === "") {
-          message += "Item Name is required ";
-        }
-  
-        if (item_amount === "") {
-          message += "Amount is required ";
-        }
-        
-        if (description === "") {
-          message += "Description is required ";
-        }
-  
-        if (image === "") {   
-          message += "Image is required ";
-        }
-  
-  
-        if (message !== "") {
-          toastr.error(`Please fill up ${message}`, "Required");
-        } else {
-          item_amount = item_amount.replace(/,/g, "").replace("₱", "");
-          $.ajax({
-            type: "POST",
-            url: "/MerchantItem/save",
-            data: {
-              size: size,
-              category: category,
-              item_name: item_name,
-              item_amount: parseFloat(item_amount),
-              description: description,
-              image: image,
+        },
+        columns: [
+          { data: "order_id" },
+          { data: "order_code" },
+          { data: "fullname" },
+          { data: "order_type" },
+          { data: "order_status" },
+          {
+            data: "order_total",
+            render: function (data, type, row) {
+              return (
+                "₱" +
+                parseFloat(data).toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
+              );
             },
-            success: function (result) {
-              if (result.msg == "success") {
-                toastr.success("Saved Successfully", "Success");
-                setTimeout(function () {
-                  window.location.reload();
-                }, 1000);
-              } else {
-                toastr.warning("Data already exists!", "Warning");
-              }
-            },
-            error: function (err) {
-              toastr.warning("Data already exists!", "Warning");
-            },
+          },
+          { data: "action" },
+        ],
+        createdRow: function (row, data, dataIndex) {
+          $("td", row).each(function () {
+            this.style.textAlign = "center";
+            this.style.verticalAlign = "middle";
+            this.style.fontSize = "14px";
           });
-        }
-      });
-  
-      function LoadSizeEdit() {
-        $.ajax({
-          type: "GET",
-          url: "/MerchantSize/load",
-          success: function (result) {
-            var data = result.data;
-
-            $.each(data, function (key, item) {
-              var options = new Option(item.size_id, item.size_id);
-              $(options).html(item.size_name);
-              $("#editsize").append(options);
-            });
-          },
-          error: function (result) {
-            alert("error: " + result.data);
-          },
-        });
-      }
-
-      function LoadCategoryEdit() {
-        $.ajax({
-          type: "GET",
-          url: "/MerchantCategory/load",
-          success: function (result) {
-            var data = result.data;
-
-            $.each(data, function (key, item) {
-              var options = new Option(item.category_id, item.category_id);
-              $(options).html(item.category_name);
-              $("#editcategory").append(options);
-            });
-          },
-          error: function (result) {
-            alert("error: " + result.data);
-          },
-        });
-      }
-
-
-      $("#dataTableItems tbody").on("click", "tr", function () {
-        var dataRow = [];
-        $(this)
-          .closest("tr")
-          .find("td")
-          .each(function () {
-            dataRow.push($(this).text());
+        },
+        initComplete: function () {
+          $("#dataTableStrandsType thead th").css({
+            "font-size": "14px",
+            "font-weight": "bold",
+            "text-align": "center",
           });
-        item_id = dataRow[0];
-        console.log(dataRow);
+        },
       });
-  
-      $(document).on("click", "#editBtn", function () {
-        $.ajax({
-          type: "POST",
-          url: "/MerchantItem/getitem",
-          data: {
-            item_id: item_id,
-          },
-          success: function (result) {
-            if (result.msg === "success") {
-              const existingData = result.data;            
-  
-              $.each(existingData, (key, item) => {
-                $("#edititemname").val(item.item_name);
-                $("#editsize").val(item.size);
-                $("#editcategory").val(item.category_id);
-                $("#editDescription").val(item.description);
-                $("#edittopupamount").val(formatCurrencyValue(item.item_price));
-                $("#editAvailability").val(item.is_available);
-                $("#viewUserImagePreview").attr(
-                  "src",
-                  "data:image/jpg;base64," + item.item_image
-                );
-                base64String = item.item_image;
-              });
-            } else {
-              toastr.error("Error fetching employee data", "Error");
-            }
-          },
-          error: function (err) {
-            toastr.error(
-              "An error occurred while fetching employee data",
-              "Error"
-            );
-          },
+    }
+
+    $("#dataTableOrders tbody").on("click", "tr", function () {
+      var dataRow = [];
+      $(this)
+        .closest("tr")
+        .find("td")
+        .each(function () {
+          dataRow.push($(this).text());
         });
-      });
-  
-      $(document).on("click", "#editItemsBtn", function () {
-        let id = item_id;
-        let item_name = $("#edititemname").val();
-        let size = $("#editsize").val();
-        let category_id = $("#editcategory").val();
-        let description = $("#editDescription").val();
-        let item_price = $("#edittopupamount").val();
-        let is_available = $("#editAvailability").val();
-        let item_image = base64String;
-  
-        var message = "";
-  
-        if (item_name === "") {
-          message += "Item Name is required ";
-        }
-  
-        if (size === "") {
-          message += "Size is required ";
-        }
-  
-        if (category_id === "") {
-          message += "Category is required ";
-        }
-  
-        if (description === "") {
-          message += "Description is required ";
-        }
-  
-        if (item_price === "") {
-          message += "Amount is required ";
-        }
-  
-        if (is_available === "") {
-          message += "Status is required ";
-        }
-  
-        if (item_image === "") {
-          message += "Image is required ";
-        }
-        item_price = item_price.replace(/,/g, "").replace("₱", "");
-        if (message !== "") {
-          toastr.error(`Please fill up ${message}`, "Required");
-        } else {
-          $.ajax({
-            type: "PUT",
-            url: "/MerchantItem/edit",
-            data: {
-              item_id: id,
-              item_name: item_name,
-              size: size,
-              category_id: category_id,
-              description: description,
-              item_price: parseFloat(item_price),
-              is_available: is_available,
-              item_image: item_image,
-            },
-            success: function (result) {
-              if (result.msg == "success") {
-                toastr.success("Saved Successfully", "Success");
-                setTimeout(function () {
-                  window.location.reload();
-                }, 500);
-              } else {
-                toastr.warning("Data already exists!", "Warning");
-              }
-            },
-            error: function (err) {
-              toastr.warning("Data already exists!", "Warning");
-            },
-          });
-        }
-      });
-  
-      $("#searchTopUpHistory").on("input", function () {
-        var query = $(this).val().toLowerCase();
-        $("#topUpHistoryBody tr").each(function () {
-          var referenceCode = $(this).find("td:eq(0)").text().toLowerCase();
-          var amount = $(this).find("td:eq(1)").text().toLowerCase();
-  
-          if (referenceCode.includes(query) || amount.includes(query)) {
-            $(this).show();
-          } else {
-            $(this).hide();
-          }
-        });
-      });
-  
-      function searchTable() {
-        var input, filter, found, table, tr, td, i, j;
-        input = document.getElementById("myInput");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("dataTableStudents");
-        tr = table.getElementsByTagName("tr");
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("td");
-          for (j = 0; j < td.length; j++) {
-            if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
-              found = true;
-            }
-          }
-          if (found) {
-            tr[i].style.display = "";
-            found = false;
-          } else {
-            tr[i].style.display = "none";
-          }
-        }
-      }
-  
-      $(".toggle-password").on("click", function () {
-        const passwordField = $("#addpassword");
-        const eyeIcon = $("#eyeIcon");
-        const fieldType =
-          passwordField.attr("type") === "password" ? "text" : "password";
-        passwordField.attr("type", fieldType);
-        if (fieldType === "password") {
-          eyeIcon.removeClass("bx-show").addClass("bx-hide");
-        } else {
-          eyeIcon.removeClass("bx-hide").addClass("bx-show");
-        }
-      });
-  
-      $(".toggle-password").on("click", function () {
-        const passwordField = $("#editPassword");
-        const eyeIcon = $("#eyeIconEdit");
-        const fieldType =
-          passwordField.attr("type") === "password" ? "text" : "password";
-        passwordField.attr("type", fieldType);
-        if (fieldType === "password") {
-          eyeIcon.removeClass("bx-show").addClass("bx-hide");
-        } else {
-          eyeIcon.removeClass("bx-hide").addClass("bx-show");
-        }
-      });
-  
-  
-      $(document).on("change", "#edititemimage", function (e) {
-        const input = document.getElementById("edititemimage");
-        const file = input.files[0];
-  
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function () {
-          const preview = document.getElementById("viewUserImagePreview");
-          preview.src = reader.result;
-        };
-        imageUploadedOld();
-      });
-  
-      function imageUploadedOld() {
-        const input = document.getElementById("edititemimage");
-        const file = input.files[0];
-  
-        var reader = new FileReader();
-  
-        reader.onload = function (e) {
-          const img = new Image();
-          img.src = e.target.result;
-  
-          img.onload = function () {
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            const targetWidth = 250;
-            const targetHeight = 250;
-            canvas.width = targetWidth;
-            canvas.height = targetHeight;
-            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-            base64String = canvas
-              .toDataURL()
-              .replace("data:image/png;base64,", ""); 
-  
-            imageBase64Stringsep = base64String;
-          };
-  
-        };
-        reader.readAsDataURL(file);
-      }
-  
-      $(document).on("change", "#additemimage", function (e) {
-        const input = document.getElementById("additemimage");
-        const file = input.files[0];
-  
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function () {
-          const preview = document.getElementById("userImagePreview");
-          preview.src = reader.result;
-        };
-        imageUploadedAdd();
-      });
-  
-      function imageUploadedAdd() {
-        const input = document.getElementById("additemimage");
-        const file = input.files[0];
-  
-        var reader = new FileReader();
-  
-        reader.onload = function (e) {
-          const img = new Image();
-          img.src = e.target.result;
-  
-          img.onload = function () {
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            const targetWidth = 250;
-            const targetHeight = 250;
-            canvas.width = targetWidth;
-            canvas.height = targetHeight;
-            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-            base64String = canvas
-              .toDataURL()
-              .replace("data:image/png;base64,", ""); 
-  
-            imageBase64Stringsep = base64String;
-          };
-  
-        };
-        reader.readAsDataURL(file);
-      }
+      order_id = dataRow[0];
+      console.log(dataRow);
     });
-  </script>
-  
+
+    $(document).on("click", "#viewBtn", function () {
+      $.ajax({
+        type: "POST",
+        url: "/MerchantOrders/viewOrderDetails",
+        data: { order_id: order_id },
+        success: function (response) {
+          if (response.msg === "success") {
+            var orders = response.data;
+
+            $("#orderDetailsContent").empty();
+
+            $.each(orders, function (index, orderData) {
+              const base64Image = `data:image/png;base64,${orderData.product_image}`;
+
+              var orderHtml = `
+                <div class="d-flex align-items-center mb-3">
+                  <img src="${base64Image}" alt="Product Image" class="img-thumbnail rounded" style="width: 150px; height: 150px; object-fit: cover;">
+                  <div class="ms-3">
+                    <h5>${orderData.product_name}</h5>
+                    <p>Category: ${orderData.order_category}</p>
+                    <p>Quantity: ${orderData.quantity}</p>
+                    <p>Price: ₱${orderData.product_price}</p>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <h5>Status: <span class="badge bg-warning text-dark">${orderData.status}</span></h5>
+                </div>
+                <div class="mb-3">
+                  <h5>Description</h5>
+                  <p>${orderData.description || "No additional instructions."}</p>
+                </div>
+                <hr>
+              `;
+
+              $("#orderDetailsContent").append(orderHtml);
+            });
+
+            $("#viewOrderModal").modal("show");
+          } else {
+            toastr.error("Error fetching order data", "Error");
+          }
+        },
+        error: function () {
+          toastr.error("An error occurred while fetching order data", "Error");
+        },
+      });
+    });
+
+    $(document).on("click", "#findRiderBtn", function () {
+      $.ajax({
+        url: "MerchantOrders/viewRiderStatus",
+        method: "GET",
+        dataType: "json",
+        success: function (result) {
+          if (result.msg === "success") {
+            const riderData = result.data[0]; 
+
+            $("#riderFullName").text(riderData.fullname);
+            $("#riderCode").text(riderData.rider_code);
+            $("#viewUserImagePreview").attr("src", "data:image/jpg;base64," + riderData.image);
+
+            $("#riderModal").modal("show");
+          } else {
+            toastr.error("Error fetching rider data", "Error");
+          }
+        },
+        error: function (err) {
+          toastr.error("An error occurred while fetching rider data", "Error");
+        },
+      });
+    });
+
+    $(document).on("change", "#edititemimage", function (e) {
+      const input = document.getElementById("edititemimage");
+      const file = input.files[0];
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function () {
+        const preview = document.getElementById("viewUserImagePreview");
+        preview.src = reader.result;
+      };
+      imageUploadedOld();
+    });
+
+    function imageUploadedOld() {
+      const input = document.getElementById("edititemimage");
+      const file = input.files[0];
+
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function () {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const targetWidth = 250;
+          const targetHeight = 250;
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+          base64String = canvas
+            .toDataURL()
+            .replace("data:image/png;base64,", "");
+
+          imageBase64Stringsep = base64String;
+        };
+
+      };
+      reader.readAsDataURL(file);
+    }
+
+    $(document).on("change", "#additemimage", function (e) {
+      const input = document.getElementById("additemimage");
+      const file = input.files[0];
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function () {
+        const preview = document.getElementById("userImagePreview");
+        preview.src = reader.result;
+      };
+      imageUploadedAdd();
+    });
+
+    function imageUploadedAdd() {
+      const input = document.getElementById("additemimage");
+      const file = input.files[0];
+
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function () {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const targetWidth = 250;
+          const targetHeight = 250;
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+          base64String = canvas
+            .toDataURL()
+            .replace("data:image/png;base64,", "");
+
+          imageBase64Stringsep = base64String;
+        };
+
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>

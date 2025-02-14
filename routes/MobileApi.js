@@ -823,6 +823,16 @@ router.post("/getCompleteExtra", (req, res) => {
   }
 });
 
+router.post("/orderCheckout", (req, res) => {
+  try {
+    let  
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+
 //#endregion
 
 //#region Merchant Api
