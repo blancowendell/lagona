@@ -27,7 +27,7 @@ const { logger, eventlogger } = require("./routes/utility/logger");
 
 //#region ROUTES IMPORT
 var AdminIndexRouter = require("./routes/AdminIndex");
-var AdminLoginRouter = require("./routes/Adminlogin");
+var AdminLoginRouter = require("./routes/AdminLogin");
 var AdminHubsRouter = require("./routes/AdminHubs");
 var AdminLoadingStationRouter = require("./routes/AdminLoadingStation");
 var AdminRidersRouter = require("./routes/AdminRiders");
