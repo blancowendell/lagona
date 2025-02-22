@@ -105,3 +105,16 @@ exports.InsertTable = (sql, data, callback) => {
     callback(null, result);
   });
 };
+
+
+
+exports.SelectPromise = (sql, data) => {
+  return new Promise((resolve, reject) => {
+    connection.query(sql, data, (err, result) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(result);
+    });
+  });
+};

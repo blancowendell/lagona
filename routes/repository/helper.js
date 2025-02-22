@@ -90,7 +90,7 @@ exports.generateUsernamefoApplicant = (applicant) => {
   }
 };
 
-exports.UserLogin = (result, callback) => {
+exports.Userlogin = (result, callback) => {
   try {
     const userData = [];
 
@@ -112,7 +112,7 @@ exports.UserLogin = (result, callback) => {
 };
 
 
-exports.CustomerLogin = (result, callback) => {
+exports.Customerlogin = (result, callback) => {
   try {
     const CustomerData = [];
 
@@ -173,7 +173,7 @@ exports.MerchantLogin = (result, callback) => {
   }
 };
 
-exports.AdminLogin = (result, callback) => {
+exports.Adminlogin = (result, callback) => {
   try {
     const AdminData = [];
 
@@ -299,7 +299,7 @@ exports.UnauthorizedTemplate = () => {
       <h1 class="text-warning">401</h1>
       <p class="error-message">Token Expired</p>
       <p>Your session has expired. Please log in again to continue.</p>
-      <a href="/AdminLogin" class="btn btn-primary mt-3">Log In</a>
+      <a href="/Adminlogin" class="btn btn-primary mt-3">Log In</a>
     </div>
 
     <!-- Bootstrap 4 JS and dependencies -->

@@ -16,14 +16,14 @@ const {
   UpdateStatement,
 } = require("./repository/customhelper");
 const { DataModeling } = require("./model/lagonaDb");
-const { AdminLogin } = require("./repository/helper");
+const { Adminlogin } = require("./repository/helper");
 const { EncrypterString, Encrypter } = require("./repository/crytography");
 var router = express.Router();
 //const currentDate = moment();
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  res.render("AdminLoginLayout", { title: "Express" });
+  res.render("AdminloginLayout", { title: "Express" });
 });
 
 module.exports = router;
@@ -59,7 +59,7 @@ router.post("/login", (req, res) => {
             if (
               user.status === "Active"
             ) {
-              let data = AdminLogin(result);
+              let data = Adminlogin(result);
                 data.forEach((user) => {
                   req.session.jwt = EncrypterString(
                     jwt.sign(

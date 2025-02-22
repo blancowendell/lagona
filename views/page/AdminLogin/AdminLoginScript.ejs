@@ -34,7 +34,7 @@
             },
             success: function (result) {
               if (result.msg === "success") {
-                toastr.success("Login Successful!", "Success");
+                toastr.success("login Successful!", "Success");
                 setTimeout(() => {
                   if (result.data[0]) {
                     location.replace("/Index");

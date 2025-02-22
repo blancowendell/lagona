@@ -23,18 +23,18 @@
       }
       $.ajax({
         type: "POST",
-        url: "/MerchantLogin/login",
+        url: "/Merchantlogin/login",
         data: { username: username, password: password },
         success: function (result) {
           console.log("Server Response:", result);
 
           if (result.msg === "success") {
-            toastr.success("Login Successful!", "Success");
+            toastr.success("login Successful!", "Success");
             setTimeout(() => {
               if (Array.isArray(result.data) && result.data.length > 0) {
                 location.replace("/MerchantIndex");
               } else {
-                location.replace("/MerchantLogin");
+                location.replace("/Merchantlogin");
               }
             }, 500);
           } else if (result.msg === "inactive") {

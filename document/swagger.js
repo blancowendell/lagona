@@ -661,6 +661,123 @@ module.exports = swaggerDocs;
 
 //#endregion
 
+//#region customerCheckout
+
+/**
+ * @swagger
+ * /MobileApi/customerCheckout:
+ *   post:
+ *     summary: Create a new order
+ *     description: Endpoint to create a new order in the system.
+ *     tags:
+ *       - Customer Api
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               merchant_id:
+ *                 type: integer
+ *                 example: 1
+ *               customer_id:
+ *                 type: integer
+ *                 example: 1
+ *               order_type:
+ *                 type: string
+ *                 example: "Online Payment"
+ *               lagona_fee:
+ *                 type: number
+ *                 format: float
+ *                 example: 10.5
+ *               order_total:
+ *                 type: number
+ *                 format: float
+ *                 example: 150.75
+ *               address_id:
+ *                 type: integer
+ *                 example: 1
+ *               order_note:
+ *                 type: string
+ *                 example: "Please deliver between 5-6 PM."
+ *               delivery_fee:
+ *                 type: number
+ *                 format: float
+ *                 example: 15.0
+ *               order_fee:
+ *                 type: number
+ *                 format: float
+ *                 example: 5.0
+ *               order_details:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     category:
+ *                       type: string
+ *                       example: "Item"
+ *                     product_id:
+ *                       type: integer
+ *                       example: 49
+ *                     quantity:
+ *                       type: integer
+ *                       example: 3
+ *           example:
+ *             merchant_id: 1
+ *             customer_id: 1
+ *             order_type: "Online Payment"
+ *             lagona_fee: 10.5
+ *             order_total: 150.75
+ *             address_id: 1
+ *             order_note: "Please deliver between 5-6 PM."
+ *             delivery_fee: 15.0
+ *             order_fee: 5.0
+ *             order_details:
+ *               - category: "Item"
+ *                 product_id: 49
+ *                 quantity: 3
+ *     responses:
+ *       200:
+ *         description: Order placed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Order placed successfully"
+ *                 order_id:
+ *                   type: integer
+ *                   example: 101
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "All fields are required and order_details must be a non-empty array"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Failed to create order"
+ */
+
+//#endregion
+
 //#endregion
 
 //#region Merchant Api
