@@ -1,38 +1,90 @@
-<body class="coming-soon-body">
-    <div class="coming-soon-container">
-        <h1>Coming Soon</h1>
-        <p>We're working hard to bring you something amazing. Stay tuned!</p>
+<div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                <h6>Order's</h6>
+                <div class="d-flex align-items-center">
+                </div>
+            </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table align-items-center mb-0" id="dataTableOrders">
+                <thead>
+                    <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">ID</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Order Code</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Customer Name</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Order Type</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Order Status</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Customer Total</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Action</th>
+                    </tr>             
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="viewOrderModal" tabindex="-1" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewOrderModalLabel">Order Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="orderDetailsContent">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="findRiderBtn">Find Rider</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="riderModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" id="modal-header">
+                <lord-icon src="https://cdn.lordicon.com/pdsourfn.json" stroke="bold"
+                colors="success:#9cf4a7,secondary:#109121,tertiary:#ebfad1" class="db-hrmis"></lord-icon>
+                <h3 class="modal-title" id="exampleModalLabel">Rider Information</h3>
+                <i class='bx bx-x' data-bs-dismiss="modal" aria-label="Close"></i>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="text-center mb-3">
+                    <img id="viewUserImagePreview" src="/img/userimage.jpg" alt="Rider Image" class="img-thumbnail rounded" style="width: 200px; height: 200px; object-fit: cover;">
+                </div>
+                <div class="text-center mb-3">
+                    <h5>Rider ID:</h5>
+                    <p id="riderId"></p>
+                </div>
+                <div class="text-center mb-3">
+                    <h5>Full Name:</h5>
+                    <p id="riderFullName"></p>
+                </div>
+                <div class="text-center mb-3">
+                    <h5>Rider Code:</h5>
+                    <p id="riderCode"></p>
+                </div>
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn lagona_class-btn btn-modal-save" id="assignRiderBtn">Assign Rider</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
-<style>
-.coming-soon-body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f8f9fa;
-}
 
-.coming-soon-container {
-    text-align: center;
-    padding: 20px;
-    border: 10px solid;
-    border-image: linear-gradient(135deg, yellow 25%, black 25%, black 50%, yellow 50%, yellow 75%, black 75%, black) 10;
-    background-color: #ffffff;
-}
-
-.coming-soon-container h1 {
-    font-size: 3em;
-    margin: 0;
-    color: #333;
-}
-
-.coming-soon-container p {
-    font-size: 1.2em;
-    color: #666;
-}
-</style>

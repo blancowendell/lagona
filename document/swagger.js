@@ -15,7 +15,7 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 module.exports = swaggerDocs;
 
-//Customer Api 2025-02-08
+//#region Customer Api
 
 //#region getMenuSoloImage
 
@@ -26,7 +26,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve an image of a solo menu item
  *     description: Returns the image URL of a solo menu item based on the provided item ID.
  *     tags:
- *       - Customer Api 2025-02-08
+ *       - Customer Api
  *     requestBody:
  *       required: true
  *       content:
@@ -74,7 +74,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve available solo menu items for a merchant
  *     description: Returns a list of active solo menu items based on the provided merchant ID.
  *     tags:
- *       - Customer Api 2025-02-08
+ *       - Customer Api
  *     requestBody:
  *       required: true
  *       content:
@@ -131,7 +131,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve available menu combos for a merchant
  *     description: Returns a list of active menu combos based on the provided merchant ID.
  *     tags:
- *       - Customer Api 2025-02-08
+ *       - Customer Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -189,7 +189,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve meal image for a specific combo
  *     description: Returns the image URL for the specified combo ID.
  *     tags:
- *       - Customer Api 2025-02-08
+ *       - Customer Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -239,7 +239,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve available menu extras for a merchant
  *     description: Returns a list of active menu extras based on the provided merchant ID.
  *     tags:
- *       - Customer Api 2025-02-08
+ *       - Customer Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -295,7 +295,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve an extra item image
  *     description: Returns the image of an extra item based on the provided extra ID.
  *     tags:
- *       - Customer Api 2025-02-08
+ *       - Customer Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -335,8 +335,6 @@ module.exports = swaggerDocs;
 //#endregion
 
 
-//Customer Api 2025-02-11
-
 //#region loadMerchantLimit
 /**
  * @swagger
@@ -345,7 +343,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve a list of merchants with a limit
  *     description: Fetches up to 10 merchants from the `master_merchant` table based on the provided `type` if they are active.
  *     tags:
- *       - Customer Api 2025-02-11
+ *       - Customer Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -391,7 +389,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve a complete menu item
  *     description: Fetches a specific menu item from the `menu_item` table based on `item_id` if it is available.
  *     tags:
- *       - Customer Api 2025-02-11
+ *       - Customer Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -438,7 +436,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve a complete solo meal
  *     description: Fetches a specific solo meal from the `menu_solo` table based on `solo_id` if it is available.
  *     tags:
- *       - Customer Api 2025-02-11
+ *       - Customer Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -485,7 +483,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve a complete combo meal
  *     description: Fetches a specific combo meal from the `menu_combo` table based on `combo_id` if it is available.
  *     tags:
- *       - Customer Api 2025-02-11
+ *       - Customer Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -532,7 +530,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve a complete extra item
  *     description: Fetches a specific extra item from the `menu_extras` table based on `extra_id` if it is available.
  *     tags:
- *       - Customer Api 2025-02-11
+ *       - Customer Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -579,7 +577,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve available menu items for a merchant
  *     description: Fetches all active menu items from the `menu_item` table based on `merchant_id`.
  *     tags:
- *       - Customer Api 2025-02-11
+ *       - Customer Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -628,7 +626,7 @@ module.exports = swaggerDocs;
  *     summary: Retrieve an item image
  *     description: Fetches the image of a specific menu item from the `menu_item` table based on `item_id`.
  *     tags:
- *       - Customer Api 2025-02-11
+ *       - Customer Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -663,8 +661,9 @@ module.exports = swaggerDocs;
 
 //#endregion
 
+//#endregion
 
-// Merchant Api 2025-02-12
+//#region Merchant Api
 
 //#region merchantSignUp
 
@@ -675,7 +674,7 @@ module.exports = swaggerDocs;
  *     summary: Merchant sign-up
  *     description: Registers a new merchant with the provided details. Sends an OTP for verification.
  *     tags:
- *       - Merchant Api 2025-02-12
+ *       - Merchant Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -759,7 +758,6 @@ module.exports = swaggerDocs;
 
 //#endregion
 
-
 //#region verifyOtpMerchant
 
 /**
@@ -769,7 +767,7 @@ module.exports = swaggerDocs;
  *     summary: Verify merchant OTP
  *     description: Verifies the OTP sent to the merchant's email and activates the account.
  *     tags:
- *       - Merchant Api 2025-02-12
+ *       - Merchant Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -808,8 +806,9 @@ module.exports = swaggerDocs;
 
 //#endregion
 
+//#endregion
 
-// Rider Api 2025-02-12
+//#region Rider Api 
 
 //#region loadHub
 
@@ -820,7 +819,7 @@ module.exports = swaggerDocs;
  *     summary: Load all master hub stations
  *     description: Retrieves a list of all available master hub stations.
  *     tags:
- *       - Rider Api 2025-02-12
+ *       - Rider Api 
  *     responses:
  *       200:
  *         description: List of master hub stations
@@ -857,7 +856,7 @@ module.exports = swaggerDocs;
  *     summary: Sign up a new rider
  *     description: Registers a new rider and sends an OTP for verification.
  *     tags:
- *       - Rider Api 2025-02-12
+ *       - Rider Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -954,7 +953,7 @@ module.exports = swaggerDocs;
  *     summary: Verify rider's OTP and activate account
  *     description: Verifies the OTP sent to the rider's email and activates the account.
  *     tags:
- *       - Rider Api 2025-02-12
+ *       - Rider Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -1002,7 +1001,7 @@ module.exports = swaggerDocs;
  *     summary: Request OTP for rider
  *     description: Generates and updates an OTP for the rider's email.
  *     tags:
- *       - Rider Api 2025-02-12
+ *       - Rider Api 
  *     requestBody:
  *       required: true
  *       content:
@@ -1034,5 +1033,153 @@ module.exports = swaggerDocs;
  *       500:
  *         description: Internal server error
  */
+
+//#endregion
+
+//#region Rider Login
+
+/**
+ * @swagger
+ * /MobileApi/riderLogin:
+ *   post:
+ *     summary: Rider login
+ *     description: Authenticates a rider using username and password, returning a JWT token upon successful login.
+ *     tags:
+ *       - Rider Api 
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: "rider123"
+ *               password:
+ *                 type: string
+ *                 example: "password123"
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     rider_id:
+ *                       type: integer
+ *                       example: 1
+ *                     rider_fullname:
+ *                       type: string
+ *                       example: "John Doe"
+ *                     role_type:
+ *                       type: string
+ *                       example: "Rider"
+ *                     token:
+ *                       type: string
+ *                       example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       401:
+ *         description: Incorrect username or password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "incorrect"
+ *       403:
+ *         description: Rider account is inactive
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "inactive"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "error"
+ *                 data:
+ *                   type: string
+ *                   example: "Detailed error message"
+ */
+
+//#endregion
+
+//#region Rider Location
+
+/**
+ * @swagger
+ * /getLocation:
+ *   put:
+ *     summary: Update rider's location
+ *     description: Updates the latitude and longitude of a rider based on their ID.
+ *     tags:
+ *       - Rider Api 
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               latitude:
+ *                 type: number
+ *                 description: Latitude of the rider's location.
+ *                 example: 14.5528
+ *               longitude:
+ *                 type: number
+ *                 description: Longitude of the rider's location.
+ *                 example: 121.0198
+ *               rider_id:
+ *                 type: integer
+ *                 description: Unique identifier of the rider.
+ *                 example: 123
+ *     responses:
+ *       200:
+ *         description: Location updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Location updated successfully."
+ *       400:
+ *         description: Invalid input data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid input data."
+ */
+
+//#endregion
 
 //#endregion

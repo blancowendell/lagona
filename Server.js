@@ -14,7 +14,7 @@ const basicAuth = require("basic-auth");
 function swaggerAuth(req, res, next) {
   const user = basicAuth(req);
   const username = "admin";
-  const password = "markcute"; 
+  const password = "markcute";
 
   if (!user || user.name !== username || user.pass !== password) {
     res.set("WWW-Authenticate", 'Basic realm="Swagger API Docs"');
@@ -73,11 +73,11 @@ app.use((req, res, next) => {
 });
 
 //#region ROUTES USE
-app.use("/AdminLogin", AdminLoginRouter);
+app.use("/", AdminLoginRouter);
 app.use("/MerchantLogin", MerchantLoginRouter);
 app.use("/MobileApi", MobileApiRouter);
-app.use(verifyJWT);
-app.use("/", AdminIndexRouter);
+// app.use(verifyJWT);
+app.use("/Index", AdminIndexRouter);
 app.use("/AdminHubs", AdminHubsRouter);
 app.use("/AdminLoadingStation", AdminLoadingStationRouter);
 app.use("/AdminRiders", AdminRidersRouter);
@@ -104,7 +104,7 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  logger.error(err.message); 
+  logger.error(err.message);
 
   res.status(err.status || 500);
   res.render("error");

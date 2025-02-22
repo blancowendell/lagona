@@ -21,6 +21,7 @@ const { DataModeling } = require("./model/lagonaDb");
 const {
   AdminLogin,
   MerchantLogin,
+  RiderLogin,
   CustomerLogin,
   generateCode,
 } = require("./repository/helper");
@@ -823,6 +824,15 @@ router.post("/getCompleteExtra", (req, res) => {
   }
 });
 
+router.post("/orderCheckout", (req, res) => {
+  try {
+    let;
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
 //#endregion
 
 //#region Merchant Api
@@ -1187,6 +1197,9 @@ router.post("/verifyOtpRider", async (req, res) => {
         WHERE mr_email = '${email}'
         AND mr_rider_otp = '${otp}'`;
 
+    if (result.length === 0) {
+      return res.json(JsonWarningResponse("Invalid OTP or email"));
+    }
 
     Select(sql, (err, result) => {
       if (err) {
@@ -1235,72 +1248,171 @@ router.post("/verifyOtpRider", async (req, res) => {
 });
 
 router.put("/requestOtpRider", (req, res) => {
-    try {
-      const {
-       email,
-      } = req.body;
-      let otp = generateCode(5);
-      let rider_otp_valid = GetCurrentDatetimeAdd1Hour();
-  
-      let data = [];
-      let columns = [];
-      let arguments = []
-  
-      if (otp) {
-        data.push(otp);
-        columns.push("rider_otp");
-      }
+  try {
+    const { email } = req.body;
+    let otp = generateCode(5);
+    let rider_otp_valid = GetCurrentDatetimeAdd1Hour();
 
-      if (rider_otp_valid) {
-        data.push(rider_otp_valid);
-        columns.push("rider_otp_valid");
-      }
-    
-      if (email) {
-        data.push(email);
-        arguments.push("email");
-      }
-  
-      let updateStatement = UpdateStatement(
-        "master_rider",
-        "mr",
-        columns,
-        arguments
-      );
-      let checkStatement = SelectStatement(
-        "select * from master_rider where mr_email = ?",
-        [email]
-      );
-  
-      Check(checkStatement)
+    let data = [];
+    let columns = [];
+    let arguments = [];
+
+    if (otp) {
+      data.push(otp);
+      columns.push("rider_otp");
+    }
+
+    if (rider_otp_valid) {
+      data.push(rider_otp_valid);
+      columns.push("rider_otp_valid");
+    }
+
+    if (email) {
+      data.push(email);
+      arguments.push("email");
+    }
+
+    let updateStatement = UpdateStatement(
+      "master_rider",
+      "mr",
+      columns,
+      arguments
+    );
+    let checkStatement = SelectStatement(
+      "select * from master_rider where mr_email = ?",
+      [email]
+    );
+
+    Check(checkStatement)
+      .then((result) => {
+        if ((result = 0)) {
+          return res.json(JsonWarningResponse(MessageStatus.NOTEXISTEMAIL));
+        } else {
+          Update(updateStatement, data, async (err, result) => {
+            if (err) console.error("Error: ", err);
+            try {
+              await sendMail(
+                email,
+                "Your New OTP Request",
+                `Your OTP code is: ${otp} this will expire in 1 hour`
+              );
+              console.log("OTP sent to email: " + email);
+            } catch (error) {
+              console.error("Error sending OTP email:", error);
+            }
+            res.json(JsonDataResponse("New OTP has been sent to: " + email));
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        res.json(JsonErrorResponse(error));
+      });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/riderLogin", (req, res) => {
+  try {
+    const { username, password } = req.body;
+    let role_type = "Rider";
+
+    Encrypter(password, (err, encrypted) => {
+      if (err) return console.error("Error: ", err);
+
+      let sql = `SELECT
+          mr_rider_id as rider_id,
+          CONCAT(mr_first_name,' ',mr_last_name) as rider_fullname,
+          mr_rider_status as status
+          FROM master_rider
+          WHERE mr_user_name = '${username}'
+          AND mr_password = '${encrypted}'`;
+
+      mysql
+        .mysqlQueryPromise(sql)
         .then((result) => {
-          if (result = 0) {
-            return res.json(JsonWarningResponse(MessageStatus.NOTEXISTEMAIL));
-          } else {
-            Update(updateStatement, data, async (err, result) => {
-              if (err) console.error("Error: ", err);
-              try {
-                await sendMail(
-                  email,
-                  "Your New OTP Request",
-                  `Your OTP code is: ${otp} this will expire in 1 hour`
-                );
-                console.log("OTP sent to email: " + email);
-              } catch (error) {
-                console.error("Error sending OTP email:", error);
-              }
-              res.json(JsonDataResponse("New OTP has been sent to: " + email));
-            });
+          if (result.length === 0) {
+            return res.json({ msg: "incorrect" });
           }
+          const user = result[0];
+          if (user.status !== "Active") {
+            return res.json({ msg: "inactive" });
+          }
+          result.forEach((row) => {
+            row.role_type = role_type;
+          });
+
+          let data = RiderLogin(result);
+
+          data.forEach((user) => {
+            const tokenPayload = {
+              rider_id: user.rider_id,
+              rider_fullname: user.rider_fullname,
+            };
+
+            const token = jwt.sign(tokenPayload, process.env._SECRET_KEY, {
+              expiresIn: "1h",
+            });
+            const encryptedToken = EncrypterString(token, {});
+
+            req.session.jwt = encryptedToken;
+            req.session.rider_id = user.rider_id;
+            req.session.rider_fullname = user.rider_fullname;
+            req.session.role_type = user.role_type;
+            user.token = encryptedToken;
+          });
+
+          console.log(data);
+
+          return res.json({ msg: "success", data: data });
         })
         .catch((error) => {
-          console.log(error);
-          res.json(JsonErrorResponse(error));
+          return res.json({ msg: "error", data: error });
         });
-    } catch (error) {
-      console.log(error);
-      res.json(JsonErrorResponse(error));
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.put("/getLocation", (req, res) => {
+  try {
+    const { latitude, longitude, rider_id } = req.body;
+
+    let data = [];
+    let columns = [];
+    let arguments = [];
+
+    if (latitude) {
+      data.push(latitude);
+      columns.push("latitude");
     }
+
+    if (longitude) {
+      data.push(longitude);
+      columns.push("longitude");
+    }
+
+    if (rider_id) {
+      data.push(rider_id);
+      arguments.push("rider_id");
+    }
+
+    let updateStatement = UpdateStatement(
+      "master_rider",
+      "mr",
+      columns,
+      arguments
+    );
+
+    Update(updateStatement, data, (err, result) => {
+      if (err) console.error("Error: ", err);
+      res.json(JsonSuccess());
+    });
+  } catch (error) {}
 });
 
 //#endregion

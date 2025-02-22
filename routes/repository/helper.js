@@ -131,6 +131,26 @@ exports.CustomerLogin = (result, callback) => {
   }
 };
 
+
+exports.RiderLogin = (result, callback) => {
+  try {
+    const RiderData = [];
+
+    result.forEach((row) => {
+      RiderData.push({
+        rider_id: row.rider_id,
+        rider_fullname: row.rider_fullname,
+        role_type: row.role_type,
+      });
+    });
+
+    return RiderData;
+  } catch (error) {
+    console.log(error);
+    callback(error);
+  }
+};
+
 exports.MerchantLogin = (result, callback) => {
   try {
     const MerchantData = [];
