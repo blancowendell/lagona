@@ -27,13 +27,13 @@ const { logger, eventlogger } = require("./routes/utility/logger");
 
 //#region ROUTES IMPORT
 var AdminIndexRouter = require("./routes/AdminIndex");
-var AdminLoginRouter = require("./routes/AdminLogin");
+var AdminLoginRouter = require("./routes/Adminlogin");
 var AdminHubsRouter = require("./routes/AdminHubs");
 var AdminLoadingStationRouter = require("./routes/AdminLoadingStation");
 var AdminRidersRouter = require("./routes/AdminRiders");
 var AdminMerchantsRouter = require("./routes/AdminMerchants");
 var AdminShareholdersRouter = require("./routes/AdminShareholders");
-var MerchantLoginRouter = require("./routes/MerchantLogin");
+var MerchantLoginRouter = require("./routes/Merchantlogin");
 var MerchantIndexRouter = require("./routes/MerchantIndex");
 var MerchantProductsRouter = require("./routes/MerchantProducts");
 var MerchantCategoryRouter = require("./routes/MerchantCategory");
@@ -76,7 +76,7 @@ app.use((req, res, next) => {
 app.use("/", AdminLoginRouter);
 app.use("/MerchantLogin", MerchantLoginRouter);
 app.use("/MobileApi", MobileApiRouter);
-// app.use(verifyJWT);
+app.use(verifyJWT);
 app.use("/Index", AdminIndexRouter);
 app.use("/AdminHubs", AdminHubsRouter);
 app.use("/AdminLoadingStation", AdminLoadingStationRouter);

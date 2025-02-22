@@ -16,7 +16,7 @@ const {
   UpdateStatement,
 } = require("./repository/customhelper");
 const { DataModeling } = require("./model/lagonaDb");
-const { AdminLogin, MerchantLogin } = require("./repository/helper");
+const { Adminlogin, MerchantLogin } = require("./repository/helper");
 const { Encrypter, EncrypterString } = require("./repository/crytography");
 var router = express.Router();
 //const currentDate = moment();
@@ -24,7 +24,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  res.render("MerchantLoginLayout", { title: "Express" });
+  res.render("MerchantloginLayout", { title: "Express" });
 });
 
 module.exports = router;
@@ -46,6 +46,9 @@ router.post("/login", (req, res) => {
         FROM master_merchant
         WHERE mm_username = '${username}'
         AND mm_password = '${encrypted}'`;
+
+        console.log(sql);
+        
 
       mysql.mysqlQueryPromise(sql)
         .then((result) => {
@@ -88,6 +91,7 @@ router.post("/login", (req, res) => {
           return res.json({ msg: "success", data: data });
         })
         .catch((error) => {
+          console.log(error);
           return res.json({ msg: "error", data: error });
         });
     });

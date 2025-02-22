@@ -24,7 +24,6 @@
             console.log(data);
 
             $.each(data, (key, item) => {
-
               var action = `
                     <button id="viewBtn" class="lagona_class-btn btn" name="viewBtn">
                     <i class="fas fa-fw fa-eye"></i>
@@ -120,11 +119,15 @@
                   </div>
                 </div>
                 <div class="mb-3">
-                  <h5>Status: <span class="badge bg-warning text-dark">${orderData.status}</span></h5>
+                  <h5>Status: <span class="badge bg-warning text-dark">${
+                    orderData.status
+                  }</span></h5>
                 </div>
                 <div class="mb-3">
                   <h5>Description</h5>
-                  <p>${orderData.description || "No additional instructions."}</p>
+                  <p>${
+                    orderData.description || "No additional instructions."
+                  }</p>
                 </div>
                 <hr>
               `;
@@ -145,17 +148,25 @@
 
     $(document).on("click", "#findRiderBtn", function () {
       $.ajax({
-        url: "MerchantOrders/viewRiderStatus",
-        method: "GET",
+        type: "POST",
+        url: "/MerchantOrders/viewRiderStatus",
+        data: { order_id: order_id },
         dataType: "json",
         success: function (result) {
-          if (result.msg === "success") {
-            const riderData = result.data[0];
+          console.log(result);
+          if (result.msg === "success" && result.data) {
+            const riderData = result.data;
 
             $("#riderFullName").text(riderData.fullname);
             $("#riderCode").text(riderData.rider_code);
             $("#riderId").text(riderData.rider_id);
-            $("#viewUserImagePreview").attr("src", "data:image/jpg;base64," + riderData.image);
+            $("#viewUserImagePreview").attr(
+              "src",
+              "data:image/jpg;base64," + riderData.image
+            );
+
+            $("#riderDistance").text(riderData.distance + " km");
+            $("#deliveryFee").text("₱" + riderData.delivery_fee);
 
             $("#riderModal").modal("show");
           } else {
@@ -171,9 +182,10 @@
     $(document).on("click", "#assignRiderBtn", function () {
       let id = order_id;
       let rider_id = $("#riderId").text();
+      let delivery_fee = $("#deliveryFee").text();
+      let distance = $("#riderDistance").text();
 
       var message = "";
-
 
       if (id === "") {
         message += "Order ID is required ";
@@ -181,6 +193,14 @@
 
       if (rider_id === "") {
         message += "Rider ID is required ";
+      }
+
+      if (delivery_fee === "") {
+        message += "Delivery Fee is required ";
+      }
+
+      if (distance === "") {
+        message += "Distance is required ";
       }
 
       if (message !== "") {
@@ -192,7 +212,8 @@
           data: {
             order_id: id,
             rider_id: rider_id,
-
+            delivery_fee: delivery_fee,
+            distance: distance,
           },
           success: function (result) {
             if (result.msg == "success") {
@@ -248,7 +269,6 @@
 
           imageBase64Stringsep = base64String;
         };
-
       };
       reader.readAsDataURL(file);
     }
@@ -290,7 +310,6 @@
 
           imageBase64Stringsep = base64String;
         };
-
       };
       reader.readAsDataURL(file);
     }

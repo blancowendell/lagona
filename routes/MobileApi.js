@@ -1,4 +1,5 @@
 const mysql = require("./repository/lagonaDb");
+const { body, validationResult } = require('express-validator');
 //const moment = require('moment');
 var express = require("express");
 const jwt = require("jsonwebtoken");
@@ -10,6 +11,7 @@ const {
   JsonDataResponse,
 } = require("./repository/response");
 const { InsertTable, Select, Update } = require("./repository/dbconnect");
+const validateCustomerCheckout = require('./utility/validator');
 const {
   SelectStatement,
   InsertStatement,
@@ -35,7 +37,7 @@ const sendMail = require("../routes/utility/mailer");
 
 /* GET home page. */
 // router.get("/", function (req, res, next) {
-//   res.render("AdminLoginLayout", { title: "Express" });
+//   res.render("AdminloginLayout", { title: "Express" });
 // });
 
 module.exports = router;
@@ -824,14 +826,106 @@ router.post("/getCompleteExtra", (req, res) => {
   }
 });
 
-router.post("/orderCheckout", (req, res) => {
+router.post('/customerCheckout', validateCustomerCheckout, async (req, res) => {
   try {
-    let;
+    const {
+      merchant_id,
+      customer_id,
+      order_type,
+      lagona_fee,
+      order_total,
+      address_id,
+      order_note,
+      order_fee,
+      order_details, 
+    } = req.body;
+
+    if (
+      !merchant_id ||
+      !customer_id ||
+      !order_type ||
+      !lagona_fee ||
+      !order_total ||
+      !address_id ||
+      !order_details ||
+      !Array.isArray(order_details) ||
+      order_details.length === 0
+    ) {
+      return res
+        .status(400)
+        .json(JsonErrorResponse("All fields are required and order_details must be a non-empty array"));
+    }
+
+    const orderCode = generateCode(5);
+    const orderStatus = "Pending"; 
+    const createDate = GetCurrentDatetime(); 
+
+    const masterOrderData = {
+      order_code: orderCode,
+      merchant_id: merchant_id,
+      customer_id: customer_id,
+      order_type: order_type,
+      order_type_charge: 0.0, 
+      order_details: JSON.stringify(order_details),
+      order_note: order_note || "",
+      order_fee: order_fee || 0.0,
+      lagona_fee: lagona_fee,
+      order_total: order_total,
+      order_status: orderStatus,
+      payment_screenshots: "",
+      address_id: address_id,
+    };
+
+    const masterOrderSql = InsertStatement("master_order", "mo", Object.keys(masterOrderData));
+    const masterOrderValues = [Object.values(masterOrderData)];
+
+    InsertTable(masterOrderSql, masterOrderValues, (err, result) => {
+      if (err) {
+        console.error("Error inserting into master_order:", err);
+        return res.status(500).json(JsonErrorResponse("Failed to create order"));
+      }
+
+      console.log(result,'RESULT');
+      
+      const orderId = result[0].id;
+
+      const orderDetailsData = order_details.map((item) => [
+        orderId,
+        item.category,
+        item.product_id,
+        item.quantity,
+        "Pending", 
+        createDate,
+      ]);
+
+      const orderDetailsSql = InsertStatement("order_details", "od", [
+        "order_id",
+        "order_category",
+        "product_id",
+        "quantity",
+        "status",
+        "create_date",
+      ]);
+
+      InsertTable(orderDetailsSql, orderDetailsData, (err) => {
+        if (err) {
+          console.error("Error inserting into order_details:", err);
+          return res.status(500).json(JsonErrorResponse("Failed to add order details"));
+        }
+
+        res.json({
+          success: true,
+          message: "Order placed successfully",
+          order_id: orderId,
+        });
+      });
+    });
   } catch (error) {
-    console.log(error);
-    res.json(JsonErrorResponse(error));
+    console.error("Checkout error:", error);
+    res.status(500).json(JsonErrorResponse("Internal server error"));
   }
 });
+
 
 //#endregion
 
@@ -1415,6 +1509,8 @@ router.put("/getLocation", (req, res) => {
   } catch (error) {}
 });
 
+
+
 //#endregion
 
 //#region FUNCTION
@@ -1427,4 +1523,5 @@ function Check(sql) {
     });
   });
 }
+
 //#endregion

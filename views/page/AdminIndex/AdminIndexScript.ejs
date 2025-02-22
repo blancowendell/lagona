@@ -99,7 +99,7 @@
 
 
     function LoadJasProfileTable() {
-      $("#jasProfilesTable").DataTable({
+      $("#jasprofilesTable").DataTable({
         destroy: true,
         processing: true,
         serverSide: true,
@@ -110,7 +110,7 @@
         scrollCollapse: true,
         serverMethod: "GET",
         ajax: {
-          url: "/JasProfiles/load",
+          url: "/jasprofiles/load",
           dataSrc: (json) => {
             var finalData = [];
             var data = json.data;

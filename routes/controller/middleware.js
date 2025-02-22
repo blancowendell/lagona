@@ -149,7 +149,7 @@ exports.AdminValidator = function (req, res, layout) {
 
       if (counter == roleacess.length) {
         if (!ismatch) {
-          res.redirect("/AdminLogin");
+          res.redirect("/Adminlogin");
         }
       }
     });
@@ -194,7 +194,7 @@ exports.MerchantValidator = function (req, res, layout) {
 
       if (counter == roleacess.length) {
         if (!ismatch) {
-          res.redirect("/MerchantLogin");
+          res.redirect("/Merchantlogin");
         }
       }
     });

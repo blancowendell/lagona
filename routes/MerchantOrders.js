@@ -98,97 +98,163 @@ router.post("/viewOrderDetails", (req, res) => {
   }
 });
 
-// router.get("/viewRiderStatus", (req, res) => {
-//   try {
-//     let sql = `    SELECT
-//     mm_prio_rider as mm_rider,
-//     CONCAT(mr_first_name,' ',mr_last_name) as mm_fullname,
-//     mr_rider_selfie as mm_image,
-//     mr_rider_code as mm_rider_code
-//     FROM master_merchant
-//     INNER JOIN master_rider ON master_merchant.mm_prio_rider = mr_rider_id
-//     WHERE mr_rider_id = mm_prio_rider
-//     AND mr_rider_status = 'Available'`;
-
-//     Select(sql, (err, result) => {
-//       if (err) {
-//         console.error(err);
-//         res.json(JsonErrorResponse(err));
-//       }
-//       if (result != 0) {
-//         let data = DataModeling(result, "mm_");
-//         res.json(JsonDataResponse(data));
-//       } else {
-//         res.json(JsonDataResponse(result));
-//       }
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.json(JsonErrorResponse(error));
-//   }
-// });
-
-router.get("/viewRiderStatus", (req, res) => {
+router.post("/viewRiderStatus", (req, res) => {  
   try {
-    const sqlPrimary = `
-      SELECT
-        mr_rider_id,
-        mm_prio_rider AS mm_rider,
-        CONCAT(mr_first_name, ' ', mr_last_name) AS mm_fullname,
-        mr_rider_selfie AS mm_image,
-        mr_rider_code AS mm_rider_code
-      FROM master_merchant
-      INNER JOIN master_rider ON master_merchant.mm_prio_rider = mr_rider_id
-      WHERE mr_rider_id = mm_prio_rider
-        AND mr_rider_status = 'Available'
-    `;
+    const orderId = req.body.order_id;
 
-    Select(sqlPrimary, (err, result) => {
+    if (!orderId) {
+      return res.status(400).json(JsonErrorResponse("Order ID is required"));
+    }
+
+    const customerQuery = `
+      SELECT ca.ca_latitude, ca.ca_longitude, mo.mo_merchant_id
+      FROM master_order mo
+      INNER JOIN customer_address ca ON mo.mo_address_id = ca.ca_address_id
+      WHERE mo.mo_order_id = '${orderId}'
+    `;
+    
+
+    Select(customerQuery, (err, customerResult) => {
       if (err) {
         console.error(err);
         return res.json(JsonErrorResponse(err));
       }
 
-      if (result.length > 0) {
-        const data = DataModeling(result, "mm_");
-        return res.json(JsonDataResponse(data));
-      } else {
-        const sqlFallback = `
+      if (customerResult.length === 0) {
+        return res.status(404).json(JsonErrorResponse("Customer address not found"));
+      }
+
+      const {
+        ca_latitude: customerLatitude,
+        ca_longitude: customerLongitude,
+        mo_merchant_id: merchantId,
+      } = customerResult[0];
+
+      const merchantQuery = `
+        SELECT mm_latitude, mm_longitude, mm_prio_rider
+        FROM master_merchant
+        WHERE mm_merchant_id = '${merchantId}'
+      `;
+
+      Select(merchantQuery, (err, merchantResult) => {
+        if (err) {
+          console.error(err);
+          return res.json(JsonErrorResponse(err));
+        }
+
+        if (merchantResult.length === 0) {
+          return res.status(404).json(JsonErrorResponse("Merchant not found"));
+        }
+
+        const {
+          mm_latitude: merchantLatitude,
+          mm_longitude: merchantLongitude,
+          mm_prio_rider: prioRiderId,
+        } = merchantResult[0];
+
+        const riderQuery = `
           SELECT
             mr_rider_id,
             CONCAT(mr_first_name, ' ', mr_last_name) AS mr_fullname,
             mr_rider_selfie,
-            mr_rider_code
+            mr_rider_code,
+            mr_latitude,
+            mr_longitude
           FROM master_rider
           WHERE mr_rider_status = 'Available'
-          LIMIT 1
+            AND mr_rider_id = '${prioRiderId}'
         `;
 
-        Select(sqlFallback, (err, fallbackResult) => {
+        Select(riderQuery, (err, riderResult) => {
           if (err) {
             console.error(err);
             return res.json(JsonErrorResponse(err));
           }
 
-          if (fallbackResult.length > 0) {
-            const data = DataModeling(fallbackResult, "mr_");
-            return res.json(JsonDataResponse(data));
+          if (riderResult.length === 0) {
+            const fallbackRiderQuery = `
+              SELECT
+                mr_rider_id,
+                CONCAT(mr_first_name, ' ', mr_last_name) AS mr_fullname,
+                mr_rider_selfie,
+                mr_rider_code,
+                mr_latitude,
+                mr_longitude
+              FROM master_rider
+              WHERE mr_rider_status = 'Available'
+              LIMIT 1
+            `;
+            Select(fallbackRiderQuery, (err, fallbackRiderResult) => {
+              if (err) {
+                console.error(err);
+                return res.json(JsonErrorResponse(err));
+              }
+
+              if (fallbackRiderResult.length === 0) {
+                return res.status(404).json(JsonErrorResponse("No available riders found"));
+              }
+
+              processRiderData(fallbackRiderResult[0]);
+            });
           } else {
-            return res.json(JsonDataResponse([]));
+            processRiderData(riderResult[0]);
           }
         });
-      }
+
+        function processRiderData(riderData) {
+          const {
+            mr_latitude: riderLatitude,
+            mr_longitude: riderLongitude,
+            mr_rider_id: riderId,
+            mr_fullname: riderFullname,
+            mr_rider_selfie: riderSelfie,
+            mr_rider_code: riderCode,
+          } = riderData;
+
+          const distance = calculateHaversineDistance(
+            parseFloat(merchantLatitude),
+            parseFloat(merchantLongitude),
+            parseFloat(customerLatitude),
+            parseFloat(customerLongitude)
+          );
+
+          const deliveryFee = calculateDeliveryFee(distance);
+
+          const responseData = {
+            rider_id: riderId,
+            fullname: riderFullname,
+            image: riderSelfie,
+            rider_code: riderCode,
+            distance: distance.toFixed(2),
+            delivery_fee: deliveryFee.toFixed(2), 
+          };
+
+          res.json(JsonDataResponse(responseData));
+        }
+      });
     });
   } catch (error) {
     console.error(error);
-    res.json(JsonErrorResponse(error));
+    res.status(500).json(JsonErrorResponse("Internal server error"));
   }
 });
 
 router.post("/assignRider", (req, res) => {
   try {
-    let order_id = req.body.order_id;
-    let rider_id = req.body.rider_id;
+    const { order_id, rider_id, delivery_fee, distance } = req.body;
+
+    if (!order_id || !rider_id || !delivery_fee || !distance) {
+      return res.status(400).json(JsonErrorResponse("All fields are required"));
+    }
+
+    const sanitizedDeliveryFee = parseFloat(
+      delivery_fee.replace(/[^\d.-]/g, "")
+    );
+
+    if (isNaN(sanitizedDeliveryFee)) {
+      return res.status(400).json(JsonErrorResponse("Invalid delivery fee"));
+    }
+
     let order_take = GetCurrentDatetime();
     let status = "Pending";
 
@@ -197,9 +263,11 @@ router.post("/assignRider", (req, res) => {
       "rider_id",
       "status",
       "take_order_time",
+      "distance",
+      "del_fee",
     ]);
 
-    let data = [[order_id, rider_id, status, order_take]];
+    let data = [[order_id, rider_id, status, order_take, distance, sanitizedDeliveryFee]];
 
     let checkStatement = SelectStatement(
       "select * from order_riders_table where ort_order_id=? and ort_rider_id=? and ort_status=?",
@@ -242,4 +310,31 @@ function Check(sql) {
     });
   });
 }
+
+function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
+  const toRad = (value) => (value * Math.PI) / 180;
+  const R = 6371;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+  return distance;
+}
+
+function calculateDeliveryFee(distance) {
+  const baseFee = 65.0; 
+  const additionalFeePerKm = 10.0; 
+  if (distance <= 1) {
+    return baseFee;
+  } else {
+    return baseFee + Math.ceil(distance - 1) * additionalFeePerKm;
+  }
+}
+
 //#endregion
