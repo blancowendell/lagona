@@ -24,7 +24,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  res.render("MerchantloginLayout", { title: "Express" });
+  res.render("MerchantLoginLayout", { title: "Express" });
 });
 
 module.exports = router;
