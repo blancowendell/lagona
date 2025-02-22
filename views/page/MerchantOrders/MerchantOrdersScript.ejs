@@ -150,10 +150,11 @@
         dataType: "json",
         success: function (result) {
           if (result.msg === "success") {
-            const riderData = result.data[0]; 
+            const riderData = result.data[0];
 
             $("#riderFullName").text(riderData.fullname);
             $("#riderCode").text(riderData.rider_code);
+            $("#riderId").text(riderData.rider_id);
             $("#viewUserImagePreview").attr("src", "data:image/jpg;base64," + riderData.image);
 
             $("#riderModal").modal("show");
@@ -165,6 +166,49 @@
           toastr.error("An error occurred while fetching rider data", "Error");
         },
       });
+    });
+
+    $(document).on("click", "#assignRiderBtn", function () {
+      let id = order_id;
+      let rider_id = $("#riderId").text();
+
+      var message = "";
+
+
+      if (id === "") {
+        message += "Order ID is required ";
+      }
+
+      if (rider_id === "") {
+        message += "Rider ID is required ";
+      }
+
+      if (message !== "") {
+        toastr.error(`Please fill up ${message}`, "Required");
+      } else {
+        $.ajax({
+          type: "POST",
+          url: "/MerchantOrders/assignRider",
+          data: {
+            order_id: id,
+            rider_id: rider_id,
+
+          },
+          success: function (result) {
+            if (result.msg == "success") {
+              toastr.success("Assigned Successfully", "Success");
+              setTimeout(function () {
+                window.location.reload();
+              }, 500);
+            } else {
+              toastr.warning("Data already exists!", "Warning");
+            }
+          },
+          error: function (err) {
+            toastr.warning("Data already exists!", "Warning");
+          },
+        });
+      }
     });
 
     $(document).on("change", "#edititemimage", function (e) {

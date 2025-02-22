@@ -27,7 +27,7 @@
         } else {
           $.ajax({
             type: "POST",
-            url: "/AdminLogin/login",
+            url: "/login",
             data: {
               username: username,
               password: password,
@@ -37,9 +37,9 @@
                 toastr.success("Login Successful!", "Success");
                 setTimeout(() => {
                   if (result.data[0]) {
-                    location.replace("/");
+                    location.replace("/Index");
                   } else {
-                    location.replace("/");
+                    location.replace("/Index");
                   }
                 }, 500);
               } else if (result.msg === "inactive") {
@@ -74,7 +74,7 @@
         } else {
           $.ajax({
             type: "POST",
-            url: "/login/forgotpassword",
+            url: "/forgotpassword",
             data: {
               email: email,
             },

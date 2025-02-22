@@ -73,11 +73,11 @@ app.use((req, res, next) => {
 });
 
 //#region ROUTES USE
-app.use("/AdminLogin", AdminLoginRouter);
+app.use("/", AdminLoginRouter);
 app.use("/MerchantLogin", MerchantLoginRouter);
 app.use("/MobileApi", MobileApiRouter);
 // app.use(verifyJWT);
-app.use("/", AdminIndexRouter);
+app.use("/Index", AdminIndexRouter);
 app.use("/AdminHubs", AdminHubsRouter);
 app.use("/AdminLoadingStation", AdminLoadingStationRouter);
 app.use("/AdminRiders", AdminRidersRouter);
