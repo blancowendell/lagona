@@ -112,7 +112,7 @@ exports.Userlogin = (result, callback) => {
 };
 
 
-exports.Customerlogin = (result, callback) => {
+exports.CustomerLogin = (result, callback) => {
   try {
     const CustomerData = [];
 
@@ -173,7 +173,7 @@ exports.MerchantLogin = (result, callback) => {
   }
 };
 
-exports.Adminlogin = (result, callback) => {
+exports.AdminLogin = (result, callback) => {
   try {
     const AdminData = [];
 

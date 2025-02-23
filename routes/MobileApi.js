@@ -1,6 +1,4 @@
 const mysql = require("./repository/lagonaDb");
-const { body, validationResult } = require('express-validator');
-//const moment = require('moment');
 var express = require("express");
 const jwt = require("jsonwebtoken");
 const {
@@ -11,7 +9,6 @@ const {
   JsonDataResponse,
 } = require("./repository/response");
 const { InsertTable, Select, Update } = require("./repository/dbconnect");
-const validateCustomerCheckout = require('./utility/validator');
 const {
   SelectStatement,
   InsertStatement,
@@ -30,15 +27,7 @@ const {
 const { EncrypterString, Encrypter } = require("./repository/crytography");
 var router = express.Router();
 const verifyJWT = require("../middleware/authenticator");
-const e = require("express");
-const { log } = require("winston");
 const sendMail = require("../routes/utility/mailer");
-//const currentDate = moment();
-
-/* GET home page. */
-// router.get("/", function (req, res, next) {
-//   res.render("AdminloginLayout", { title: "Express" });
-// });
 
 module.exports = router;
 
@@ -386,67 +375,6 @@ router.post("/logoutCustomer", (req, res) => {
       msg: "success",
     });
   });
-});
-
-router.post("/addAddress", verifyJWT, (req, res) => {
-  try {
-    const { customer_id, address, geo_code, latitude, longitude, type } =
-      req.body;
-    let create_date = GetCurrentDatetime();
-    let status = "Active";
-
-    let sql = InsertStatement("customer_address", "ca", [
-      "customer_id",
-      "address",
-      "geo_code",
-      "latitude",
-      "longitude",
-      "type",
-      "status",
-      "create_date",
-    ]);
-
-    let data = [
-      [
-        customer_id,
-        address,
-        geo_code,
-        latitude,
-        longitude,
-        type,
-        status,
-        create_date,
-      ],
-    ];
-
-    let checkStatement = SelectStatement(
-      "select * from customer_address where ca_customer_id=? and ca_latitude=? and ca_longitude=?",
-      [customer_id, latitude, longitude]
-    );
-
-    Check(checkStatement)
-      .then((result) => {
-        if (result != 0) {
-          return res.json(JsonWarningResponse(MessageStatus.EXIST));
-        } else {
-          InsertTable(sql, data, (err, result) => {
-            if (err) {
-              console.log(err);
-              return res.json(JsonErrorResponse(err));
-            }
-
-            res.json(JsonSuccess());
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        res.json(JsonErrorResponse(err));
-      });
-  } catch (error) {
-    console.log(error);
-    res.json(JsonErrorResponse(error));
-  }
 });
 
 router.get("/getSize", (req, res) => {
@@ -826,7 +754,116 @@ router.post("/getCompleteExtra", (req, res) => {
   }
 });
 
-router.post('/customerCheckout', validateCustomerCheckout, async (req, res) => {
+// router.post("/customerCheckout",verifyJWT ,async (req, res) => {
+//     try {
+//       const {
+//         merchant_id,
+//         customer_id,
+//         order_type,
+//         lagona_fee,
+//         order_total,
+//         address_id,
+//         order_note,
+//         order_fee,
+//         order_details,
+//       } = req.body;
+
+//       if (
+//         !merchant_id ||
+//         !customer_id ||
+//         !order_type ||
+//         !lagona_fee ||
+//         !order_total ||
+//         !address_id ||
+//         !order_details ||
+//         !Array.isArray(order_details) ||
+//         order_details.length === 0
+//       ) {
+//         return res
+//           .status(400)
+//           .json(
+//             JsonErrorResponse(
+//               "All fields are required and order_details must be a non-empty array"
+//             )
+//           );
+//       }
+
+//       const orderCode = generateCode(5);
+//       const orderStatus = "Pending";
+//       const createDate = GetCurrentDatetime();
+
+//       const masterOrderData = {
+//         order_code: orderCode,
+//         merchant_id: merchant_id,
+//         customer_id: customer_id,
+//         order_type: order_type,
+//         order_type_charge: 0.0,
+//         order_details: JSON.stringify(order_details),
+//         order_note: order_note || "",
+//         order_fee: order_fee || 0.0,
+//         lagona_fee: lagona_fee,
+//         order_total: order_total,
+//         order_status: orderStatus,
+//         payment_screenshots: "",
+//         address_id: address_id,
+//       };
+
+//       const masterOrderSql = InsertStatement(
+//         "master_order",
+//         "mo",
+//         Object.keys(masterOrderData)
+//       );
+//       const masterOrderValues = [Object.values(masterOrderData)];
+
+//       InsertTable(masterOrderSql, masterOrderValues, (err, result) => {
+//         if (err) {
+//           console.error("Error inserting into master_order:", err);
+//           return res
+//             .status(500)
+//             .json(JsonErrorResponse("Failed to create order"));
+//         }
+//         const orderId = result[0].id;
+
+//         const orderDetailsData = order_details.map((item) => [
+//           orderId,
+//           item.category,
+//           item.product_id,
+//           item.quantity,
+//           "Pending",
+//           createDate,
+//         ]);
+
+//         const orderDetailsSql = InsertStatement("order_details", "od", [
+//           "order_id",
+//           "order_category",
+//           "product_id",
+//           "quantity",
+//           "status",
+//           "create_date",
+//         ]);
+
+//         InsertTable(orderDetailsSql, orderDetailsData, (err) => {
+//           if (err) {
+//             console.error("Error inserting into order_details:", err);
+//             return res
+//               .status(500)
+//               .json(JsonErrorResponse("Failed to add order details"));
+//           }
+
+//           res.json({
+//             success: true,
+//             message: "Order placed successfully",
+//             order_id: orderId,
+//           });
+//         });
+//       });
+//     } catch (error) {
+//       console.error("Checkout error:", error);
+//       res.status(500).json(JsonErrorResponse("Internal server error"));
+//   }
+// });
+
+router.post("/customerCheckout", verifyJWT, async (req, res) => {
   try {
     const {
       merchant_id,
@@ -837,7 +874,7 @@ router.post('/customerCheckout', validateCustomerCheckout, async (req, res) => {
       address_id,
       order_note,
       order_fee,
-      order_details, 
+      order_details,
     } = req.body;
 
     if (
@@ -853,19 +890,96 @@ router.post('/customerCheckout', validateCustomerCheckout, async (req, res) => {
     ) {
       return res
         .status(400)
-        .json(JsonErrorResponse("All fields are required and order_details must be a non-empty array"));
+        .json(
+          JsonErrorResponse(
+            "All fields are required and order_details must be a non-empty array"
+          )
+        );
+    }
+
+    const checkMerchantQuery = SelectStatement(
+      "SELECT * FROM master_merchant WHERE mm_merchant_id = ?",
+      [merchant_id]
+    );
+    const merchantExists = await Check(checkMerchantQuery);
+
+    if (!merchantExists || merchantExists.length === 0) {
+      return res.status(400).json(JsonErrorResponse("Merchant does not exist"));
+    }
+
+    const checkCustomerQuery = SelectStatement(
+      "SELECT * FROM master_customer WHERE mc_customer_id = ?",
+      [customer_id]
+    );
+    const customerExists = await Check(checkCustomerQuery);
+
+    if (!customerExists || customerExists.length === 0) {
+      return res.status(400).json(JsonErrorResponse("Customer does not exist"));
+    }
+
+    const checkAddressQuery = SelectStatement(
+      "SELECT * FROM customer_address WHERE ca_address_id = ? AND ca_customer_id = ?",
+      [address_id, customer_id]
+    );
+    const addressExists = await Check(checkAddressQuery);
+
+    if (!addressExists || addressExists.length === 0) {
+      return res.status(400).json(JsonErrorResponse("Address does not exist"));
+    }
+
+    for (const item of order_details) {
+      if (!item.category || !item.product_id) {
+        return res.status(400).json(JsonErrorResponse("Invalid order details format"));
+      }
+
+      let checkProductQuery;
+      switch (item.category) {
+        case "Item":
+          checkProductQuery = SelectStatement(
+            "SELECT * FROM menu_item WHERE mi_item_id = ?",
+            [item.product_id]
+          );
+          break;
+        case "Solo":
+          checkProductQuery = SelectStatement(
+            "SELECT * FROM menu_solo WHERE ms_solo_id = ?",
+            [item.product_id]
+          );
+          break;
+        case "Combo":
+          checkProductQuery = SelectStatement(
+            "SELECT * FROM menu_combo WHERE mc_combo_id = ?",
+            [item.product_id]
+          );
+          break;
+        case "Extra":
+          checkProductQuery = SelectStatement(
+            "SELECT * FROM menu_extras WHERE me_extra_id = ?",
+            [item.product_id]
+          );
+          break;
+        default:
+          return res.status(400).json(JsonErrorResponse("Wrong category"));
+      }
+
+      const productExists = await Check(checkProductQuery);
+      if (!productExists || productExists.length === 0) {
+        return res
+          .status(400)
+          .json(JsonErrorResponse(`Invalid product_id for category ${item.category}`));
+      }
     }
 
     const orderCode = generateCode(5);
-    const orderStatus = "Pending"; 
-    const createDate = GetCurrentDatetime(); 
+    const orderStatus = "Pending";
+    const createDate = GetCurrentDatetime();
 
     const masterOrderData = {
       order_code: orderCode,
       merchant_id: merchant_id,
       customer_id: customer_id,
       order_type: order_type,
-      order_type_charge: 0.0, 
+      order_type_charge: 0.0,
       order_details: JSON.stringify(order_details),
       order_note: order_note || "",
       order_fee: order_fee || 0.0,
@@ -876,17 +990,21 @@ router.post('/customerCheckout', validateCustomerCheckout, async (req, res) => {
       address_id: address_id,
     };
 
-    const masterOrderSql = InsertStatement("master_order", "mo", Object.keys(masterOrderData));
+    const masterOrderSql = InsertStatement(
+      "master_order",
+      "mo",
+      Object.keys(masterOrderData)
+    );
     const masterOrderValues = [Object.values(masterOrderData)];
 
     InsertTable(masterOrderSql, masterOrderValues, (err, result) => {
       if (err) {
         console.error("Error inserting into master_order:", err);
-        return res.status(500).json(JsonErrorResponse("Failed to create order"));
+        return res
+          .status(500)
+          .json(JsonErrorResponse("Failed to create order"));
       }
 
-      console.log(result,'RESULT');
-      
       const orderId = result[0].id;
 
       const orderDetailsData = order_details.map((item) => [
@@ -894,7 +1012,7 @@ router.post('/customerCheckout', validateCustomerCheckout, async (req, res) => {
         item.category,
         item.product_id,
         item.quantity,
-        "Pending", 
+        "Pending",
         createDate,
       ]);
 
@@ -910,7 +1028,9 @@ router.post('/customerCheckout', validateCustomerCheckout, async (req, res) => {
       InsertTable(orderDetailsSql, orderDetailsData, (err) => {
         if (err) {
           console.error("Error inserting into order_details:", err);
-          return res.status(500).json(JsonErrorResponse("Failed to add order details"));
+          return res
+            .status(500)
+            .json(JsonErrorResponse("Failed to add order details"));
         }
 
         res.json({
@@ -925,6 +1045,68 @@ router.post('/customerCheckout', validateCustomerCheckout, async (req, res) => {
     res.status(500).json(JsonErrorResponse("Internal server error"));
   }
 });
+
+router.post("/addAddress", verifyJWT, async (req, res) => {
+  try {
+    const { customer_id, address, geo_code, latitude, longitude, type } = req.body;
+    let create_date = GetCurrentDatetime();
+    let status = "Active";
+
+    let checkCustomerQuery = SelectStatement(
+      "SELECT * FROM customer_address WHERE ca_customer_id=?",
+      [customer_id]
+    );
+
+    let customerExists = await Check(checkCustomerQuery);
+    if (!customerExists || customerExists.length === 0) {
+      return res.json(JsonWarningResponse(MessageStatus.NOTEXISTCUSTOMER));
+    }
+
+    let checkStatement = SelectStatement(
+      "SELECT * FROM customer_address WHERE ca_customer_id=? AND ca_latitude=? AND ca_longitude=?",
+      [customer_id, latitude, longitude]
+    );
+
+    let addressExists = await Check(checkStatement);
+    if (addressExists && addressExists.length > 0) {
+      return res.json(JsonWarningResponse(MessageStatus.EXIST));
+    }
+    let sql = InsertStatement("customer_address", "ca", [
+      "customer_id",
+      "address",
+      "geo_code",
+      "latitude",
+      "longitude",
+      "type",
+      "status",
+      "create_date",
+    ]);
+
+    let data = [
+      [
+        customer_id,
+        address,
+        geo_code,
+        latitude,
+        longitude,
+        type,
+        status,
+        create_date,
+      ],
+    ];
+    InsertTable(sql, data, (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.json(JsonErrorResponse(err));
+      }
+      res.json(JsonSuccess());
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
 
 
 //#endregion
@@ -1509,8 +1691,6 @@ router.put("/getLocation", (req, res) => {
   } catch (error) {}
 });
 
-
-
 //#endregion
 
 //#region FUNCTION
@@ -1523,5 +1703,4 @@ function Check(sql) {
     });
   });
 }
-
 //#endregion
