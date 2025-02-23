@@ -661,6 +661,173 @@ module.exports = swaggerDocs;
 
 //#endregion
 
+
+//#region loginCustomer
+
+/**
+ * @swagger
+ * /MobileApi/loginCustomer:
+ *   post:
+ *     summary: Customer login
+ *     description: Authenticates a customer and returns a JWT token upon successful login.
+ *     tags:
+ *       - Customer Api 
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: "customer123"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "securePassword"
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     cus_id:
+ *                       type: integer
+ *                       example: 1
+ *                     cus_fullname:
+ *                       type: string
+ *                       example: "John Doe"
+ *                     role_type:
+ *                       type: string
+ *                       example: "Customer"
+ *                     token:
+ *                       type: string
+ *                       example: "encrypted_jwt_token_here"
+ *       401:
+ *         description: Incorrect username or password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "incorrect"
+ *       403:
+ *         description: Account is inactive
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "inactive"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "error"
+ *                 data:
+ *                   type: string
+ *                   example: "Detailed error message here"
+ */
+
+//#endregion
+
+
+//#region Add Customer Address
+
+/**
+ * @swagger
+ * /MobileApi/addAddress:
+ *   post:
+ *     summary: Add a new address for a customer
+ *     description: Adds a new address to the customer's address list. Requires JWT authentication.
+ *     tags:
+ *       - Customer Api
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customer_id:
+ *                 type: integer
+ *                 example: 123
+ *               address:
+ *                 type: string
+ *                 example: "123 Main St, Springfield"
+ *               geo_code:
+ *                 type: string
+ *                 example: "SP123"
+ *               latitude:
+ *                 type: number
+ *                 format: float
+ *                 example: 37.7749
+ *               longitude:
+ *                 type: number
+ *                 format: float
+ *                 example: -122.4194
+ *               type:
+ *                 type: string
+ *                 example: "Home"
+ *     responses:
+ *       200:
+ *         description: Address added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "success"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "error"
+ *                 data:
+ *                   type: string
+ *                   example: "Detailed error message"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "Unauthorized"
+ */
+
+//#endregion
+
+
 //#region customerCheckout
 
 /**
@@ -777,6 +944,7 @@ module.exports = swaggerDocs;
  */
 
 //#endregion
+
 
 //#endregion
 

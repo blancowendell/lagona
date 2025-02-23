@@ -16,7 +16,7 @@ const {
   UpdateStatement,
 } = require("./repository/customhelper");
 const { DataModeling } = require("./model/lagonaDb");
-const { Adminlogin } = require("./repository/helper");
+const { AdminLogin } = require("./repository/helper");
 const { EncrypterString, Encrypter } = require("./repository/crytography");
 var router = express.Router();
 //const currentDate = moment();
@@ -59,7 +59,7 @@ router.post("/login", (req, res) => {
             if (
               user.status === "Active"
             ) {
-              let data = Adminlogin(result);
+              let data = AdminLogin(result);
                 data.forEach((user) => {
                   req.session.jwt = EncrypterString(
                     jwt.sign(

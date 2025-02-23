@@ -11,6 +11,7 @@ const MessageStatus = {
     EXISTMERCHANT: "Merchant Already Exist",
     EXISTRIDER: "Rider Already Exist",
     NOTEXISTEMAIL: "Youre Email is not Exist in our Database",
+    NOTEXISTCUSTOMER: "Customer is not Exist in our Database",
   };
   
   function JsonSuccess() {

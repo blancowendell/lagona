@@ -1,18 +1,22 @@
 const session = require("express-session");
 const mongoose = require("mongoose");
+require("dotenv").config();
+
 const { CheckConnection } = require("../repository/lagonaDb");
 const MongoDBSession = require("connect-mongodb-session")(session);
 const dbconnect = require("../repository/dbconnect");
+const MONGO_URI = process.env._MONGO_URI;
+const SESSION_COLLECTION = process.env._SESSION_COLLECTION;
 
 exports.SetMongo = (app) => {
   //mongodb
-  mongoose.connect("mongodb://localhost:27017/LAGONA").then((res) => {
+  mongoose.connect(MONGO_URI).then((res) => {
     console.log("MongoDB Connected!");
   });
 
   const store = new MongoDBSession({
-    uri: "mongodb://localhost:27017/LAGONA",
-    collection: "LAGONASessions",
+    uri: MONGO_URI,
+    collection: SESSION_COLLECTION,
   });
 
   //Session
