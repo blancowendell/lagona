@@ -1,0 +1,389 @@
+<script>
+    let base64String = "";
+    let order_id = "";
+    $(document).ready(function () {
+      LoadTable();
+  
+      function LoadTable() {
+        $("#dataTableOrders").DataTable({
+          destroy: true,
+          processing: true,
+          serverSide: true,
+          paging: false,
+          searching: false,
+          info: false,
+          scrollY: 600,
+          scrollCollapse: true,
+          serverMethod: "GET",
+          ajax: {
+            url: "/MerchantToApproved/loadToApproved",
+            dataSrc: (json) => {
+              var finalData = [];
+              var data = json.data;
+  
+              console.log(data);
+  
+              $.each(data, (key, item) => {
+                var action = `
+                      <button id="viewBtn" class="lagona_class-btn btn" name="viewBtn">
+                      <i class="fas fa-fw fa-eye"></i>
+                      <button id="toPayBtn" class="lagona_class-btn btn" name="toPayBtn">
+                      <i class="fas fa-fw fa-money-bill"></i>
+                  `;
+  
+                finalData.push({
+                  order_id: item.order_id,
+                  order_code: item.order_code,
+                  fullname: item.fullname,
+                  order_type: item.order_type,
+                  order_status: item.order_status,
+                  order_total: item.order_total,
+                  action: action,
+                });
+              });
+  
+              return finalData;
+            },
+          },
+          columns: [
+            { data: "order_id" },
+            { data: "order_code" },
+            { data: "fullname" },
+            { data: "order_type" },
+            { data: "order_status" },
+            {
+              data: "order_total",
+              render: function (data, type, row) {
+                return (
+                  "₱" +
+                  parseFloat(data).toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
+                );
+              },
+            },
+            { data: "action" },
+          ],
+          createdRow: function (row, data, dataIndex) {
+            $("td", row).each(function () {
+              this.style.textAlign = "center";
+              this.style.verticalAlign = "middle";
+              this.style.fontSize = "14px";
+            });
+          },
+          initComplete: function () {
+            $("#dataTableStrandsType thead th").css({
+              "font-size": "14px",
+              "font-weight": "bold",
+              "text-align": "center",
+            });
+          },
+        });
+      }
+  
+      $("#dataTableOrders tbody").on("click", "tr", function () {
+        var dataRow = [];
+        $(this)
+          .closest("tr")
+          .find("td")
+          .each(function () {
+            dataRow.push($(this).text());
+          });
+        order_id = dataRow[0];
+      });
+
+
+      $(document).on("click", "#viewBtn", function () {
+        $.ajax({
+          type: "POST",
+          url: "/MerchantToApproved/getPayment",          
+          data: { order_id: order_id },
+          dataType: "json",
+          success: function (result) {
+            if (result.msg === "success") {
+              const existingData = result.data;            
+  
+              $.each(existingData, (key, item) => {
+                $("#fullNamae").text(item.fullname);
+                $("#paiDate").text(item.paid_date);
+                $("#viewUserImagePreview").attr(
+                  "src",
+                  "data:image/jpg;base64," + item.payment_screenshots
+                );
+                $("#viewPaymentModal").modal("show");
+              });
+            } else {
+              toastr.error("Error fetching employee data", "Error");
+            }
+          },
+          error: function (err) {
+            toastr.error("An error occurred while fetching rider data", "Error");
+          },
+        });
+      });
+  
+      $(document).on("click", "#", function () {
+        $.ajax({
+          type: "POST",
+          url: "/MerchantToApproved/getPayment",
+          data: { order_id: order_id },
+          success: function (response) {
+            if (response.msg === "success") {
+              var orders = response.data;
+  
+              $("#orderDetailsContent").empty();
+  
+              $.each(orders, function (index, orderData) {
+                const base64Image = `data:image/png;base64,${orderData.product_image}`;
+  
+                var orderHtml = `
+                  <div class="d-flex align-items-center mb-3">
+                    <img src="${base64Image}" alt="Product Image" class="img-thumbnail rounded" style="width: 150px; height: 150px; object-fit: cover;">
+                    <div class="ms-3">
+                      <h5>${orderData.product_name}</h5>
+                      <p>Category: ${orderData.order_category}</p>
+                      <p>Quantity: ${orderData.quantity}</p>
+                      <p>Price: ₱${orderData.product_price}</p>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <h5>Status: <span class="badge bg-warning text-dark">${
+                      orderData.status
+                    }</span></h5>
+                  </div>
+                  <div class="mb-3">
+                    <h5>Description</h5>
+                    <p>${
+                      orderData.description || "No additional instructions."
+                    }</p>
+                  </div>
+                  <hr>
+                `;
+  
+                $("#orderDetailsContent").append(orderHtml);
+              });
+  
+              $("#viewOrderModal").modal("show");
+            } else {
+              toastr.error("Error fetching order data", "Error");
+            }
+          },
+          error: function () {
+            toastr.error("An error occurred while fetching order data", "Error");
+          },
+        });
+      });
+  
+      $(document).on("click", "#assignRiderBtn", function () {
+        let id = order_id;
+        let rider_id = $("#riderId").text();
+        let delivery_fee = $("#deliveryFee").text();
+        let distance = $("#riderDistance").text();
+  
+        var message = "";
+  
+        if (id === "") {
+          message += "Order ID is required ";
+        }
+  
+        if (rider_id === "") {
+          message += "Rider ID is required ";
+        }
+  
+        if (delivery_fee === "") {
+          message += "Delivery Fee is required ";
+        }
+  
+        if (distance === "") {
+          message += "Distance is required ";
+        }
+  
+        if (message !== "") {
+          toastr.error(`Please fill up ${message}`, "Required");
+        } else {
+          $.ajax({
+            type: "POST",
+            url: "/MerchantOrders/assignRider",
+            data: {
+              order_id: id,
+              rider_id: rider_id,
+              delivery_fee: delivery_fee,
+              distance: distance,
+            },
+            success: function (result) {
+              if (result.msg == "success") {
+                toastr.success("Assigned Successfully", "Success");
+                setTimeout(function () {
+                  window.location.reload();
+                }, 500);
+              } else {
+                toastr.warning("Data already exists!", "Warning");
+              }
+            },
+            error: function (err) {
+              toastr.warning("Data already exists!", "Warning");
+            },
+          });
+        }
+      });
+  
+      $(document).on("click", "#toPayBtn", function () {
+        $.ajax({
+          type: "POST",
+          url: "/MerchantOrders/viewOderReadyToPay",
+          data: { order_id: order_id },
+          dataType: "json",
+          success: function (result) {
+            console.log("API Response:", result);
+  
+            if (
+              result &&
+              result.msg === "success" &&
+              Array.isArray(result.data) &&
+              result.data.length > 0
+            ) {
+              const riderData = result.data[0]; 
+  
+              $("#toPayriderFullName").text(riderData.fullname || "N/A");
+              $("#toPayriderCode").text(riderData.rider_code || "N/A");
+              const riderImage = riderData.rider_selfie
+                ? "data:image/jpg;base64," + riderData.rider_selfie
+                : "/img/userimage.jpg"; 
+              $("#viewUserImagePreviewToPay").attr("src", riderImage);
+  
+              $("#toPayModal").modal("show");
+            } else {
+              console.warn("No rider assigned, not showing modal.");
+              toastr.error(
+                "No rider assigned. Please add a rider first.",
+                "Error"
+              );
+            }
+          },
+          error: function (err) {
+            console.error("AJAX error:", err);
+            toastr.error("An error occurred while fetching rider data", "Error");
+          },
+        });
+      });
+  
+      $(document).on("click", "#toPayassignRiderBtn", function () {
+        let id = order_id;
+  
+        var message = "";
+  
+        if (id === "") {
+          message += "Order ID is required ";
+        }
+  
+        if (message !== "") {
+          toastr.error(`Please fill up ${message}`, "Required");
+        } else {
+          $.ajax({
+            type: "PUT",
+            url: "/MerchantOrders/sendPaidNotif",
+            data: {
+              order_id: id,
+            },
+            success: function (result) {
+              if (result.msg == "success") {
+                toastr.success("Assigned Successfully", "Success");
+                setTimeout(function () {
+                  window.location.reload();
+                }, 500);
+              } else {
+                toastr.warning("Data already exists!", "Warning");
+              }
+            },
+            error: function (err) {
+              toastr.warning("Data already exists!", "Warning");
+            },
+          });
+        }
+      });
+  
+      $(document).on("change", "#edititemimage", function (e) {
+        const input = document.getElementById("edititemimage");
+        const file = input.files[0];
+  
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function () {
+          const preview = document.getElementById("viewUserImagePreview");
+          preview.src = reader.result;
+        };
+        imageUploadedOld();
+      });
+  
+      function imageUploadedOld() {
+        const input = document.getElementById("edititemimage");
+        const file = input.files[0];
+  
+        var reader = new FileReader();
+  
+        reader.onload = function (e) {
+          const img = new Image();
+          img.src = e.target.result;
+  
+          img.onload = function () {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const targetWidth = 250;
+            const targetHeight = 250;
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+            base64String = canvas
+              .toDataURL()
+              .replace("data:image/png;base64,", "");
+  
+            imageBase64Stringsep = base64String;
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+  
+      $(document).on("change", "#additemimage", function (e) {
+        const input = document.getElementById("additemimage");
+        const file = input.files[0];
+  
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function () {
+          const preview = document.getElementById("userImagePreview");
+          preview.src = reader.result;
+        };
+        imageUploadedAdd();
+      });
+  
+      function imageUploadedAdd() {
+        const input = document.getElementById("additemimage");
+        const file = input.files[0];
+  
+        var reader = new FileReader();
+  
+        reader.onload = function (e) {
+          const img = new Image();
+          img.src = e.target.result;
+  
+          img.onload = function () {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const targetWidth = 250;
+            const targetHeight = 250;
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+            base64String = canvas
+              .toDataURL()
+              .replace("data:image/png;base64,", "");
+  
+            imageBase64Stringsep = base64String;
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+  

@@ -27,11 +27,11 @@ const {
 const { EncrypterString, Encrypter } = require("./repository/crytography");
 var router = express.Router();
 const verifyJWT = require("../middleware/authenticator");
-const sendMail = require("../routes/utility/mailer");
+const sendMail = require("./utility/mailer");
 
 module.exports = router;
 
-//#region Customer Api
+//#region WitOut Token Api
 
 router.post("/signUp", (req, res) => {
   try {
@@ -754,114 +754,9 @@ router.post("/getCompleteExtra", (req, res) => {
   }
 });
 
-// router.post("/customerCheckout",verifyJWT ,async (req, res) => {
-//     try {
-//       const {
-//         merchant_id,
-//         customer_id,
-//         order_type,
-//         lagona_fee,
-//         order_total,
-//         address_id,
-//         order_note,
-//         order_fee,
-//         order_details,
-//       } = req.body;
+//#endregion
 
-//       if (
-//         !merchant_id ||
-//         !customer_id ||
-//         !order_type ||
-//         !lagona_fee ||
-//         !order_total ||
-//         !address_id ||
-//         !order_details ||
-//         !Array.isArray(order_details) ||
-//         order_details.length === 0
-//       ) {
-//         return res
-//           .status(400)
-//           .json(
-//             JsonErrorResponse(
-//               "All fields are required and order_details must be a non-empty array"
-//             )
-//           );
-//       }
-
-//       const orderCode = generateCode(5);
-//       const orderStatus = "Pending";
-//       const createDate = GetCurrentDatetime();
-
-//       const masterOrderData = {
-//         order_code: orderCode,
-//         merchant_id: merchant_id,
-//         customer_id: customer_id,
-//         order_type: order_type,
-//         order_type_charge: 0.0,
-//         order_details: JSON.stringify(order_details),
-//         order_note: order_note || "",
-//         order_fee: order_fee || 0.0,
-//         lagona_fee: lagona_fee,
-//         order_total: order_total,
-//         order_status: orderStatus,
-//         payment_screenshots: "",
-//         address_id: address_id,
-//       };
-
-//       const masterOrderSql = InsertStatement(
-//         "master_order",
-//         "mo",
-//         Object.keys(masterOrderData)
-//       );
-//       const masterOrderValues = [Object.values(masterOrderData)];
-
-//       InsertTable(masterOrderSql, masterOrderValues, (err, result) => {
-//         if (err) {
-//           console.error("Error inserting into master_order:", err);
-//           return res
-//             .status(500)
-//             .json(JsonErrorResponse("Failed to create order"));
-//         }
-//         const orderId = result[0].id;
-
-//         const orderDetailsData = order_details.map((item) => [
-//           orderId,
-//           item.category,
-//           item.product_id,
-//           item.quantity,
-//           "Pending",
-//           createDate,
-//         ]);
-
-//         const orderDetailsSql = InsertStatement("order_details", "od", [
-//           "order_id",
-//           "order_category",
-//           "product_id",
-//           "quantity",
-//           "status",
-//           "create_date",
-//         ]);
-
-//         InsertTable(orderDetailsSql, orderDetailsData, (err) => {
-//           if (err) {
-//             console.error("Error inserting into order_details:", err);
-//             return res
-//               .status(500)
-//               .json(JsonErrorResponse("Failed to add order details"));
-//           }
-
-//           res.json({
-//             success: true,
-//             message: "Order placed successfully",
-//             order_id: orderId,
-//           });
-//         });
-//       });
-//     } catch (error) {
-//       console.error("Checkout error:", error);
-//       res.status(500).json(JsonErrorResponse("Internal server error"));
-//   }
-// });
+//#region With Token Api
 
 router.post("/customerCheckout", verifyJWT, async (req, res) => {
   try {
@@ -929,7 +824,9 @@ router.post("/customerCheckout", verifyJWT, async (req, res) => {
 
     for (const item of order_details) {
       if (!item.category || !item.product_id) {
-        return res.status(400).json(JsonErrorResponse("Invalid order details format"));
+        return res
+          .status(400)
+          .json(JsonErrorResponse("Invalid order details format"));
       }
 
       let checkProductQuery;
@@ -966,7 +863,11 @@ router.post("/customerCheckout", verifyJWT, async (req, res) => {
       if (!productExists || productExists.length === 0) {
         return res
           .status(400)
-          .json(JsonErrorResponse(`Invalid product_id for category ${item.category}`));
+          .json(
+            JsonErrorResponse(
+              `Invalid product_id for category ${item.category}`
+            )
+          );
       }
     }
 
@@ -1048,7 +949,8 @@ router.post("/customerCheckout", verifyJWT, async (req, res) => {
 
 router.post("/addAddress", verifyJWT, async (req, res) => {
   try {
-    const { customer_id, address, geo_code, latitude, longitude, type } = req.body;
+    const { customer_id, address, geo_code, latitude, longitude, type } =
+      req.body;
     let create_date = GetCurrentDatetime();
     let status = "Active";
 
@@ -1107,200 +1009,21 @@ router.post("/addAddress", verifyJWT, async (req, res) => {
   }
 });
 
-
-
-//#endregion
-
-//#region Merchant Api
-
-router.post("/merchantSignUp", async (req, res) => {
+router.post("/getPaymentQrCode", verifyJWT, async (req, res) => {
   try {
-    let merchant_code = generateCode(10);
-    let create_date = GetCurrentDatetime();
-    let status = "Inactive";
-    const {
-      merchant_type,
-      merchant_owner,
-      business_name,
-      business_branch,
-      logo,
-      mobile,
-      email,
-      username,
-      password,
-      merchant_address,
-      merchant_geo_code,
-      latitude,
-      longitude,
-      payment_qr_code,
-    } = req.body;
+    let customer_id = req.body.customer_id;
 
-    let encrypted = EncrypterString(password);
-    let otp = generateCode(5);
-
-    let sql = InsertStatement("master_merchant", "mm", [
-      "merchant_type",
-      "merchant_code",
-      "merchant_fullname",
-      "business_name",
-      "business_branch",
-      "merchant_address",
-      "merchant_geo_code",
-      "latitude",
-      "longitude",
-      "mobile",
-      "email",
-      "username",
-      "password",
-      "merchant_otp",
-      "logo",
-      "payment_qr_code",
-      "status",
-      "create_by",
-      "create_date",
-    ]);
-
-    let data = [
-      [
-        merchant_type,
-        merchant_code,
-        merchant_owner,
-        business_name,
-        business_branch,
-        merchant_address,
-        merchant_geo_code,
-        latitude,
-        longitude,
-        mobile,
-        email,
-        username,
-        encrypted,
-        otp,
-        logo,
-        payment_qr_code,
-        status,
-        merchant_owner,
-        create_date,
-      ],
-    ];
-
-    let checkEmail = SelectStatement(
-      "SELECT * FROM master_merchant WHERE mm_email = ?",
-      [email]
-    );
-
-    let checkStatement = SelectStatement(
-      "select * from master_merchant where mm_business_name=? and mm_business_branch=? and mm_merchant_type=?",
-      [business_name, business_branch, merchant_type]
-    );
-
-    Check(checkEmail)
-      .then((result1) => {
-        if (result1.length > 0) {
-          return Promise.reject(
-            JsonWarningResponse(MessageStatus.EXIST, MessageStatus.EXISTEMAIL)
-          );
-        }
-        return Check(checkStatement);
-      })
-      .then((result2) => {
-        if (result2.length > 0) {
-          return Promise.reject(
-            JsonWarningResponse(
-              MessageStatus.EXIST,
-              MessageStatus.EXISTMERCHANT
-            )
-          );
-        }
-        InsertTable(sql, data, async (err, result) => {
-          if (err) {
-            console.log(err);
-            return res.json(JsonErrorResponse(err));
-          }
-          try {
-            await sendMail(
-              email,
-              "Congratulations! you are one step closer to becoming a merchant",
-              `Your OTP code is: ${otp}`
-            );
-            console.log("OTP sent to email: " + email);
-          } catch (error) {
-            console.error("Error sending OTP email:", error);
-          }
-
-          res.json(JsonSuccess());
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        return res.json(error);
-      });
-  } catch (error) {
-    console.log(error);
-    res.json(JsonErrorResponse(error));
-  }
-});
-
-router.post("/verifyOtpMerchant", async (req, res) => {
-  try {
-    const { email, otp } = req.body;
-    let status = "Active";
-
-    let checkStatement = SelectStatement(
-      "SELECT * FROM master_merchant WHERE mm_email = ? AND mm_merchant_otp = ?",
-      [email, otp]
-    );
-
-    let result = await Check(checkStatement);
-
-    if (result.length === 0) {
-      return res.json(JsonWarningResponse("Invalid OTP or email"));
-    }
-
-    let data = [];
-    let columns = [];
-    let arguments = [];
-
-    if (status) {
-      data.push(status);
-      columns.push("status");
-    }
-
-    if (email) {
-      data.push(email);
-      arguments.push("email");
-    }
-
-    let updateStatement = UpdateStatement(
-      "master_merchant",
-      "mm",
-      columns,
-      arguments
-    );
-
-    Update(updateStatement, data, (err, result) => {
-      if (err) console.error("Error: ", err);
-      res.json(JsonDataResponse("Your account has been activated"));
-    });
-  } catch (error) {
-    console.error(error);
-    res.json(JsonErrorResponse(error));
-  }
-});
-
-//#endregion
-
-//#region Rider Api
-
-router.get("/loadHub", (req, res) => {
-  try {
-    let sql = ` 
-    SELECT
-        msh_hub_id,
-        msh_hub_name,
-        msh_hub_code,
-        msh_hub_address
-        FROM master_hub_station`;
+    let sql = `
+    SELECT 
+    mm_business_name,
+    mm_payment_qr_code,
+    mm_merchant_code,
+    mo_order_total as mm_total
+    FROM master_merchant
+    INNER JOIN master_order ON master_merchant.mm_merchant_id = mo_merchant_id
+    WHERE mm_merchant_id = mo_merchant_id
+    AND mo_customer_id = '${customer_id}'
+    AND mo_order_status = 'To Be Paid'`;
 
     Select(sql, (err, result) => {
       if (err) {
@@ -1308,7 +1031,7 @@ router.get("/loadHub", (req, res) => {
         res.json(JsonErrorResponse(err));
       }
       if (result != 0) {
-        let data = DataModeling(result, "msh_");
+        let data = DataModeling(result, "mm_");
         res.json(JsonDataResponse(data));
       } else {
         res.json(JsonDataResponse(result));
@@ -1320,333 +1043,70 @@ router.get("/loadHub", (req, res) => {
   }
 });
 
-router.post("/riderSignUp", async (req, res) => {
+router.put("/sendPayment", verifyJWT, (req, res) => {
   try {
-    let rider_code = generateCode(10);
-    let create_date = GetCurrentDatetime();
-    let status = "Inactive";
-    let budget = 0;
-    let rider_account_status = "Inactive";
-    const {
-      first_name,
-      hub_id,
-      middle_name,
-      last_name,
-      address,
-      mobile,
-      email,
-      username,
-      password,
-      selfie,
-      driver_license,
-      original_certificate,
-      certificate_of_registration,
-      vehicle_image,
-      vehicle_type,
-      gender,
-      license_code,
-    } = req.body;
+    const { order_id, payment_screenshots } = req.body;
+    let paid_date = req.body.paid_date;
 
-    let encrypted = EncrypterString(password);
-    let otp = generateCode(5);
-    let rider_otp_valid = GetCurrentDatetimeAdd1Hour();
-
-    let sql = InsertStatement("master_rider", "mr", [
-      "rider_code",
-      "hub_id",
-      "first_name",
-      "middle_name",
-      "last_name",
-      "address",
-      "mobile_number",
-      "email",
-      "rider_otp",
-      "rider_otp_valid",
-      "rider_status",
-      "user_name",
-      "password",
-      "rider_selfie",
-      "driver_license",
-      "OR",
-      "CR",
-      "vehicle_image",
-      "vehicle_type",
-      "rider_account_status",
-      "rider_registration_date",
-      "budget",
-      "gender",
-      "license_code",
-    ]);
-
-    let data = [
-      [
-        rider_code,
-        hub_id,
-        first_name,
-        middle_name,
-        last_name,
-        address,
-        mobile,
-        email,
-        otp,
-        rider_otp_valid,
-        status,
-        username,
-        encrypted,
-        selfie,
-        driver_license,
-        original_certificate,
-        certificate_of_registration,
-        vehicle_image,
-        vehicle_type,
-        rider_account_status,
-        create_date,
-        budget,
-        gender,
-        license_code,
-      ],
-    ];
-
-    let checkEmail = SelectStatement(
-      "SELECT * FROM master_rider WHERE mr_email = ?",
-      [email]
-    );
-
-    let checkStatement = SelectStatement(
-      "select * from master_rider where mr_first_name=? and mr_last_name=? and mr_mobile_number=?",
-      [first_name, last_name, mobile]
-    );
-
-    Check(checkEmail)
-      .then((result1) => {
-        if (result1.length > 0) {
-          return Promise.reject(
-            JsonWarningResponse(MessageStatus.EXIST, MessageStatus.EXISTEMAIL)
-          );
-        }
-        return Check(checkStatement);
-      })
-      .then((result2) => {
-        if (result2.length > 0) {
-          return Promise.reject(
-            JsonWarningResponse(MessageStatus.EXIST, MessageStatus.EXISTRIDER)
-          );
-        }
-        InsertTable(sql, data, async (err, result) => {
-          if (err) {
-            console.log(err);
-            return res.json(JsonErrorResponse(err));
-          }
-          try {
-            await sendMail(
-              email,
-              "Congratulations! you are one step closer to becoming a rider",
-              `Your OTP code is: ${otp} this will expire in 1 hour`
-            );
-            console.log("OTP sent to email: " + email);
-          } catch (error) {
-            console.error("Error sending OTP email:", error);
-          }
-
-          res.json(JsonDataResponse("Email sent successfully to: " + email));
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        return res.json(error);
-      });
-  } catch (error) {
-    console.log(error);
-    res.json(JsonErrorResponse(error));
-  }
-});
-
-router.post("/verifyOtpRider", async (req, res) => {
-  try {
-    const { email, otp } = req.body;
-    let status = "Active";
-
-    let sql = `
-        SELECT 
-        DATE_FORMAT(mr_rider_otp_valid, '%Y-%m-%d %H:%i:%s') as mr_rider_otp_valid
-        FROM master_rider
-        WHERE mr_email = '${email}'
-        AND mr_rider_otp = '${otp}'`;
-
-    if (result.length === 0) {
-      return res.json(JsonWarningResponse("Invalid OTP or email"));
+    if (!order_id || !payment_screenshots) {
+      return res.json(
+        JsonErrorResponse("Order ID and payment screenshots are required.")
+      );
     }
 
-    Select(sql, (err, result) => {
+    const checkQuery = `
+      SELECT mo_payment_screenshots, mo_paid_date
+      FROM master_order
+      WHERE mo_order_id = '${order_id}'`;
+
+    Select(checkQuery, (err, result) => {
       if (err) {
-        console.error(err);
+        console.error("Error: ", err);
         return res.json(JsonErrorResponse(err));
       }
 
       if (result.length === 0) {
-        return res.json(JsonWarningResponse("Invalid OTP or email"));
+        return res.json(JsonErrorResponse("Order not found."));
       }
 
-      let otpValidTime = new Date(result[0].mr_rider_otp_valid);
-      let currentTime = new Date();
+      const order = result[0];
 
-      if (currentTime > otpValidTime) {
+      if (order.mo_payment_screenshots || order.mo_paid_date) {
         return res.json(
-          JsonWarningResponse("OTP has expired. Please request a new one.")
+          JsonWarningResponse("Payment has already been made for this order.")
         );
+      }
+
+      let data = [];
+      let columns = [];
+      let arguments = [];
+
+      if (paid_date) {
+        data.push(paid_date);
+        columns.push("paid_date");
+      }
+
+      if (payment_screenshots) {
+        data.push(payment_screenshots);
+        columns.push("payment_screenshots");
+      }
+
+      if (order_id) {
+        data.push(order_id);
+        arguments.push("order_id");
       }
 
       let updateStatement = UpdateStatement(
-        "master_rider",
-        "mr",
-        ["rider_status"],
-        ["email"]
+        "master_order",
+        "mo",
+        columns,
+        arguments
       );
 
-      let data = [status, email];
-
       Update(updateStatement, data, (err, result) => {
-        if (err) {
-          console.error("Error updating rider status: ", err);
-          return res.json(JsonErrorResponse(err));
-        }
-        return res.json(
-          JsonDataResponse(
-            "Your account has been activated successfully. Proceed to your hub for the budget."
-          )
-        );
+        if (err) console.error("Error: ", err);
+        res.json(JsonSuccess());
       });
-    });
-  } catch (error) {
-    console.error(error);
-    res.json(JsonErrorResponse(error));
-  }
-});
-
-router.put("/requestOtpRider", (req, res) => {
-  try {
-    const { email } = req.body;
-    let otp = generateCode(5);
-    let rider_otp_valid = GetCurrentDatetimeAdd1Hour();
-
-    let data = [];
-    let columns = [];
-    let arguments = [];
-
-    if (otp) {
-      data.push(otp);
-      columns.push("rider_otp");
-    }
-
-    if (rider_otp_valid) {
-      data.push(rider_otp_valid);
-      columns.push("rider_otp_valid");
-    }
-
-    if (email) {
-      data.push(email);
-      arguments.push("email");
-    }
-
-    let updateStatement = UpdateStatement(
-      "master_rider",
-      "mr",
-      columns,
-      arguments
-    );
-    let checkStatement = SelectStatement(
-      "select * from master_rider where mr_email = ?",
-      [email]
-    );
-
-    Check(checkStatement)
-      .then((result) => {
-        if ((result = 0)) {
-          return res.json(JsonWarningResponse(MessageStatus.NOTEXISTEMAIL));
-        } else {
-          Update(updateStatement, data, async (err, result) => {
-            if (err) console.error("Error: ", err);
-            try {
-              await sendMail(
-                email,
-                "Your New OTP Request",
-                `Your OTP code is: ${otp} this will expire in 1 hour`
-              );
-              console.log("OTP sent to email: " + email);
-            } catch (error) {
-              console.error("Error sending OTP email:", error);
-            }
-            res.json(JsonDataResponse("New OTP has been sent to: " + email));
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        res.json(JsonErrorResponse(error));
-      });
-  } catch (error) {
-    console.log(error);
-    res.json(JsonErrorResponse(error));
-  }
-});
-
-router.post("/riderLogin", (req, res) => {
-  try {
-    const { username, password } = req.body;
-    let role_type = "Rider";
-
-    Encrypter(password, (err, encrypted) => {
-      if (err) return console.error("Error: ", err);
-
-      let sql = `SELECT
-          mr_rider_id as rider_id,
-          CONCAT(mr_first_name,' ',mr_last_name) as rider_fullname,
-          mr_rider_status as status
-          FROM master_rider
-          WHERE mr_user_name = '${username}'
-          AND mr_password = '${encrypted}'`;
-
-      mysql
-        .mysqlQueryPromise(sql)
-        .then((result) => {
-          if (result.length === 0) {
-            return res.json({ msg: "incorrect" });
-          }
-          const user = result[0];
-          if (user.status !== "Active") {
-            return res.json({ msg: "inactive" });
-          }
-          result.forEach((row) => {
-            row.role_type = role_type;
-          });
-
-          let data = RiderLogin(result);
-
-          data.forEach((user) => {
-            const tokenPayload = {
-              rider_id: user.rider_id,
-              rider_fullname: user.rider_fullname,
-            };
-
-            const token = jwt.sign(tokenPayload, process.env._SECRET_KEY, {
-              expiresIn: "1h",
-            });
-            const encryptedToken = EncrypterString(token, {});
-
-            req.session.jwt = encryptedToken;
-            req.session.rider_id = user.rider_id;
-            req.session.rider_fullname = user.rider_fullname;
-            req.session.role_type = user.role_type;
-            user.token = encryptedToken;
-          });
-
-          console.log(data);
-
-          return res.json({ msg: "success", data: data });
-        })
-        .catch((error) => {
-          return res.json({ msg: "error", data: error });
-        });
     });
   } catch (error) {
     console.log(error);
@@ -1654,42 +1114,6 @@ router.post("/riderLogin", (req, res) => {
   }
 });
 
-router.put("/getLocation", (req, res) => {
-  try {
-    const { latitude, longitude, rider_id } = req.body;
-
-    let data = [];
-    let columns = [];
-    let arguments = [];
-
-    if (latitude) {
-      data.push(latitude);
-      columns.push("latitude");
-    }
-
-    if (longitude) {
-      data.push(longitude);
-      columns.push("longitude");
-    }
-
-    if (rider_id) {
-      data.push(rider_id);
-      arguments.push("rider_id");
-    }
-
-    let updateStatement = UpdateStatement(
-      "master_rider",
-      "mr",
-      columns,
-      arguments
-    );
-
-    Update(updateStatement, data, (err, result) => {
-      if (err) console.error("Error: ", err);
-      res.json(JsonSuccess());
-    });
-  } catch (error) {}
-});
 
 //#endregion
 

@@ -1,5 +1,4 @@
 const mysql = require("./repository/lagonaDb");
-//const moment = require('moment');
 var express = require("express");
 const jwt = require("jsonwebtoken");
 const {
@@ -19,7 +18,6 @@ const { DataModeling } = require("./model/lagonaDb");
 const { Adminlogin, MerchantLogin } = require("./repository/helper");
 const { Encrypter, EncrypterString } = require("./repository/crytography");
 var router = express.Router();
-//const currentDate = moment();
 
 
 /* GET home page. */

@@ -38,7 +38,7 @@ router.get("/getPendingOrders", (req, res) => {
     FROM master_order
     INNER JOIN master_customer ON master_order.mo_customer_id = mc_customer_id
     WHERE mo_merchant_id = '${merchant_id}'
-    AND mo_order_status = 'Pending'`;
+    AND mo_order_status IN ('Pending','To Be Paid')`;
 
     Select(sql, (err, result) => {
       if (err) {
@@ -270,8 +270,8 @@ router.post("/assignRider", (req, res) => {
     let data = [[order_id, rider_id, status, order_take, distance, sanitizedDeliveryFee]];
 
     let checkStatement = SelectStatement(
-      "select * from order_riders_table where ort_order_id=? and ort_rider_id=? and ort_status=?",
-      [order_id, rider_id, status]
+      "select * from order_riders_table where ort_order_id=? and ort_rider_id=?",
+      [order_id, rider_id]
     );
 
     Check(checkStatement)
@@ -298,7 +298,75 @@ router.post("/assignRider", (req, res) => {
   }
 });
 
+router.post("/viewOderReadyToPay", (req, res) => {
+  try {
+    let order_id = req.body.order_id;
+    let sql = `SELECT 
+    mr_rider_code,
+    mr_rider_selfie,
+    concat(mr_first_name,' ',mr_last_name) as mr_fullname
+    FROM order_riders_table
+    INNER JOIN master_rider ON order_riders_table.ort_rider_id = mr_rider_id
+    WHERE ort_order_id = '${order_id}'
+    AND ort_status = 'Rider Accepted'`;
 
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mr_");
+        res.json(JsonDataResponse(data));        
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+
+router.put("/sendPaidNotif", (req, res) => {
+    try {
+      const {
+        order_id,
+      } = req.body;
+      let status = 'To Be Paid'
+  
+      let data = [];
+      let columns = [];
+      let arguments = []
+  
+      if (status) {
+        data.push(status);
+        columns.push("order_status");
+      }
+  
+    
+      if (order_id) {
+        data.push(order_id);
+        arguments.push("order_id");
+      }
+  
+      let updateStatement = UpdateStatement(
+        "master_order",
+        "mo",
+        columns,
+        arguments
+      );
+  
+      Update(updateStatement, data, (err, result) => {
+        if (err) console.error("Error: ", err);
+        res.json(JsonSuccess());
+      });
+    } catch (error) {
+      console.log(error);
+      res.json(JsonErrorResponse(error));
+    }
+});
 
 //#region FUNCTION
 function Check(sql) {
