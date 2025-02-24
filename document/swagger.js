@@ -21,7 +21,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/getMenuSoloImage:
+ * /CustomerAppApi/getMenuSoloImage:
  *   post:
  *     summary: Retrieve an image of a solo menu item
  *     description: Returns the image URL of a solo menu item based on the provided item ID.
@@ -69,7 +69,7 @@ module.exports = swaggerDocs;
 //#region getMenuSolo
 /**
  * @swagger
- * /MobileApi/getMenuSolo:
+ * /CustomerAppApi/getMenuSolo:
  *   post:
  *     summary: Retrieve available solo menu items for a merchant
  *     description: Returns a list of active solo menu items based on the provided merchant ID.
@@ -126,7 +126,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/getCombo:
+ * /CustomerAppApi/getCombo:
  *   post:
  *     summary: Retrieve available menu combos for a merchant
  *     description: Returns a list of active menu combos based on the provided merchant ID.
@@ -184,7 +184,7 @@ module.exports = swaggerDocs;
 //#region geComboImage
 /**
  * @swagger
- * /MobileApi/geComboImage:
+ * /CustomerAppApi/geComboImage:
  *   post:
  *     summary: Retrieve meal image for a specific combo
  *     description: Returns the image URL for the specified combo ID.
@@ -234,7 +234,7 @@ module.exports = swaggerDocs;
 //#region getExtra
 /**
  * @swagger
- * /MobileApi/getExtra:
+ * /CustomerAppApi/getExtra:
  *   post:
  *     summary: Retrieve available menu extras for a merchant
  *     description: Returns a list of active menu extras based on the provided merchant ID.
@@ -290,7 +290,7 @@ module.exports = swaggerDocs;
 //#region geExtraImage
 /**
  * @swagger
- * /MobileApi/geExtraImage:
+ * /CustomerAppApi/geExtraImage:
  *   post:
  *     summary: Retrieve an extra item image
  *     description: Returns the image of an extra item based on the provided extra ID.
@@ -338,7 +338,7 @@ module.exports = swaggerDocs;
 //#region loadMerchantLimit
 /**
  * @swagger
- * /MobileApi/loadMerchantLimit:
+ * /CustomerAppApi/loadMerchantLimit:
  *   post:
  *     summary: Retrieve a list of merchants with a limit
  *     description: Fetches up to 10 merchants from the `master_merchant` table based on the provided `type` if they are active.
@@ -384,7 +384,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/getCompleteItem:
+ * /CustomerAppApi/getCompleteItem:
  *   post:
  *     summary: Retrieve a complete menu item
  *     description: Fetches a specific menu item from the `menu_item` table based on `item_id` if it is available.
@@ -431,7 +431,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/getCompleteSolo:
+ * /CustomerAppApi/getCompleteSolo:
  *   post:
  *     summary: Retrieve a complete solo meal
  *     description: Fetches a specific solo meal from the `menu_solo` table based on `solo_id` if it is available.
@@ -478,7 +478,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/getCompleteCombo:
+ * /CustomerAppApi/getCompleteCombo:
  *   post:
  *     summary: Retrieve a complete combo meal
  *     description: Fetches a specific combo meal from the `menu_combo` table based on `combo_id` if it is available.
@@ -525,7 +525,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/getCompleteExtra:
+ * /CustomerAppApi/getCompleteExtra:
  *   post:
  *     summary: Retrieve a complete extra item
  *     description: Fetches a specific extra item from the `menu_extras` table based on `extra_id` if it is available.
@@ -572,7 +572,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/getItem:
+ * /CustomerAppApi/getItem:
  *   post:
  *     summary: Retrieve available menu items for a merchant
  *     description: Fetches all active menu items from the `menu_item` table based on `merchant_id`.
@@ -621,7 +621,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/getItemImage:
+ * /CustomerAppApi/getItemImage:
  *   post:
  *     summary: Retrieve an item image
  *     description: Fetches the image of a specific menu item from the `menu_item` table based on `item_id`.
@@ -666,7 +666,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/loginCustomer:
+ * /CustomerAppApi/loginCustomer:
  *   post:
  *     summary: Customer login
  *     description: Authenticates a customer and returns a JWT token upon successful login.
@@ -754,7 +754,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/addAddress:
+ * /CustomerAppApi/addAddress:
  *   post:
  *     summary: Add a new address for a customer
  *     description: Adds a new address to the customer's address list. Requires JWT authentication.
@@ -832,7 +832,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/customerCheckout:
+ * /CustomerAppApi/customerCheckout:
  *   post:
  *     summary: Create a new order
  *     description: Endpoint to create a new order in the system.
@@ -946,6 +946,165 @@ module.exports = swaggerDocs;
 //#endregion
 
 
+//#region getPaymentQrCode
+
+/**
+ * @swagger
+ * /CustomerAppApi/getPaymentQrCode:
+ *   post:
+ *     summary: Retrieve payment QR code for a customer
+ *     description: Returns the business name, payment QR code, merchant code, and order total for a customer's pending order.
+ *     tags:
+ *       - Customer Api
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customer_id:
+ *                 type: string
+ *                 example: "12345"
+ *                 description: The unique identifier of the customer.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved payment details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     mm_business_name:
+ *                       type: string
+ *                       example: "ABC Store"
+ *                     mm_payment_qr_code:
+ *                       type: string
+ *                       example: "https://example.com/qr/abcstore.png"
+ *                     mm_merchant_code:
+ *                       type: string
+ *                       example: "ABC123"
+ *                     mo_total:
+ *                       type: number
+ *                       format: float
+ *                       example: 150.75
+ *       400:
+ *         description: Invalid request or missing parameters.
+ *       401:
+ *         description: Unauthorized access.
+ *       500:
+ *         description: Server error.
+ */
+
+//#endregion
+
+
+//#region sendPayment
+
+/**
+ * @swagger
+ * /CustomerAppApi/sendPayment:
+ *   put:
+ *     summary: Submit payment for an order
+ *     description: Allows a customer to submit a base64-encoded payment screenshot for a specific order. Requires JWT authentication.
+ *     tags:
+ *       - Customer Api
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               order_id:
+ *                 type: string
+ *                 description: The unique identifier of the order.
+ *                 example: "12345"
+ *               payment_screenshots:
+ *                 type: string
+ *                 format: byte
+ *                 description: The base64-encoded payment screenshot.
+ *                 example: "iVBORw0KGgoAAAANSUhEUgAA..."
+ *             required:
+ *               - order_id
+ *               - payment_screenshots
+ *     responses:
+ *       200:
+ *         description: Payment information updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 message:
+ *                   type: string
+ *                   example: "Payment information updated successfully."
+ *       400:
+ *         description: Bad request. Order ID and payment screenshots are required.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "error"
+ *                 message:
+ *                   type: string
+ *                   example: "Order ID and payment screenshots are required."
+ *       404:
+ *         description: Order not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "error"
+ *                 message:
+ *                   type: string
+ *                   example: "Order not found."
+ *       409:
+ *         description: Payment has already been made for this order.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "warning"
+ *                 message:
+ *                   type: string
+ *                   example: "Payment has already been made for this order."
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "error"
+ *                 message:
+ *                   type: string
+ *                   example: "An unexpected error occurred."
+ */
+
+//#endregion
+
+
 //#endregion
 
 //#region Merchant Api
@@ -954,7 +1113,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/merchantSignUp:
+ * /MerchantAppApi/merchantSignUp:
  *   post:
  *     summary: Merchant sign-up
  *     description: Registers a new merchant with the provided details. Sends an OTP for verification.
@@ -1047,7 +1206,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/verifyOtpMerchant:
+ * /MerchantAppApi/verifyOtpMerchant:
  *   post:
  *     summary: Verify merchant OTP
  *     description: Verifies the OTP sent to the merchant's email and activates the account.
@@ -1099,7 +1258,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/loadHub:
+ * /RiderAppApi/loadHub:
  *   get:
  *     summary: Load all master hub stations
  *     description: Retrieves a list of all available master hub stations.
@@ -1136,7 +1295,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/riderSignUp:
+ * /RiderAppApi/riderSignUp:
  *   post:
  *     summary: Sign up a new rider
  *     description: Registers a new rider and sends an OTP for verification.
@@ -1233,7 +1392,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/verifyOtpRider:
+ * /RiderAppApi/verifyOtpRider:
  *   post:
  *     summary: Verify rider's OTP and activate account
  *     description: Verifies the OTP sent to the rider's email and activates the account.
@@ -1281,7 +1440,7 @@ module.exports = swaggerDocs;
 
 /** 
  * @swagger
- * /MobileApi/requestOtpRider:
+ * /RiderAppApi/requestOtpRider:
  *   put:
  *     summary: Request OTP for rider
  *     description: Generates and updates an OTP for the rider's email.
@@ -1325,7 +1484,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /MobileApi/riderLogin:
+ * /RiderAppApi/riderLogin:
  *   post:
  *     summary: Rider login
  *     description: Authenticates a rider using username and password, returning a JWT token upon successful login.
@@ -1411,7 +1570,7 @@ module.exports = swaggerDocs;
 
 /**
  * @swagger
- * /getLocation:
+ * /RiderAppApi/getLocation:
  *   put:
  *     summary: Update rider's location
  *     description: Updates the latitude and longitude of a rider based on their ID.

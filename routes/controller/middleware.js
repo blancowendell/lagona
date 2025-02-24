@@ -76,9 +76,9 @@ var roleacess = [
       {
         layout: "MerchantOrdersLayout",
       },
-      // {
-      //   layout: "scholarshiplayout",
-      // },
+      {
+        layout: "MerchantToApprovedLayout",
+      },
       // {
       //   layout: "approvedapplicationlayout",
       // },

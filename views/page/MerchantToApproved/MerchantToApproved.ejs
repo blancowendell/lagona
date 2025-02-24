@@ -3,7 +3,7 @@
       <div class="col-12">
         <div class="card mb-4">
             <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-                <h6>Order's</h6>
+                <h6>To Approved Order's</h6>
                 <div class="d-flex align-items-center">
                 </div>
             </div>
@@ -51,8 +51,8 @@
     </div>
 </div>
 
-<!-- Rider Modal -->
-<div class="modal fade" id="riderModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- View Payment Modal -->
+<div class="modal fade" id="viewPaymentModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header" id="modal-header">
@@ -66,24 +66,12 @@
                     <img id="viewUserImagePreview" src="/img/userimage.jpg" alt="Rider Image" class="img-thumbnail rounded" style="width: 200px; height: 200px; object-fit: cover;">
                 </div>
                 <div class="text-center mb-3">
-                    <h5>Rider ID:</h5>
-                    <p id="riderId"></p>
-                </div>
-                <div class="text-center mb-3">
                     <h5>Full Name:</h5>
-                    <p id="riderFullName"></p>
+                    <p id="fullNamae"></p>
                 </div>
                 <div class="text-center mb-3">
-                    <h5>Rider Code:</h5>
-                    <p id="riderCode"></p>
-                </div>
-                <div class="text-center mb-3">
-                  <h5>Distance:</h5>
-                  <p id="riderDistance"></p>
-                </div>
-                <div class="text-center mb-3">
-                  <h5>Delivery Fee:</h5>
-                  <p id="deliveryFee"></p>
+                    <h5>Date Paid</h5>
+                    <p id="paiDate"></p>
                 </div>
             </div>
             <div class="modal-footer" id="modal-footer">
