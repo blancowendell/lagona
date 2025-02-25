@@ -1009,6 +1009,29 @@ router.post("/addAddress", verifyJWT, async (req, res) => {
   }
 });
 
+router.post("/viewAddress", verifyJWT, (req, res) => {
+  try {
+    let customer_id = req.body.customer_id;
+    let sql = `SELECT * FROM customer_address
+    WHERE ca_customer_id = '${customer_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "ca_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    res.json(JsonErrorResponse(error));
+  }
+});
+
 router.post("/getPaymentQrCode", verifyJWT, async (req, res) => {
   try {
     let customer_id = req.body.customer_id;
@@ -1188,9 +1211,9 @@ router.put("/viewDelFee", verifyJWT, (req, res) => {
   }
 });
 
-router.get("/calculateDeliveryFee", verifyJWT, (req, res) => {
+router.post("/calculateDeliveryFee", verifyJWT, (req, res) => {
   try {
-    const { merchant_id, customer_id } = req.query;
+    const { merchant_id, customer_id } = req.body;
 
     if (!merchant_id || !customer_id) {
       return res.status(400).json({ error: "Merchant ID and Customer ID are required." });

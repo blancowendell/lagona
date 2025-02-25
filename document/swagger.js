@@ -828,6 +828,96 @@ module.exports = swaggerDocs;
 //#endregion
 
 
+//#region viewAddress
+
+/**
+ * @swagger
+ * /CustomerAppApi/viewAddress:
+ *   post:
+ *     summary: Retrieve customer addresses
+ *     description: Fetches all addresses associated with the authenticated customer. Requires JWT authentication.
+ *     tags:
+ *       - Customer Api
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customer_id:
+ *                 type: string
+ *                 description: The unique identifier of the order.
+ *                 example: "12345"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved customer addresses.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       ca_address_id:
+ *                         type: string
+ *                         example: "1"
+ *                       ca_customer_id:
+ *                         type: string
+ *                         example: "12345"
+ *                       ca_address:
+ *                         type: string
+ *                         example: "123 Main St, City, Country"
+ *                       ca_latitude:
+ *                         type: string
+ *                         example: "14.5995"
+ *                       ca_longitude:
+ *                         type: string
+ *                         example: "120.9842"
+ *       400:
+ *         description: Bad request. Order ID is required.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Order ID is required."
+ *       404:
+ *         description: Addresses not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "No addresses found for the given customer."
+ *       500:
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Internal Server Error"
+ *                 details:
+ *                   type: string
+ *                   example: "Error details here."
+ */
+
+//#endregion
+
+
 //#region customerCheckout
 
 /**
@@ -1113,24 +1203,29 @@ module.exports = swaggerDocs;
 /**
  * @swagger
  * /CustomerAppApi/calculateDeliveryFee:
- *   get:
+ *   post:
  *     summary: Calculate the delivery fee between a merchant and a customer
  *     description: Computes the delivery fee based on the distance between the merchant's and customer's locations. Requires JWT authentication.
  *     tags:
  *       - Customer Api
- *     parameters:
- *       - in: query
- *         name: merchant_id
- *         required: true
- *         schema:
- *           type: string
- *         description: The unique identifier of the merchant.
- *       - in: query
- *         name: address_id
- *         required: true
- *         schema:
- *           type: string
- *         description: The unique identifier of the customer.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - merchant_id
+ *               - customer_id
+ *             properties:
+ *               merchant_id:
+ *                 type: string
+ *                 description: The unique identifier of the merchant.
+ *                 example: "1"
+ *               customer_id:
+ *                 type: string
+ *                 description: The unique identifier of the customer.
+ *                 example: "101"
  *     responses:
  *       200:
  *         description: Successfully calculated the delivery fee.
@@ -1142,11 +1237,11 @@ module.exports = swaggerDocs;
  *                 distance:
  *                   type: string
  *                   description: The distance between the merchant and the customer in kilometers.
- *                   example: "5.25 km"
+ *                   example: "5.25"
  *                 delivery_fee:
  *                   type: string
  *                   description: The calculated delivery fee in Philippine Peso.
- *                   example: "50.00 PHP"
+ *                   example: "50.00"
  *       400:
  *         description: Bad request due to missing or invalid parameters.
  *         content:
@@ -1181,6 +1276,7 @@ module.exports = swaggerDocs;
  *                   type: string
  *                   example: "Error details message."
  */
+
 //#endregion
 
 //#endregion
