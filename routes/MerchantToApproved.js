@@ -19,6 +19,7 @@ const {
 } = require("./repository/customhelper");
 const { generateCode, refineCurrencyInput } = require("./repository/helper");
 const { DataModeling } = require("./model/lagonaDb");
+const { sq } = require("date-fns/locale");
 var router = express.Router();
 //const currentDate = moment();
 
@@ -61,7 +62,7 @@ router.get("/loadToApproved", (req, res) => {
 
 router.post("/getPayment", (req, res) => {
   try {
-    let order_id = req.order_id;
+    let order_id = req.body.order_id;
     let sql = `SELECT
     CONCAT(mc_first_name,' ',mc_last_name) as mo_fullname,
     mo_payment_screenshots,
@@ -69,7 +70,7 @@ router.post("/getPayment", (req, res) => {
     FROM master_order
     INNER JOIN master_customer ON master_order.mo_customer_id = mc_customer_id
     WHERE mo_order_id = '${order_id}'`;
-
+    
     Select(sql, (err, result) => {
       if (err) {
         console.error(err);

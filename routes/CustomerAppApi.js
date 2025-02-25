@@ -1117,6 +1117,135 @@ router.put("/sendPayment", verifyJWT, (req, res) => {
   }
 });
 
+router.put("/viewDelFee", verifyJWT, (req, res) => {
+  try {
+    const { order_id, payment_screenshots } = req.body;
+    let paid_date = req.body.paid_date;
+
+    if (!order_id || !payment_screenshots) {
+      return res.json(
+        JsonErrorResponse("Order ID and payment screenshots are required.")
+      );
+    }
+
+    const checkQuery = `
+      SELECT mo_payment_screenshots, mo_paid_date
+      FROM master_order
+      WHERE mo_order_id = '${order_id}'`;
+
+    Select(checkQuery, (err, result) => {
+      if (err) {
+        console.error("Error: ", err);
+        return res.json(JsonErrorResponse(err));
+      }
+
+      if (result.length === 0) {
+        return res.json(JsonErrorResponse("Order not found."));
+      }
+
+      const order = result[0];
+
+      if (order.mo_payment_screenshots || order.mo_paid_date) {
+        return res.json(
+          JsonWarningResponse("Payment has already been made for this order.")
+        );
+      }
+
+      let data = [];
+      let columns = [];
+      let arguments = [];
+
+      if (paid_date) {
+        data.push(paid_date);
+        columns.push("paid_date");
+      }
+
+      if (payment_screenshots) {
+        data.push(payment_screenshots);
+        columns.push("payment_screenshots");
+      }
+
+      if (order_id) {
+        data.push(order_id);
+        arguments.push("order_id");
+      }
+
+      let updateStatement = UpdateStatement(
+        "master_order",
+        "mo",
+        columns,
+        arguments
+      );
+
+      Update(updateStatement, data, (err, result) => {
+        if (err) console.error("Error: ", err);
+        res.json(JsonSuccess());
+      });
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.get("/calculateDeliveryFee", verifyJWT, (req, res) => {
+  try {
+    const { merchant_id, customer_id } = req.query;
+
+    if (!merchant_id || !customer_id) {
+      return res.status(400).json({ error: "Merchant ID and Customer ID are required." });
+    }
+
+    const merchantQuery = `SELECT mm_latitude, mm_longitude FROM master_merchant WHERE mm_merchant_id = '${merchant_id}'`;
+    const customerQuery = `SELECT ca_latitude, ca_longitude FROM customer_address WHERE ca_address_id = '${customer_id}'`;
+
+    Select(merchantQuery, (merchantErr, merchantResult) => {
+      if (merchantErr) {
+        console.error("Merchant Query Error: ", merchantErr);
+        return res.status(500).json({ error: "Database Error", details: merchantErr });
+      }
+      if (!merchantResult.length) {
+        return res.status(404).json({ error: "Merchant not found." });
+      }
+
+      Select(customerQuery, (customerErr, customerResult) => {
+        if (customerErr) {
+          console.error("Customer Query Error: ", customerErr);
+          return res.status(500).json({ error: "Database Error", details: customerErr });
+        }
+        if (!customerResult.length) {
+          return res.status(404).json({ error: "Customer not found." });
+        }
+
+        const { mm_latitude, mm_longitude } = merchantResult[0];
+        const { ca_latitude, ca_longitude } = customerResult[0];
+
+        if (!mm_latitude || !mm_longitude || !ca_latitude || !ca_longitude) {
+          return res.status(400).json({ error: "Invalid coordinates." });
+        }
+
+        const distance = calculateHaversineDistance(
+          parseFloat(mm_latitude),
+          parseFloat(mm_longitude),
+          parseFloat(ca_latitude),
+          parseFloat(ca_longitude)
+        );
+
+        const deliveryFee = calculateDeliveryFee(distance);
+
+        return res.json({
+          distance: `${distance.toFixed(2)}`,
+          delivery_fee: `${deliveryFee.toFixed(2)}`,
+        });
+      });
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Internal Server Error", details: error.message });
+  }
+});
+
+
 
 //#endregion
 
@@ -1130,4 +1259,27 @@ function Check(sql) {
     });
   });
 }
+
+function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
+  const toRad = (value) => (value * Math.PI) / 180;
+  const R = 6371;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+
+function calculateDeliveryFee(distance) {
+  const baseFee = 65.0;
+  const additionalFeePerKm = 10.0;
+  return distance <= 1 ? baseFee : baseFee + Math.ceil(distance - 1) * additionalFeePerKm;
+}
+
 //#endregion

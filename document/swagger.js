@@ -1108,6 +1108,80 @@ module.exports = swaggerDocs;
 
 //#endregion
 
+//#region calculateDeliveryFee
+
+/**
+ * @swagger
+ * /CustomerAppApi/calculateDeliveryFee:
+ *   get:
+ *     summary: Calculate the delivery fee between a merchant and a customer
+ *     description: Computes the delivery fee based on the distance between the merchant's and customer's locations. Requires JWT authentication.
+ *     tags:
+ *       - Customer Api
+ *     parameters:
+ *       - in: query
+ *         name: merchant_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The unique identifier of the merchant.
+ *       - in: query
+ *         name: customer_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The unique identifier of the customer.
+ *     responses:
+ *       200:
+ *         description: Successfully calculated the delivery fee.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 distance:
+ *                   type: string
+ *                   description: The distance between the merchant and the customer in kilometers.
+ *                   example: "5.25 km"
+ *                 delivery_fee:
+ *                   type: string
+ *                   description: The calculated delivery fee in Philippine Peso.
+ *                   example: "50.00 PHP"
+ *       400:
+ *         description: Bad request due to missing or invalid parameters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Merchant ID and Customer ID are required."
+ *       404:
+ *         description: Merchant or Customer not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Merchant or Customer not found."
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Internal Server Error"
+ *                 details:
+ *                   type: string
+ *                   example: "Error details message."
+ */
+//#endregion
 
 //#endregion
 
