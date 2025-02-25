@@ -955,7 +955,7 @@ router.post("/addAddress", verifyJWT, async (req, res) => {
     let status = "Active";
 
     let checkCustomerQuery = SelectStatement(
-      "SELECT * FROM customer_address WHERE ca_customer_id=?",
+      "SELECT * FROM master_customer WHERE mc_customer_id=?",
       [customer_id]
     );
 
