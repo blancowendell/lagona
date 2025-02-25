@@ -1213,14 +1213,14 @@ router.put("/viewDelFee", verifyJWT, (req, res) => {
 
 router.post("/calculateDeliveryFee", verifyJWT, (req, res) => {
   try {
-    const { merchant_id, customer_id } = req.body;
+    const { merchant_id, address_id } = req.body;
 
-    if (!merchant_id || !customer_id) {
+    if (!merchant_id || !address_id) {
       return res.status(400).json({ error: "Merchant ID and Customer ID are required." });
     }
 
     const merchantQuery = `SELECT mm_latitude, mm_longitude FROM master_merchant WHERE mm_merchant_id = '${merchant_id}'`;
-    const customerQuery = `SELECT ca_latitude, ca_longitude FROM customer_address WHERE ca_address_id = '${customer_id}'`;
+    const customerQuery = `SELECT ca_latitude, ca_longitude FROM customer_address WHERE ca_address_id = '${address_id}'`;
 
     Select(merchantQuery, (merchantErr, merchantResult) => {
       if (merchantErr) {
@@ -1237,7 +1237,7 @@ router.post("/calculateDeliveryFee", verifyJWT, (req, res) => {
           return res.status(500).json({ error: "Database Error", details: customerErr });
         }
         if (!customerResult.length) {
-          return res.status(404).json({ error: "Customer not found." });
+          return res.status(404).json({ error: "Customer Address not found." });
         }
 
         const { mm_latitude, mm_longitude } = merchantResult[0];
