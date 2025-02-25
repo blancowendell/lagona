@@ -1216,13 +1216,13 @@ module.exports = swaggerDocs;
  *             type: object
  *             required:
  *               - merchant_id
- *               - customer_id
+ *               - address_id
  *             properties:
  *               merchant_id:
  *                 type: string
  *                 description: The unique identifier of the merchant.
  *                 example: "1"
- *               customer_id:
+ *               address_id:
  *                 type: string
  *                 description: The unique identifier of the customer.
  *                 example: "101"
