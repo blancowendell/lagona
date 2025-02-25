@@ -1126,7 +1126,7 @@ module.exports = swaggerDocs;
  *           type: string
  *         description: The unique identifier of the merchant.
  *       - in: query
- *         name: customer_id
+ *         name: address_id
  *         required: true
  *         schema:
  *           type: string
