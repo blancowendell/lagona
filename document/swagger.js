@@ -990,7 +990,11 @@ module.exports = swaggerDocs;
  *                     mm_merchant_code:
  *                       type: string
  *                       example: "ABC123"
- *                     mo_total:
+ *                     mm_total:
+ *                       type: number
+ *                       format: float
+ *                       example: 150.75
+ *                     mm_del_fee:
  *                       type: number
  *                       format: float
  *                       example: 150.75

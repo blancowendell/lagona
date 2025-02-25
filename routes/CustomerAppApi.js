@@ -1014,16 +1014,19 @@ router.post("/getPaymentQrCode", verifyJWT, async (req, res) => {
     let customer_id = req.body.customer_id;
 
     let sql = `
-    SELECT 
-    mm_business_name,
-    mm_payment_qr_code,
-    mm_merchant_code,
-    mo_order_total as mm_total
-    FROM master_merchant
-    INNER JOIN master_order ON master_merchant.mm_merchant_id = mo_merchant_id
-    WHERE mm_merchant_id = mo_merchant_id
-    AND mo_customer_id = '${customer_id}'
-    AND mo_order_status = 'To Be Paid'`;
+    	SELECT 
+      mm_business_name,
+      mm_payment_qr_code,
+      mm_merchant_code,
+      mo_order_total as mm_total,
+      ort_del_fee as mm_del_fee
+      FROM master_merchant
+      INNER JOIN master_order ON master_merchant.mm_merchant_id = mo_merchant_id
+      INNER JOIN order_riders_table ON master_order.mo_order_id = ort_order_id
+      WHERE mm_merchant_id = mo_merchant_id
+      AND mo_order_id = ort_order_id
+      AND mo_customer_id = '${customer_id}'
+      AND mo_order_status = 'To Be Paid'`;
 
     Select(sql, (err, result) => {
       if (err) {
