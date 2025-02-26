@@ -340,7 +340,7 @@ router.post("/loginCustomer", (req, res) => {
             };
 
             const token = jwt.sign(tokenPayload, process.env._SECRET_KEY, {
-              expiresIn: "1h",
+              expiresIn: "12h",
             });
             const encryptedToken = EncrypterString(token, {});
 

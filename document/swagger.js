@@ -1837,8 +1837,8 @@ module.exports = swaggerDocs;
  *                 example: 100.50
  *               attachment:
  *                 type: string
- *                 format: binary
- *                 description: The payment attachment file.
+ *                 format: string
+ *                 description: The payment attachment file convert to Base64 string.
  *     responses:
  *       200:
  *         description: Top-up request submitted successfully.
