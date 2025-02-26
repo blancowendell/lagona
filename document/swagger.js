@@ -1800,4 +1800,101 @@ module.exports = swaggerDocs;
 
 //#endregion
 
+//#region rider-topup
+
+/**
+ * @swagger
+ * /RiderAppApi/riderTopUp:
+ *   post:
+ *     summary: Rider top-up request
+ *     description: Allows a rider to request a top-up by uploading a payment attachment. Requires JWT authentication.
+ *     tags:
+ *       - Rider Api
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - rider_id
+ *               - station_id
+ *               - amount
+ *               - attachment
+ *             properties:
+ *               rider_id:
+ *                 type: string
+ *                 description: The unique identifier of the rider.
+ *                 example: "rider123"
+ *               station_id:
+ *                 type: string
+ *                 description: The unique identifier of the load station.
+ *                 example: "station456"
+ *               amount:
+ *                 type: number
+ *                 format: float
+ *                 description: The amount to top up.
+ *                 example: 100.50
+ *               attachment:
+ *                 type: string
+ *                 format: string
+ *                 description: The payment attachment file convert to Base64 string.
+ *     responses:
+ *       200:
+ *         description: Top-up request submitted successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 message:
+ *                   type: string
+ *                   example: "Top-up request submitted successfully."
+ *       400:
+ *         description: Bad request. Missing or invalid parameters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "error"
+ *                 message:
+ *                   type: string
+ *                   example: "Merchant ID and Customer ID are required."
+ *       404:
+ *         description: Load station not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "warning"
+ *                 message:
+ *                   type: string
+ *                   example: "Load station does not exist."
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "error"
+ *                 message:
+ *                   type: string
+ *                   example: "An unexpected error occurred."
+ */
+
+
+//#endregion
+
 //#endregion

@@ -25,7 +25,7 @@ const sendMail = require("./utility/mailer");
 
 module.exports = router;
 
-//#region Rider Api
+//#region WitOut Token Api
 
 router.get("/loadHub", (req, res) => {
   try {
@@ -389,7 +389,11 @@ router.post("/riderLogin", (req, res) => {
   }
 });
 
-router.put("/getLocation", (req, res) => {
+//#endregion
+
+//#region With Token Api
+
+router.put("/getLocation", verifyJWT, (req, res) => {
   try {
     const { latitude, longitude, rider_id } = req.body;
 
@@ -425,6 +429,56 @@ router.put("/getLocation", (req, res) => {
     });
   } catch (error) {}
 });
+
+router.post("/riderTopUp", verifyJWT, async (req, res) => {
+  try {
+    const { rider_id, station_id, amount, attachment } = req.body;
+    let status = "Requested";
+    let create_date = GetCurrentDatetime();
+
+    let checkStationQuery = SelectStatement(
+      "SELECT * FROM master_load_station WHERE mls_station_id=?",
+      [station_id]
+    );
+
+    let stationExists = await Check(checkStationQuery);
+    if (!stationExists || stationExists.length === 0) {
+      return res.json(JsonWarningResponse(MessageStatus.NOTEXISTLOADSTATION));
+    }
+
+    let sql = InsertStatement("rider_reload", "rr", [
+      "rider_id",
+      "load_station_id",
+      "amount",
+      "attachment",
+      "create_date",
+      "reload_status",
+    ]);
+
+    let data = [
+      [
+        rider_id,
+        station_id,
+        amount,
+        attachment,
+        create_date,
+        status,
+      ],
+    ];
+    InsertTable(sql, data, (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.json(JsonErrorResponse(err));
+      }
+      res.json(JsonSuccess());
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+//#endregion
 
 //#endregion
 

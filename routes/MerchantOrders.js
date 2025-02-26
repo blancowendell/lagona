@@ -328,7 +328,6 @@ router.post("/viewOderReadyToPay", (req, res) => {
   }
 });
 
-
 router.put("/sendPaidNotif", (req, res) => {
     try {
       const {
