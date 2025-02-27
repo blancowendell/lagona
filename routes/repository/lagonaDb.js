@@ -19,7 +19,7 @@ Decrypter("a869eb633c0774c4aa8a4c40e71699a7", (err, encrypted) => {
 //   console.log(encrypted);
 // });
 
-Encrypter("dev2025zetaSoft", (err, encrypted) => {
+Encrypter("manasarias", (err, encrypted) => {
   if (err) console.error("Error: ", err);
   console.log(encrypted);
 });

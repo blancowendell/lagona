@@ -1198,6 +1198,7 @@ module.exports = swaggerDocs;
 
 //#endregion
 
+
 //#region calculateDeliveryFee
 
 /**
@@ -1208,6 +1209,8 @@ module.exports = swaggerDocs;
  *     description: Computes the delivery fee based on the distance between the merchant's and customer's locations. Requires JWT authentication.
  *     tags:
  *       - Customer Api
+ *     security:
+ *       - BearerAuth: []  # If JWT authentication is required
  *     requestBody:
  *       required: true
  *       content:
@@ -1224,7 +1227,7 @@ module.exports = swaggerDocs;
  *                 example: "1"
  *               address_id:
  *                 type: string
- *                 description: The unique identifier of the customer.
+ *                 description: The unique identifier of the customer's address.
  *                 example: "101"
  *     responses:
  *       200:
@@ -1234,14 +1237,26 @@ module.exports = swaggerDocs;
  *             schema:
  *               type: object
  *               properties:
- *                 distance:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
  *                   type: string
- *                   description: The distance between the merchant and the customer in kilometers.
- *                   example: "5.25"
- *                 delivery_fee:
- *                   type: string
- *                   description: The calculated delivery fee in Philippine Peso.
- *                   example: "50.00"
+ *                   example: "Delivery fee calculated successfully."
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     distance:
+ *                       type: string
+ *                       description: The distance between the merchant and the customer in kilometers.
+ *                       example: "5.25"
+ *                     delivery_fee:
+ *                       type: string
+ *                       description: The calculated delivery fee in Philippine Peso.
+ *                       example: "50.00"
  *       400:
  *         description: Bad request due to missing or invalid parameters.
  *         content:
@@ -1249,19 +1264,31 @@ module.exports = swaggerDocs;
  *             schema:
  *               type: object
  *               properties:
- *                 error:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 status:
+ *                   type: integer
+ *                   example: 400
+ *                 message:
  *                   type: string
  *                   example: "Merchant ID and Customer ID are required."
  *       404:
- *         description: Merchant or Customer not found.
+ *         description: Merchant or Customer address not found.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 error:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 status:
+ *                   type: integer
+ *                   example: 404
+ *                 message:
  *                   type: string
- *                   example: "Merchant or Customer not found."
+ *                   example: "Merchant or Customer Address not found."
  *       500:
  *         description: Internal server error.
  *         content:
@@ -1269,10 +1296,16 @@ module.exports = swaggerDocs;
  *             schema:
  *               type: object
  *               properties:
- *                 error:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
  *                   type: string
  *                   example: "Internal Server Error"
- *                 details:
+ *                 error:
  *                   type: string
  *                   example: "Error details message."
  */

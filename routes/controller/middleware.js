@@ -87,8 +87,31 @@ var roleacess = [
       // },
     ],
   },
+  {
+    role: "Load Station",
+    routes: [
+      {
+        layout: "LoadIndexLayout",
+      },
+      {
+        layout: "LoadTopUpLayout",
+      },
+      // {
+      //   layout: "finishapplicationlayout",
+      // },
+      // {
+      //   layout: "testpermitlayout",
+      // },
+      // {
+      //   layout: "ojtreqabsentlayout",
+      // },
+      // {
+      //   layout: "ojtprofilelayout",
+      // },
+    ],
+  },
   // {
-  //   role: "STUDENT",
+  //   role: "Load Station",
   //   routes: [
   //     {
   //       layout: "studentindexlayout",
@@ -201,6 +224,49 @@ exports.MerchantValidator = function (req, res, layout) {
   }
 };
 
+
+exports.LoadStationValidator = function (req, res, layout) {
+
+  let ismatch = false;
+  let counter = 0;
+  if (req.session.accesstype == "Load Station" && layout == "LoadIndex") {
+    console.log("hit");
+    return res.render(`${layout}`, {
+      station_id: req.session.station_id,
+      code: req.session.code,
+      load_name: req.session.load_name,
+      role_type: req.session.role_type,
+      status: req.session.status,
+    });
+  } else {
+    roleacess.forEach((key, item) => {
+      counter += 1;
+      var routes = key.routes;
+
+      routes.forEach((value, index) => {
+
+        if (key.role == req.session.role_type && value.layout == layout) {
+          console.log("Role: ", req.session.role_type, "Layout: ", layout);
+          ismatch = true;
+
+          return res.render(`${layout}`, {
+            station_id: req.session.station_id,
+            code: req.session.code,
+            load_name: req.session.load_name,
+            role_type: req.session.role_type,
+            status: req.session.status,
+          });
+        }
+      });
+
+      if (counter == roleacess.length) {
+        if (!ismatch) {
+          res.redirect("/LoadLogin");
+        }
+      }
+    });
+  }
+};
 
 // exports.UserValidator = function (req, res, layout) {
 //   // console.log(layout);

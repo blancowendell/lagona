@@ -18,6 +18,7 @@ const {
 } = require("./repository/customhelper");
 const { generateCode, refineCurrencyInput } = require("./repository/helper");
 const { DataModeling } = require("./model/lagonaDb");
+const { EncrypterString, DecrypterString } = require("./repository/crytography");
 var router = express.Router();
 //const currentDate = moment();
 
@@ -79,6 +80,9 @@ router.post("/save", (req, res) => {
     } = req.body;
     let hubcode = generateCode(5);
 
+    let encrypted = EncrypterString(password);
+
+
     let sql = InsertStatement("master_load_station", "mls", [
       "hub_id",
       "load_name",
@@ -106,7 +110,7 @@ router.post("/save", (req, res) => {
         email,
         budget,
         username,
-        password,
+        encrypted,
         createddate,
         status,
         notes,
@@ -138,7 +142,7 @@ router.post("/save", (req, res) => {
         res.json(JsonErrorResponse(err));
       });
   } catch (error) {
-    console.log(error); // Log the error properly
+    console.log(error);
     res.json(JsonErrorResponse(error));
   }
 });
@@ -159,6 +163,9 @@ router.post("/getloadstation", async (req, res) => {
       }
       if (result != 0) {
         let data = DataModeling(result, "mls_");
+
+        data[0].password = DecrypterString(data[0].password);
+
         res.json(JsonDataResponse(data));
       } else {
         res.json(JsonDataResponse(result));

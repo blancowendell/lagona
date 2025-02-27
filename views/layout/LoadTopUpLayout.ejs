@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include("../components/LoadHeader.ejs")%>
+
+<body class="g-sidenav-show   bg-gray-100">
+  <div class="min-height-300 position-absolute w-100 lagona_class-btn"></div>
+  <%- include("../components/LoadSideBar.ejs")%>
+  <main class="main-content position-relative border-radius-lg ">
+    <!-- Navbar -->
+    <%- include("../components/LoadTopBar.ejs")%>
+    <!-- End Navbar -->
+    <%- include("../page/LoadTopUp/LoadTopUp.ejs")%>
+  </main>
+  <div class="fixed-plugin">
+    <a class="fixed-plugin-button text-dark position-fixed px-3 py-2" style="background-color: #fff;">
+      <i class="fa fa-cog py-2"> </i>
+    </a>
+    <%- include("../components/LoadLeftSideBar.ejs")%>
+  </div>
+  <!--   Core JS Files   -->
+  <%- include("../components/LoadScripts.ejs")%>
+  <%- include("../page/LoadTopUp/LoadTopUpScript.ejs")%>
+</body>
+
+</html>

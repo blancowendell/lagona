@@ -48,6 +48,9 @@ var MerchantOrdersRouter = require("./routes/MerchantOrders");
 var RiderAppApiRouter = require("./routes/RiderAppApi");
 var MerchantAppApiRouter = require("./routes/MerchantAppApi");
 var MerchantToApprovedRouter = require("./routes/MerchantToApproved");
+var LoadLoginRouter = require("./routes/LoadLogin");
+var LoadIndexRouter = require("./routes/LoadIndex");
+var LoadTopUpRouter = require("./routes/LoadTopUp");
 //#endregion
 
 const verifyJWT = require("./middleware/authenticator");
@@ -78,6 +81,7 @@ app.use((req, res, next) => {
 //#region ROUTES USE
 app.use("/", AdminLoginRouter);
 app.use("/MerchantLogin", MerchantLoginRouter);
+app.use("/LoadLogin", LoadLoginRouter);
 app.use("/CustomerAppApi", CustomerAppApiRouter);
 app.use("/RiderAppApi", RiderAppApiRouter);
 app.use("/MerchantAppApi", MerchantAppApiRouter);
@@ -99,6 +103,8 @@ app.use("/MerchantExtra", MerchantExtraRouter);
 app.use("/MerchantInventory", MerchantInventoryRouter);
 app.use("/MerchantOrders", MerchantOrdersRouter);
 app.use("/MerchantToApproved", MerchantToApprovedRouter);
+app.use("/LoadIndex", LoadIndexRouter);
+app.use("/LoadTopUp", LoadTopUpRouter);
 
 //#endregion
 

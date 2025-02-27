@@ -194,6 +194,28 @@ exports.AdminLogin = (result, callback) => {
   }
 };
 
+exports.LoadStationLogin = (result, callback) => {
+  try {
+    const LoadStationData = [];
+
+    result.forEach((row) => {
+      LoadStationData.push({
+        station_id: row.station_id,
+        load_name: row.load_name,
+        role_type: row.role_type,
+        status: row.status,
+        code: row.code,
+      });
+    });
+
+    return LoadStationData;
+  } catch (error) {
+    console.log(error);
+    callback(error);
+  }
+};
+
+
 exports.showSweetAlert = (title, text, icon, buttonText) => {
   try {
     swal({

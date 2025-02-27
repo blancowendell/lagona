@@ -1216,7 +1216,11 @@ router.post("/calculateDeliveryFee", verifyJWT, (req, res) => {
     const { merchant_id, address_id } = req.body;
 
     if (!merchant_id || !address_id) {
-      return res.status(400).json({ error: "Merchant ID and Customer ID are required." });
+      return res.status(400).json({ 
+        success: false, 
+        status: 400, 
+        message: "Merchant ID and Customer ID are required." 
+      });
     }
 
     const merchantQuery = `SELECT mm_latitude, mm_longitude FROM master_merchant WHERE mm_merchant_id = '${merchant_id}'`;
@@ -1225,26 +1229,48 @@ router.post("/calculateDeliveryFee", verifyJWT, (req, res) => {
     Select(merchantQuery, (merchantErr, merchantResult) => {
       if (merchantErr) {
         console.error("Merchant Query Error: ", merchantErr);
-        return res.status(500).json({ error: "Database Error", details: merchantErr });
+        return res.status(500).json({ 
+          success: false, 
+          status: 500, 
+          message: "Database Error", 
+          error: merchantErr 
+        });
       }
       if (!merchantResult.length) {
-        return res.status(404).json({ error: "Merchant not found." });
+        return res.status(404).json({ 
+          success: false, 
+          status: 404, 
+          message: "Merchant not found." 
+        });
       }
 
       Select(customerQuery, (customerErr, customerResult) => {
         if (customerErr) {
           console.error("Customer Query Error: ", customerErr);
-          return res.status(500).json({ error: "Database Error", details: customerErr });
+          return res.status(500).json({ 
+            success: false, 
+            status: 500, 
+            message: "Database Error", 
+            error: customerErr 
+          });
         }
         if (!customerResult.length) {
-          return res.status(404).json({ error: "Customer Address not found." });
+          return res.status(404).json({ 
+            success: false, 
+            status: 404, 
+            message: "Customer Address not found." 
+          });
         }
 
         const { mm_latitude, mm_longitude } = merchantResult[0];
         const { ca_latitude, ca_longitude } = customerResult[0];
 
         if (!mm_latitude || !mm_longitude || !ca_latitude || !ca_longitude) {
-          return res.status(400).json({ error: "Invalid coordinates." });
+          return res.status(400).json({ 
+            success: false, 
+            status: 400, 
+            message: "Invalid coordinates." 
+          });
         }
 
         const distance = calculateHaversineDistance(
@@ -1256,15 +1282,25 @@ router.post("/calculateDeliveryFee", verifyJWT, (req, res) => {
 
         const deliveryFee = calculateDeliveryFee(distance);
 
-        return res.json({
-          distance: `${distance.toFixed(2)}`,
-          delivery_fee: `${deliveryFee.toFixed(2)}`,
+        return res.status(200).json({
+          success: true,
+          status: 200,
+          message: "Delivery fee calculated successfully.",
+          data: {
+            distance: distance.toFixed(2),
+            delivery_fee: deliveryFee.toFixed(2),
+          }
         });
       });
     });
   } catch (error) {
     console.error("Error:", error);
-    return res.status(500).json({ error: "Internal Server Error", details: error.message });
+    return res.status(500).json({ 
+      success: false, 
+      status: 500, 
+      message: "Internal Server Error", 
+      error: error.message 
+    });
   }
 });
 
