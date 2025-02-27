@@ -1230,17 +1230,15 @@ router.post("/calculateDeliveryFee", verifyJWT, (req, res) => {
       if (merchantErr) {
         console.error("Merchant Query Error: ", merchantErr);
         return res.status(500).json({ 
-          success: false, 
           status: 500, 
-          message: "Database Error", 
+          msg: "Database Error", 
           error: merchantErr 
         });
       }
       if (!merchantResult.length) {
         return res.status(404).json({ 
-          success: false, 
           status: 404, 
-          message: "Merchant not found." 
+          msg: "Merchant not found." 
         });
       }
 
@@ -1248,17 +1246,15 @@ router.post("/calculateDeliveryFee", verifyJWT, (req, res) => {
         if (customerErr) {
           console.error("Customer Query Error: ", customerErr);
           return res.status(500).json({ 
-            success: false, 
             status: 500, 
-            message: "Database Error", 
+            msg: "Database Error", 
             error: customerErr 
           });
         }
         if (!customerResult.length) {
           return res.status(404).json({ 
-            success: false, 
             status: 404, 
-            message: "Customer Address not found." 
+            msg: "Customer Address not found." 
           });
         }
 
@@ -1267,9 +1263,8 @@ router.post("/calculateDeliveryFee", verifyJWT, (req, res) => {
 
         if (!mm_latitude || !mm_longitude || !ca_latitude || !ca_longitude) {
           return res.status(400).json({ 
-            success: false, 
             status: 400, 
-            message: "Invalid coordinates." 
+            msg: "Invalid coordinates." 
           });
         }
 
@@ -1283,9 +1278,8 @@ router.post("/calculateDeliveryFee", verifyJWT, (req, res) => {
         const deliveryFee = calculateDeliveryFee(distance);
 
         return res.status(200).json({
-          success: true,
           status: 200,
-          message: "Delivery fee calculated successfully.",
+          msg: "Delivery fee calculated successfully.",
           data: {
             distance: distance.toFixed(2),
             delivery_fee: deliveryFee.toFixed(2),
@@ -1296,9 +1290,8 @@ router.post("/calculateDeliveryFee", verifyJWT, (req, res) => {
   } catch (error) {
     console.error("Error:", error);
     return res.status(500).json({ 
-      success: false, 
       status: 500, 
-      message: "Internal Server Error", 
+      msg: "Internal Server Error", 
       error: error.message 
     });
   }

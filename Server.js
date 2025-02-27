@@ -51,6 +51,7 @@ var MerchantToApprovedRouter = require("./routes/MerchantToApproved");
 var LoadLoginRouter = require("./routes/LoadLogin");
 var LoadIndexRouter = require("./routes/LoadIndex");
 var LoadTopUpRouter = require("./routes/LoadTopUp");
+var LoadRidersRouter = require("./routes/LoadRiders");
 //#endregion
 
 const verifyJWT = require("./middleware/authenticator");
@@ -105,6 +106,7 @@ app.use("/MerchantOrders", MerchantOrdersRouter);
 app.use("/MerchantToApproved", MerchantToApprovedRouter);
 app.use("/LoadIndex", LoadIndexRouter);
 app.use("/LoadTopUp", LoadTopUpRouter);
+app.use("/LoadRiders", LoadRidersRouter);
 
 //#endregion
 
