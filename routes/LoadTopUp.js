@@ -1,5 +1,5 @@
 const mysql = require("./repository/lagonaDb");
-//const moment = require('moment');
+const moment = require('moment');
 var express = require("express");
 const { LoadStationValidator } = require("./controller/middleware");
 const verifyJWT = require("../middleware/authenticator");
@@ -10,11 +10,11 @@ const {
   MessageStatus,
   JsonDataResponse,
 } = require("./repository/response");
-const { InsertTable, Select, Update } = require("./repository/dbconnect");
+const { InsertTable, Select, Update} = require("./repository/dbconnect");
 const {
   SelectStatement,
   InsertStatement,
-  UpdateStatement,
+  UpdateStatement, 
   GetCurrentDatetime,
 } = require("./repository/customhelper");
 const { generateCode, refineCurrencyInput } = require("./repository/helper");
@@ -119,113 +119,208 @@ router.post("/getTopUp", (req, res) => {
   }
 });
 
-router.post("/save", (req, res) => {
+// router.post("/topUp", (req, res) => {
+//   try {
+//     let station_id = req.session.station_id;
+//     let date_response = GetCurrentDatetime();
+//     const { load_id, load_amount, create_date, status, attachment } = req.body;
+
+//     const checkQuery = `
+//       SELECT rr_rider_id
+//       FROM rider_reload
+//       WHERE rr_reload_id = '${load_id}'`;
+
+//     Select(checkQuery, (err, result) => {
+//       if (err) {
+//         console.error("Error: ", err);
+//         return res.json(JsonErrorResponse(err));
+//       }
+
+//       if (result.length === 0) {
+//         return res.json(JsonErrorResponse("Rider not found."));
+//       }
+
+//       const rider = result[0];
+
+//       let sql = InsertStatement("rider_reload_history", "rrh", [
+//         "rider_id",
+//         "load_station_id",
+//         "amount",
+//         "attachment",
+//         "create_date",
+//         "date_response",
+//         "status",
+//         "reload_reference_id",
+//       ]);
+
+//       let data = [
+//         [
+//           rider,
+//           station_id,
+//           load_amount,
+//           attachment,
+//           create_date,
+//           date_response,
+//           status,
+//           load_id,
+//         ],
+//       ];
+
+//       let checkStatement = SelectStatement(
+//         `SELECT 
+//             CASE 
+//               WHEN ? > mls_budget THEN 'Insufficient Funds' 
+//               ELSE 'Sufficient Funds' 
+//             END AS budget_status 
+//          FROM master_load_station 
+//          WHERE mls_station_id = ?`,
+//         [load_amount, station_id]
+//       );
+      
+//       Check(checkStatement)
+//         .then((result) => {
+//           if (result != 'Sufficient Funds') {
+//             return res.json(JsonWarningResponse(MessageStatus.INSUFFICIENT));
+//           } else {
+//             InsertTable(sql, data, (err, result) => {
+//               if (err) {
+//                 console.log(err);
+//                 return res.json(JsonErrorResponse(err));
+//               }
+
+//               let data = [];
+//               let columns = [];
+//               let arguments = [];
+
+//               if (paid_date) {
+//                 data.push(paid_date);
+//                 columns.push("paid_date");
+//               }
+
+//               if (payment_screenshots) {
+//                 data.push(payment_screenshots);
+//                 columns.push("payment_screenshots");
+//               }
+
+//               if (order_id) {
+//                 data.push(order_id);
+//                 arguments.push("order_id");
+//               }
+
+//               let updateStatement = UpdateStatement(
+//                 "master_order",
+//                 "mo",
+//                 columns,
+//                 arguments
+//               );
+
+//               Update(updateStatement, data, (err, result) => {
+//                 if (err) console.error("Error: ", err);
+//                 res.json(JsonSuccess());
+//               });
+//               res.json(JsonSuccess());
+//             });
+//           }
+//         })
+//         .catch((err) => {
+//           console.log(err);
+//           res.json(JsonErrorResponse(err));
+//         });
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.json(JsonErrorResponse(error));
+//   }
+// });
+
+router.post("/topUp", async (req, res) => {
   try {
     let station_id = req.session.station_id;
     let date_response = GetCurrentDatetime();
     const { load_id, load_amount, create_date, status, attachment } = req.body;
 
-    const checkQuery = `
-      SELECT rr_rider_id
-      FROM rider_reload
-      WHERE rr_reload_id = '${load_id}'`;
+    let reloadType = "TopUp";
+    let createDate = moment(create_date, "MMM DD YYYY, hh:mm A").format("YYYY-MM-DD HH:mm:ss");
 
-    Select(checkQuery, (err, result) => {
-      if (err) {
-        console.error("Error: ", err);
-        return res.json(JsonErrorResponse(err));
-      }
+    if (!load_id || !load_amount || !status) {
+      return res.json(JsonErrorResponse("Missing required fields."));
+    }
 
-      if (result.length === 0) {
-        return res.json(JsonErrorResponse("Rider not found."));
-      }
+    const checkQuery = `SELECT rr_rider_id FROM rider_reload WHERE rr_reload_id = '${load_id}'`;
+    let result = await mysql.SelectPromise(checkQuery);
+    
+    if (result.length === 0) {
+      return res.json(JsonErrorResponse("Rider not found."));
+    }
 
-      const rider = result[0];
+    const rider_id = result[0].rr_rider_id;
 
-      let sql = InsertStatement("rider_reload_history", "rrh", [
-        "rider_id",
-        "load_station_id",
-        "amount",
-        "attachment",
-        "create_date",
-        "date_response",
-        "status",
-        "reload_reference_id",
-      ]);
+    let checkBudgetSQL = `SELECT mls_budget FROM master_load_station WHERE mls_station_id = '${station_id}'`;
+    let budgetResult = await mysql.SelectPromise(checkBudgetSQL);
 
-      let data = [
-        [
-          rider,
-          station_id,
-          load_amount,
-          attachment,
-          create_date,
-          date_response,
-          status,
-          load_id,
-        ],
-      ];
+    if (budgetResult.length === 0) {
+      return res.json(JsonErrorResponse("Load station not found."));
+    }
 
-      let checkStatement = SelectStatement(
-        "select * from menu_extras where me_merchant_id=? and me_extra_name=?",
-        [merchant_id, combo_name]
-      );
+    let available_budget = parseFloat(budgetResult[0].mls_budget);
 
-      Check(checkStatement)
-        .then((result) => {
-          if (result != 0) {
-            return res.json(JsonWarningResponse(MessageStatus.EXIST));
-          } else {
-            InsertTable(sql, data, (err, result) => {
-              if (err) {
-                console.log(err);
-                return res.json(JsonErrorResponse(err));
-              }
+    if (load_amount > available_budget) {
+      return res.json(JsonWarningResponse(MessageStatus.INSUFFICIENT));
+    }
 
-              let data = [];
-              let columns = [];
-              let arguments = [];
+    let insertHistorySQL = InsertStatement("rider_reload_history", "rrh", [
+      "rider_id",
+      "load_station_id",
+      "amount",
+      "attachment",
+      "create_date",
+      "date_response",
+      "reload_type",
+      "status",
+      "reload_reference_id",
+    ]);
 
-              if (paid_date) {
-                data.push(paid_date);
-                columns.push("paid_date");
-              }
+    let historyData = [[
+      rider_id,
+      station_id,
+      load_amount,
+      attachment,
+      createDate,
+      date_response,
+      reloadType,
+      status,
+      load_id,
+    ]];
 
-              if (payment_screenshots) {
-                data.push(payment_screenshots);
-                columns.push("payment_screenshots");
-              }
+    await mysql.InsertTablePromise(insertHistorySQL, historyData);
 
-              if (order_id) {
-                data.push(order_id);
-                arguments.push("order_id");
-              }
+    if (status === "Rejected") {
+      return res.json(JsonSuccess("Top-up recorded as rejected."));
+    }
 
-              let updateStatement = UpdateStatement(
-                "master_order",
-                "mo",
-                columns,
-                arguments
-              );
+    let updateLoadStation = `UPDATE master_load_station SET mls_budget = mls_budget - ${load_amount} WHERE mls_station_id = '${station_id}'`;
+    let updateRiderBudget = `UPDATE master_rider SET mr_budget = mr_budget + ${load_amount} WHERE mr_rider_id = '${rider_id}'`;
 
-              Update(updateStatement, data, (err, result) => {
-                if (err) console.error("Error: ", err);
-                res.json(JsonSuccess());
-              });
-              res.json(JsonSuccess());
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          res.json(JsonErrorResponse(err));
-        });
-    });
+    await mysql.mysqlQueryPromise(updateLoadStation);
+    await mysql.mysqlQueryPromise(updateRiderBudget);
+
+    // ✅ Update `rr_reload_status` to "Credited"
+    let updateRiderReloadStatus = `UPDATE rider_reload SET rr_reload_status = 'Credited' WHERE rr_reload_id = '${load_id}'`;
+    await mysql.mysqlQueryPromise(updateRiderReloadStatus);
+
+    return res.json(JsonSuccess("Top-up successful"));
+
   } catch (error) {
-    console.log(error);
+    console.error("Unexpected error:", error);
     res.json(JsonErrorResponse(error));
   }
 });
+
+
+
+
+
+
 
 router.post("/getextra", async (req, res) => {
   try {

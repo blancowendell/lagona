@@ -1930,4 +1930,298 @@ module.exports = swaggerDocs;
 
 //#endregion
 
+//#region View Wallet
+
+/**
+ * @swagger
+ * /RiderAppApi/viewWallet:
+ *   post:
+ *     summary: View rider's wallet
+ *     description: Retrieves the wallet details of a rider based on their ID.
+ *     tags:
+ *       - Rider Api
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rider_id:
+ *                 type: string
+ *                 description: The unique identifier of the rider.
+ *                 example: "rider123"
+ *     responses:
+ *       200:
+ *         description: Wallet details retrieved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     rider_id:
+ *                       type: string
+ *                       description: The unique identifier of the rider.
+ *                       example: "rider123"
+ *                     rider_code:
+ *                       type: string
+ *                       description: The code associated with the rider.
+ *                       example: "RC456"
+ *                     budget:
+ *                       type: number
+ *                       description: The current budget or balance of the rider's wallet.
+ *                       example: 1500.75
+ *       400:
+ *         description: Bad request. Invalid or missing rider_id.
+ *       401:
+ *         description: Unauthorized. JWT token is missing or invalid.
+ *       500:
+ *         description: Internal server error.
+ */
+
+
+//#endregion
+
+//#region Rider Button
+
+/**
+ * @swagger
+ * /RiderAppApi/delivButton:
+ *   post:
+ *     summary: Update rider's availability status
+ *     description: Allows a rider to update their status to 'Available' or 'Not Available'.
+ *     tags:
+ *       - Rider Api
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rider_id:
+ *                 type: string
+ *                 description: The unique identifier of the rider.
+ *                 example: "rider123"
+ *               riderStatus:
+ *                 type: string
+ *                 description: The availability status of the rider. Must be 'Available' or 'Not Available'.
+ *                 example: "Available"
+ *     responses:
+ *       200:
+ *         description: Rider status updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Rider status updated successfully."
+ *       400:
+ *         description: Bad request. Invalid or missing parameters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Invalid riderStatus. Must be 'Available' or 'Not Available'."
+ *       401:
+ *         description: Unauthorized. JWT token is missing or invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized access."
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Failed to update rider status."
+ */
+
+
+//#endregion
+
+//#region Rider Status
+
+/**
+ * @swagger
+ * /RiderAppApi/getRiderStatus:
+ *   post:
+ *     summary: Retrieve the status of a rider
+ *     description: Fetches the current status of a rider based on their unique identifier.
+ *     tags:
+ *       - Rider Api
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rider_id:
+ *                 type: string
+ *                 description: The unique identifier of the rider.
+ *                 example: "rider123"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved rider status.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   description: The current status of the rider.
+ *                   example: "Available"
+ *       400:
+ *         description: Bad request. Invalid or missing parameters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Invalid rider_id provided."
+ *       401:
+ *         description: Unauthorized. JWT token is missing or invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized access."
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "An unexpected error occurred."
+ */
+
+
+//#endregion
+
+//#region Rider Orders
+
+/**
+ * @swagger
+ * /RiderAppApi/getOrder:
+ *   post:
+ *     summary: Retrieve pending orders for a rider
+ *     description: Fetches the list of pending orders assigned to a rider based on their unique identifier.
+ *     tags:
+ *       - Rider Api
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rider_id:
+ *                 type: string
+ *                 description: The unique identifier of the rider.
+ *                 example: "rider123"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved pending orders.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   merchant:
+ *                     type: string
+ *                     description: The merchant's business name.
+ *                     example: "Pizza Hub"
+ *                   merchant_lng:
+ *                     type: number
+ *                     format: float
+ *                     description: Longitude of the merchant.
+ *                     example: -73.935242
+ *                   merchant_lat:
+ *                     type: number
+ *                     format: float
+ *                     description: Latitude of the merchant.
+ *                     example: 40.73061
+ *                   customer_lng:
+ *                     type: number
+ *                     format: float
+ *                     description: Longitude of the customer's address.
+ *                     example: -73.935242
+ *                   customer_lat:
+ *                     type: number
+ *                     format: float
+ *                     description: Latitude of the customer's address.
+ *                     example: 40.73061
+ *                   distance:
+ *                     type: number
+ *                     format: float
+ *                     description: Distance between merchant and customer.
+ *                     example: 5.2
+ *                   del_fee:
+ *                     type: number
+ *                     format: float
+ *                     description: Delivery fee for the order.
+ *                     example: 3.5
+ *       400:
+ *         description: Bad request. Invalid or missing parameters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Invalid rider_id provided."
+ *       401:
+ *         description: Unauthorized. JWT token is missing or invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized access."
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "An unexpected error occurred."
+ */
+
+//#endregion
+
+
 //#endregion

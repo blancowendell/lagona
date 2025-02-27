@@ -1,419 +1,417 @@
 <script>
-    let base64String = "";
-    let load_id = "";
-    $(document).ready(function () {
-      LoadTable();
-      LoadBudget();
+  let base64String = "";
+  let load_id = "";
+  $(document).ready(function () {
+    LoadTable();
+    LoadBudget();
 
-      function LoadBudget() {
-        $.ajax({
-          type: "GET",
-          url: "/LoadTopUp/getBudget",
-          success: function (result) {
-            if (result.msg === "success") {
-              const existingData = result.data;            
-  
-              $.each(existingData, (key, item) => {
-                let formattedBudget = formatPeso(item.budget);
-                $("#budget").text(formattedBudget);
-              });
-            } else {
-              toastr.error("Error fetching employee data", "Error");
-            }
-          },
-          error: function (err) {
-            toastr.error(
-              "An error occurred while fetching employee data",
-              "Error"
-            );
-          },
-        });
-      }
+    function LoadBudget() {
+      $.ajax({
+        type: "GET",
+        url: "/LoadTopUp/getBudget",
+        success: function (result) {
+          if (result.msg === "success") {
+            const existingData = result.data;
 
-      function LoadTable() {
-        $("#dataTableTopUp").DataTable({
-          destroy: true,
-          processing: true,
-          serverSide: true,
-          paging: false,
-          searching: false,
-          info: false,
-          scrollY: 600,
-          scrollCollapse: true,
-          serverMethod: "GET",
-          ajax: {
-            url: "/LoadTopUp/load",
-            dataSrc: (json) => {
-              var finalData = [];
-              var data = json.data;
-  
-              console.log(data);
-  
-              $.each(data, (key, item) => {
-                var action = `
+            $.each(existingData, (key, item) => {
+              let formattedBudget = formatPeso(item.budget);
+              $("#budget").text(formattedBudget);
+            });
+          } else {
+            toastr.error("Error fetching employee data", "Error");
+          }
+        },
+        error: function (err) {
+          toastr.error(
+            "An error occurred while fetching employee data",
+            "Error"
+          );
+        },
+      });
+    }
+
+    function LoadTable() {
+      $("#dataTableTopUp").DataTable({
+        destroy: true,
+        processing: true,
+        serverSide: true,
+        paging: false,
+        searching: false,
+        info: false,
+        scrollY: 600,
+        scrollCollapse: true,
+        serverMethod: "GET",
+        ajax: {
+          url: "/LoadTopUp/load",
+          dataSrc: (json) => {
+            var finalData = [];
+            var data = json.data;
+
+            console.log(data);
+
+            $.each(data, (key, item) => {
+              var action = `
                     <button id="editBtn" class="lagona_class-btn btn" name="editBtn" data-bs-toggle="modal" data-bs-target="#viewTopUpModal">
                     <i class="fas fa-fw fa-pen"></i>
                     </button>
                 `;
 
-                var imgElement = document.createElement("img");
-                imgElement.src = "data:image/jpg;base64," + item.extra_image;
-                imgElement.alt = "Profile Image";
-                imgElement.style.width = "90px";
-                imgElement.style.height = "90px";
+              var imgElement = document.createElement("img");
+              imgElement.src = "data:image/jpg;base64," + item.extra_image;
+              imgElement.alt = "Profile Image";
+              imgElement.style.width = "90px";
+              imgElement.style.height = "90px";
 
-                finalData.push({
-                  reload_id: item.reload_id,
-                  create_date: item.create_date,
-                  fullname: item.fullname,
-                  amount: item.amount,
-                  reload_status: item.reload_status,
-                  action: action,
-                });
+              finalData.push({
+                reload_id: item.reload_id,
+                create_date: item.create_date,
+                fullname: item.fullname,
+                amount: item.amount,
+                reload_status: item.reload_status,
+                action: action,
               });
-  
-              return finalData;
+            });
+
+            return finalData;
+          },
+        },
+        columns: [
+          { data: "reload_id" },
+          { data: "create_date" },
+          { data: "fullname" },
+          {
+            data: "amount",
+            render: function (data, type, row) {
+              return (
+                "₱" +
+                parseFloat(data).toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
+              );
             },
           },
-          columns: [
-            { data: "reload_id" },
-            { data: "create_date" },
-            { data: "fullname" },
-            {
-              data: "amount",
-              render: function (data, type, row) {
-                return (
-                  "₱" +
-                  parseFloat(data).toLocaleString("en-US", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })
-                );
-              },
-            },
-            { data: "reload_status" },
-            { data: "action" },
-          ],
-          createdRow: function (row, data, dataIndex) {
-            $("td", row).each(function () {
-              this.style.textAlign = "center";
-              this.style.verticalAlign = "middle";
-              this.style.fontSize = "14px";
-            });
-          },
-          initComplete: function () {
-            $("#dataTableStrandsType thead th").css({
-              "font-size": "14px",
-              "font-weight": "bold",
-              "text-align": "center",
-            });
-          },
+          { data: "reload_status" },
+          { data: "action" },
+        ],
+        createdRow: function (row, data, dataIndex) {
+          $("td", row).each(function () {
+            this.style.textAlign = "center";
+            this.style.verticalAlign = "middle";
+            this.style.fontSize = "14px";
+          });
+        },
+        initComplete: function () {
+          $("#dataTableStrandsType thead th").css({
+            "font-size": "14px",
+            "font-weight": "bold",
+            "text-align": "center",
+          });
+        },
+      });
+    }
+
+    $("#dataTableTopUp tbody").on("click", "tr", function () {
+      var dataRow = [];
+      $(this)
+        .closest("tr")
+        .find("td")
+        .each(function () {
+          dataRow.push($(this).text());
         });
+      load_id = dataRow[0];
+    });
+
+    $(document).on("click", "#editBtn", function () {
+      $.ajax({
+        type: "POST",
+        url: "/LoadTopUp/getTopUp",
+        data: {
+          load_id: load_id,
+        },
+        success: function (result) {
+          if (result.msg === "success") {
+            const existingData = result.data;
+            console.log(existingData, "data");
+
+            $.each(existingData, (key, item) => {
+              $("#ridername").val(item.fullname);
+              $("#ridercode").val(item.rider_code);
+              $("#ridertopupamount").text(formatCurrencyValue(item.amount));
+              $("#requestdate").val(item.create_date);
+              $("#viewUserImagePreview").attr(
+                "src",
+                "data:image/jpg;base64," + item.attachment
+              );
+              base64String = item.attachment;
+            });
+          } else {
+            toastr.error("Error fetching employee data", "Error");
+          }
+        },
+        error: function (err) {
+          toastr.error(
+            "An error occurred while fetching employee data",
+            "Error"
+          );
+        },
+      });
+    });
+
+    $(document).on("click", "#topupSaveBtn", function () {
+      let loadId = load_id;
+      let file = base64String;
+      let laodAmount = $("#ridertopupamount").text();
+      let createDate = $("#requestdate").val();
+      let status = $("#topupstatus").val();
+
+      var message = "";
+
+      if (loadId === "") {
+        message += "Load Id is required ";
       }
 
-      $("#dataTableTopUp tbody").on("click", "tr", function () {
-        var dataRow = [];
-        $(this)
-          .closest("tr")
-          .find("td")
-          .each(function () {
-            dataRow.push($(this).text());
-          });
-          load_id = dataRow[0];
-      });
-  
-      $(document).on("click", "#editBtn", function () {
+      if (file === "") {
+        message += "File is required ";
+      }
+
+      if (laodAmount === "") {
+        message += "Amount is required ";
+      }
+
+      if (createDate === "") {
+        message += "Create Date is required ";
+      }
+
+      if (status === "") {
+        message += "Status is required ";
+      }
+
+      if (message !== "") {
+        toastr.error(`Please fill up ${message}`, "Required");
+      } else {
+        laod_Amount = laodAmount.replace(/,/g, "").replace("₱", "");
         $.ajax({
           type: "POST",
-          url: "/LoadTopUp/getTopUp",
+          url: "/LoadTopUp/topUp",
           data: {
-            load_id: load_id,
+            load_id: loadId,
+            load_amount: parseFloat(laod_Amount),
+            create_date: createDate,
+            status: status,
+            attachment: file,
           },
           success: function (result) {
-            if (result.msg === "success") {
-              const existingData = result.data;     
-              console.log(existingData,'data');
-                     
-  
-              $.each(existingData, (key, item) => {
-                $("#ridername").val(item.fullname);
-                $("#ridercode").val(item.rider_code);
-                $("#ridertopupamount").text(formatCurrencyValue(item.amount));
-                $("#requestdate").val(item.create_date);
-                $("#viewUserImagePreview").attr(
-                  "src",
-                  "data:image/jpg;base64," + item.attachment
-                );
-                base64String = item.attachment;
-              });
+            if (result.msg == "success") {
+              toastr.success("Saved Successfully", "Success");
+              setTimeout(function () {
+                window.location.reload();
+              }, 500);
+            } else if (result.msg == "Insufficient Funds") {
+              toastr.error("Insufficient Funds", "Error");
             } else {
-              toastr.error("Error fetching employee data", "Error");
+              toastr.warning("Data already exists!", "Warning");
             }
           },
           error: function (err) {
-            toastr.error(
-              "An error occurred while fetching employee data",
-              "Error"
-            );
+            toastr.warning("Something went wrong!", "Error");
           },
         });
-      });
-  
-  
-      $(document).on("click", "#saveComboBtn", function () {
-        let combo_name = $("#addcomboname").val();
-        let logo = base64String;
-        let combo_price = $("#topupamount").val();
-        let combo_description = $("#addDescription").val();
-  
-        var message = "";
-  
-  
-        if (combo_name === "") {
-          message += "Merchant Owner is required ";
-        }
-  
-        if (logo === "") {
-          message += "Business Name is required ";
-        }
-  
-        if (combo_price === "") {
-          message += "Business Branch is required ";
-        }
-  
-        if (combo_description === "") {
-          message += "Merchant Address is required ";
-        }
-  
-  
-        if (message !== "") {
-          toastr.error(`Please fill up ${message}`, "Required");
-        } else {
-          combo_price = combo_price.replace(/,/g, "").replace("₱", "");
-          $.ajax({
-            type: "POST",
-            url: "/MerchantExtra/save",
-            data: {
-              combo_name: combo_name,
-              combo_description: combo_description,
-              combo_price: parseFloat(combo_price),
-              logo: logo,
-            },
-            success: function (result) {
-              if (result.msg == "success") {
-                toastr.success("Saved Successfully", "Success");
-                setTimeout(function () {
-                  window.location.reload();
-                }, 1000);
-              } else {
-                toastr.warning("Data already exists!", "Warning");
-              }
-            },
-            error: function (err) {
-              toastr.warning("Data already exists!", "Warning");
-            },
-          });
-        }
-      });
-  
-      $(document).on("click", "#editsaveComboBtn", function () {
-        let id = extra_id;
-        let combo_name = $("#editcomboname").val();
-        let logo = base64String;
-        let combo_price = $("#edittopupamount").val();
-        let combo_description = $("#editDescription").val();
-        let combo_availability = $("#editAvailability").val();
-
-        console.log(logo,'img');
-        
-  
-        var message = "";
-
-        if (combo_name === "") {
-          message += "Combo Name is required ";
-        }
-
-        if (logo === "") {
-          message += "Combo Image is required ";
-        }
-
-        if (combo_price === "") {
-          message += "Combo Price is required ";
-        }
-
-        if (combo_description === "") {
-          message += "Combo Description is required ";
-        }
-
-        if (combo_availability === "") {
-          message += "Combo Availability is required ";
-        }
-
-  
-        if (message !== "") {
-          toastr.error(`Please fill up ${message}`, "Required");
-        } else {
-          combo_price = combo_price.replace(/,/g, "").replace("₱", "");
-          $.ajax({
-            type: "PUT",
-            url: "/MerchantExtra/edit",
-            data: {
-              combo_id: id,
-              combo_name: combo_name,
-              combo_price: parseFloat(combo_price),
-              logo: logo,
-              combo_description: combo_description,
-              combo_availability: combo_availability,
-            },
-            success: function (result) {
-              if (result.msg == "success") {
-                toastr.success("Saved Successfully", "Success");
-                setTimeout(function () {
-                  window.location.reload();
-                }, 1000);
-              } else {
-                toastr.warning("Data already exists!", "Warning");
-              }
-            },
-            error: function (err) {
-              toastr.warning("Data already exists!", "Warning");
-            },
-          });
-        }
-      });
-
-      function searchTable() {
-        var input, filter, found, table, tr, td, i, j;
-        input = document.getElementById("myInput");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("dataTableStudents");
-        tr = table.getElementsByTagName("tr");
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("td");
-          for (j = 0; j < td.length; j++) {
-            if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
-              found = true;
-            }
-          }
-          if (found) {
-            tr[i].style.display = "";
-            found = false;
-          } else {
-            tr[i].style.display = "none";
-          }
-        }
-      }
-  
-      $(".toggle-password").on("click", function () {
-        const passwordField = $("#addpassword");
-        const eyeIcon = $("#eyeIcon");
-        const fieldType =
-          passwordField.attr("type") === "password" ? "text" : "password";
-        passwordField.attr("type", fieldType);
-        if (fieldType === "password") {
-          eyeIcon.removeClass("bx-show").addClass("bx-hide");
-        } else {
-          eyeIcon.removeClass("bx-hide").addClass("bx-show");
-        }
-      });
-  
-      $(".toggle-password").on("click", function () {
-        const passwordField = $("#editPassword");
-        const eyeIcon = $("#eyeIconEdit");
-        const fieldType =
-          passwordField.attr("type") === "password" ? "text" : "password";
-        passwordField.attr("type", fieldType);
-        if (fieldType === "password") {
-          eyeIcon.removeClass("bx-show").addClass("bx-hide");
-        } else {
-          eyeIcon.removeClass("bx-hide").addClass("bx-show");
-        }
-      });
-  
-  
-      $(document).on("change", "#editaddimage", function (e) {
-        const input = document.getElementById("editaddimage");
-        const file = input.files[0];
-  
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function () {
-          const preview = document.getElementById("viewUserImagePreview");
-          preview.src = reader.result;
-        };
-        imageUploadedAdd();
-      });
-  
-      function imageUploadedAdd() {
-        const input = document.getElementById("editaddimage");
-        const file = input.files[0];
-  
-        var reader = new FileReader();
-  
-        reader.onload = function (e) {
-          const img = new Image();
-          img.src = e.target.result;
-  
-          img.onload = function () {
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            const targetWidth = 250;
-            const targetHeight = 250;
-            canvas.width = targetWidth;
-            canvas.height = targetHeight;
-            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-            base64String = canvas
-              .toDataURL()
-              .replace("data:image/png;base64,", ""); 
-  
-            imageBase64Stringsep = base64String;
-          };
-  
-        };
-        reader.readAsDataURL(file);
-      }
-  
-      $(document).on("change", "#addimage", function (e) {
-        const input = document.getElementById("addimage");
-        const file = input.files[0];
-  
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function () {
-          const preview = document.getElementById("userImagePreview");
-          preview.src = reader.result;
-        };
-        imageUploadedOld();
-      });
-  
-      function imageUploadedOld() {
-        const input = document.getElementById("addimage");
-        const file = input.files[0];
-  
-        var reader = new FileReader();
-  
-        reader.onload = function (e) {
-          const img = new Image();
-          img.src = e.target.result;
-  
-          img.onload = function () {
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            const targetWidth = 250;
-            const targetHeight = 250;
-            canvas.width = targetWidth;
-            canvas.height = targetHeight;
-            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-            base64String = canvas
-              .toDataURL()
-              .replace("data:image/png;base64,", ""); 
-  
-            imageBase64Stringsep = base64String;
-          };
-  
-        };
-        reader.readAsDataURL(file);
       }
     });
-  </script>
-  
+
+    $(document).on("click", "#editsaveComboBtn", function () {
+      let id = extra_id;
+      let combo_name = $("#editcomboname").val();
+      let logo = base64String;
+      let combo_price = $("#edittopupamount").val();
+      let combo_description = $("#editDescription").val();
+      let combo_availability = $("#editAvailability").val();
+
+      console.log(logo, "img");
+
+      var message = "";
+
+      if (combo_name === "") {
+        message += "Combo Name is required ";
+      }
+
+      if (logo === "") {
+        message += "Combo Image is required ";
+      }
+
+      if (combo_price === "") {
+        message += "Combo Price is required ";
+      }
+
+      if (combo_description === "") {
+        message += "Combo Description is required ";
+      }
+
+      if (combo_availability === "") {
+        message += "Combo Availability is required ";
+      }
+
+      if (message !== "") {
+        toastr.error(`Please fill up ${message}`, "Required");
+      } else {
+        combo_price = combo_price.replace(/,/g, "").replace("₱", "");
+        $.ajax({
+          type: "PUT",
+          url: "/MerchantExtra/edit",
+          data: {
+            combo_id: id,
+            combo_name: combo_name,
+            combo_price: parseFloat(combo_price),
+            logo: logo,
+            combo_description: combo_description,
+            combo_availability: combo_availability,
+          },
+          success: function (result) {
+            if (result.msg == "success") {
+              toastr.success("Saved Successfully", "Success");
+              setTimeout(function () {
+                window.location.reload();
+              }, 1000);
+            } else {
+              toastr.warning("Data already exists!", "Warning");
+            }
+          },
+          error: function (err) {
+            toastr.warning("Data already exists!", "Warning");
+          },
+        });
+      }
+    });
+
+    function searchTable() {
+      var input, filter, found, table, tr, td, i, j;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("dataTableStudents");
+      tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td");
+        for (j = 0; j < td.length; j++) {
+          if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+            found = true;
+          }
+        }
+        if (found) {
+          tr[i].style.display = "";
+          found = false;
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+
+    $(".toggle-password").on("click", function () {
+      const passwordField = $("#addpassword");
+      const eyeIcon = $("#eyeIcon");
+      const fieldType =
+        passwordField.attr("type") === "password" ? "text" : "password";
+      passwordField.attr("type", fieldType);
+      if (fieldType === "password") {
+        eyeIcon.removeClass("bx-show").addClass("bx-hide");
+      } else {
+        eyeIcon.removeClass("bx-hide").addClass("bx-show");
+      }
+    });
+
+    $(".toggle-password").on("click", function () {
+      const passwordField = $("#editPassword");
+      const eyeIcon = $("#eyeIconEdit");
+      const fieldType =
+        passwordField.attr("type") === "password" ? "text" : "password";
+      passwordField.attr("type", fieldType);
+      if (fieldType === "password") {
+        eyeIcon.removeClass("bx-show").addClass("bx-hide");
+      } else {
+        eyeIcon.removeClass("bx-hide").addClass("bx-show");
+      }
+    });
+
+    $(document).on("change", "#editaddimage", function (e) {
+      const input = document.getElementById("editaddimage");
+      const file = input.files[0];
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function () {
+        const preview = document.getElementById("viewUserImagePreview");
+        preview.src = reader.result;
+      };
+      imageUploadedAdd();
+    });
+
+    function imageUploadedAdd() {
+      const input = document.getElementById("editaddimage");
+      const file = input.files[0];
+
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function () {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const targetWidth = 250;
+          const targetHeight = 250;
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+          base64String = canvas
+            .toDataURL()
+            .replace("data:image/png;base64,", "");
+
+          imageBase64Stringsep = base64String;
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+
+    $(document).on("change", "#addimage", function (e) {
+      const input = document.getElementById("addimage");
+      const file = input.files[0];
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function () {
+        const preview = document.getElementById("userImagePreview");
+        preview.src = reader.result;
+      };
+      imageUploadedOld();
+    });
+
+    function imageUploadedOld() {
+      const input = document.getElementById("addimage");
+      const file = input.files[0];
+
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function () {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const targetWidth = 250;
+          const targetHeight = 250;
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+          base64String = canvas
+            .toDataURL()
+            .replace("data:image/png;base64,", "");
+
+          imageBase64Stringsep = base64String;
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
