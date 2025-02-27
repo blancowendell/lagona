@@ -32,16 +32,16 @@ module.exports = router;
 
 router.get("/load", (req, res) => {
   try {
-    let merchant_id = req.session.merchant_id;
-    let sql = `SELECT
-    me_extra_id,
-    me_extra_image,
-    me_extra_name,
-    me_extra_price,
-    me_is_available,
-    DATE_FORMAT(me_created_at, '%Y-%m-%d %H:%i:%s') as me_created_at
-    FROM menu_extras
-    WHERE me_merchant_id = '${merchant_id}'`;
+    let station_id = req.session.station_id;
+    let sql = `SELECT 
+    rr_reload_id,
+    DATE_FORMAT(rr_create_date, '%b %d %Y, %h:%i %p') as rr_create_date,
+    CONCAT(mr_first_name,' ',mr_last_name) as rr_fullname,
+    rr_amount,
+    rr_reload_status
+    FROM rider_reload
+    INNER JOIN master_rider ON rider_reload.rr_rider_id = mr_rider_id
+    WHERE rr_load_station_id = '${station_id}'`;
 
     Select(sql, (err, result) => {
       if (err) {
@@ -49,7 +49,7 @@ router.get("/load", (req, res) => {
         res.json(JsonErrorResponse(err));
       }
       if (result != 0) {
-        let data = DataModeling(result, "me_");
+        let data = DataModeling(result, "rr_");
         res.json(JsonDataResponse(data));
       } else {
         res.json(JsonDataResponse(result));
@@ -59,6 +59,69 @@ router.get("/load", (req, res) => {
     res.json(JsonErrorResponse(error));
   }
 });
+
+router.get("/getBudget", (req, res) => {
+  try {
+    let station_id = req.session.station_id;
+    let sql = `
+    SELECT
+    mls_budget 
+    FROM master_load_station
+    WHERE mls_station_id = '${station_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mls_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/getTopUp", (req, res) => {
+  try {
+    let load_id = req.body.load_id;
+    let sql = `
+    SELECT 
+    DATE_FORMAT(rr_create_date, '%b %d %Y, %h:%i %p') as rr_create_date,
+    CONCAT(mr_first_name,' ',mr_last_name) as rr_fullname,
+    mr_rider_code as rr_rider_code,
+    rr_amount,
+    rr_attachment,
+    rr_reload_status
+    FROM rider_reload
+    INNER JOIN master_rider ON rider_reload.rr_rider_id = mr_rider_id
+    WHERE rr_reload_id = '${load_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "rr_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+        
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+
 
 router.post("/save", (req, res) => {
   try {

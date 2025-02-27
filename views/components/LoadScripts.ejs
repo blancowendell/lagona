@@ -165,12 +165,12 @@ function formatCurrencyValue(amount) {
       console.log('clicked');
       $.ajax({
         type: "POST",
-        url: "/Merchantlogin/logout",
+        url: "/LoadLogin/logout",
         success: function (result) {
           toastr.success("Log out Successfully", "Ba Bye!!!");
           setTimeout(() => {
             window.location.reload();
-            location.replace("/Merchantlogin");
+            location.replace("/LoadLogin");
           }, 500); 
         },
         error: function (err) {

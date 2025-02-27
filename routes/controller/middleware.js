@@ -96,9 +96,9 @@ var roleacess = [
       {
         layout: "LoadTopUpLayout",
       },
-      // {
-      //   layout: "finishapplicationlayout",
-      // },
+      {
+        layout: "LoadRidersLayout",
+      },
       // {
       //   layout: "testpermitlayout",
       // },
