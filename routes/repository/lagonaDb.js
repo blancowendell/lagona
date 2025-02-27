@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const { Encrypter, Decrypter } = require("./crytography");
+const { Select, InsertTable } = require("./dbconnect");
 require("dotenv").config();
 
 let password = "";
@@ -54,4 +55,31 @@ exports.mysqlQueryPromise = (sql) => {
     });
   });
 };
+
+
+exports.SelectPromise = (sql) => {
+  return new Promise((resolve, reject) => {
+    Select(sql, (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+};
+
+
+exports.InsertTablePromise = (sql, values) => {
+  return new Promise((resolve, reject) => {
+    InsertTable(sql, values, (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+};
+
 

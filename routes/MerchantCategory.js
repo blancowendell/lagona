@@ -103,12 +103,11 @@ router.post("/save", (req, res) => {
         }
       })
       .catch((err) => {
-        // Ensure error is caught correctly here
         console.log(err);
         res.json(JsonErrorResponse(err));
       });
   } catch (error) {
-    console.log(error); // Log the error properly
+    console.log(error);
     res.json(JsonErrorResponse(error));
   }
 });

@@ -456,14 +456,7 @@ router.post("/riderTopUp", verifyJWT, async (req, res) => {
     ]);
 
     let data = [
-      [
-        rider_id,
-        station_id,
-        amount,
-        attachment,
-        create_date,
-        status,
-      ],
+      [rider_id, station_id, amount, attachment, create_date, status],
     ];
     InsertTable(sql, data, (err, result) => {
       if (err) {
@@ -477,6 +470,140 @@ router.post("/riderTopUp", verifyJWT, async (req, res) => {
     res.json(JsonErrorResponse(error));
   }
 });
+
+router.post("/viewWallet", verifyJWT, (req, res) => {
+  try {
+    let rider_id = req.body.rider_id;
+    let sql = `SELECT
+    mr_rider_id,
+    mr_rider_code,
+    mr_budget
+    FROM master_rider
+    WHERE mr_rider_id = '${rider_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mr_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/delivButton", verifyJWT, (req, res) => {
+  try {
+    const { rider_id, riderStatus } = req.body;
+
+    if (!["Available", "Not Available"].includes(riderStatus)) {
+      return res.json(JsonErrorResponse("Invalid riderStatus. Must be 'Available' or 'Not Available'."));
+    }
+
+    let data = [];
+    let columns = [];
+    let arguments = [];
+
+    if (riderStatus) {
+      data.push(riderStatus);
+      columns.push("rider_status");
+    }
+
+    if (rider_id) {
+      data.push(rider_id);
+      arguments.push("rider_id");
+    }
+
+    let updateStatement = UpdateStatement(
+      "master_rider",
+      "mr",
+      columns,
+      arguments
+    );
+
+    Update(updateStatement, data, (err, result) => {
+      if (err) {
+        console.error("Error: ", err);
+        return res.json(JsonErrorResponse("Failed to update rider status."));
+      }
+      res.json(JsonSuccess("Rider status updated successfully."));
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/getRiderStatus", verifyJWT, (req, res) => {
+  try {
+    let rider_id = req.body.rider_id;
+    let sql = `SELECT
+    mr_rider_status
+    FROM master_rider
+    WHERE mr_rider_id = '${rider_id}'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mr_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+router.post("/getOrder", verifyJWT, (req, res) => {
+  try {
+    let rider_id = req.body.rider_id;
+    let sql = `SELECT
+    mm_business_name as mm_merchant,
+    mm_longitude as mm_merchant_lng,
+    mm_latitude as mm_merchant_lat,
+    ca_longitude as mm_customer_lng,
+    ca_latitude as mm_customer_lat,
+    ort_distance as mm_distance,
+    ort_del_fee as mm_del_fee
+    FROM order_riders_table
+    INNER JOIN master_order ON order_riders_table.ort_order_id = mo_order_id
+    INNER JOIN master_merchant ON master_order.mo_merchant_id = mm_merchant_id
+    INNER JOIN customer_address ON master_order.mo_address_id = ca_address_id
+    WHERE ort_rider_id = '${rider_id}'
+    AND ort_status = 'Pending'`;
+
+    Select(sql, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json(JsonErrorResponse(err));
+      }
+      if (result != 0) {
+        let data = DataModeling(result, "mm_");
+        res.json(JsonDataResponse(data));
+      } else {
+        res.json(JsonDataResponse(result));
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json(JsonErrorResponse(error));
+  }
+});
+
+
 
 //#endregion
 

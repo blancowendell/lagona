@@ -98,7 +98,148 @@ router.post("/viewOrderDetails", (req, res) => {
   }
 });
 
-router.post("/viewRiderStatus", (req, res) => {  
+// router.post("/viewRiderStatus", (req, res) => {  
+//   try {
+//     const orderId = req.body.order_id;
+
+//     if (!orderId) {
+//       return res.status(400).json(JsonErrorResponse("Order ID is required"));
+//     }
+
+//     const customerQuery = `
+//       SELECT ca.ca_latitude, ca.ca_longitude, mo.mo_merchant_id
+//       FROM master_order mo
+//       INNER JOIN customer_address ca ON mo.mo_address_id = ca.ca_address_id
+//       WHERE mo.mo_order_id = '${orderId}'
+//     `;
+    
+
+//     Select(customerQuery, (err, customerResult) => {
+//       if (err) {
+//         console.error(err);
+//         return res.json(JsonErrorResponse(err));
+//       }
+
+//       if (customerResult.length === 0) {
+//         return res.status(404).json(JsonErrorResponse("Customer address not found"));
+//       }
+
+//       const {
+//         ca_latitude: customerLatitude,
+//         ca_longitude: customerLongitude,
+//         mo_merchant_id: merchantId,
+//       } = customerResult[0];
+
+//       const merchantQuery = `
+//         SELECT mm_latitude, mm_longitude, mm_prio_rider
+//         FROM master_merchant
+//         WHERE mm_merchant_id = '${merchantId}'
+//       `;
+
+//       Select(merchantQuery, (err, merchantResult) => {
+//         if (err) {
+//           console.error(err);
+//           return res.json(JsonErrorResponse(err));
+//         }
+
+//         if (merchantResult.length === 0) {
+//           return res.status(404).json(JsonErrorResponse("Merchant not found"));
+//         }
+
+//         const {
+//           mm_latitude: merchantLatitude,
+//           mm_longitude: merchantLongitude,
+//           mm_prio_rider: prioRiderId,
+//         } = merchantResult[0];
+
+//         const riderQuery = `
+//           SELECT
+//             mr_rider_id,
+//             CONCAT(mr_first_name, ' ', mr_last_name) AS mr_fullname,
+//             mr_rider_selfie,
+//             mr_rider_code,
+//             mr_latitude,
+//             mr_longitude
+//           FROM master_rider
+//           WHERE mr_rider_status = 'Available'
+//             AND mr_rider_id = '${prioRiderId}'
+//         `;
+
+//         Select(riderQuery, (err, riderResult) => {
+//           if (err) {
+//             console.error(err);
+//             return res.json(JsonErrorResponse(err));
+//           }
+
+//           if (riderResult.length === 0) {
+//             const fallbackRiderQuery = `
+//               SELECT
+//                 mr_rider_id,
+//                 CONCAT(mr_first_name, ' ', mr_last_name) AS mr_fullname,
+//                 mr_rider_selfie,
+//                 mr_rider_code,
+//                 mr_latitude,
+//                 mr_longitude
+//               FROM master_rider
+//               WHERE mr_rider_status = 'Available'
+//               LIMIT 1
+//             `;
+//             Select(fallbackRiderQuery, (err, fallbackRiderResult) => {
+//               if (err) {
+//                 console.error(err);
+//                 return res.json(JsonErrorResponse(err));
+//               }
+
+//               if (fallbackRiderResult.length === 0) {
+//                 return res.status(404).json(JsonErrorResponse("No available riders found"));
+//               }
+
+//               processRiderData(fallbackRiderResult[0]);
+//             });
+//           } else {
+//             processRiderData(riderResult[0]);
+//           }
+//         });
+
+//         function processRiderData(riderData) {
+//           const {
+//             mr_latitude: riderLatitude,
+//             mr_longitude: riderLongitude,
+//             mr_rider_id: riderId,
+//             mr_fullname: riderFullname,
+//             mr_rider_selfie: riderSelfie,
+//             mr_rider_code: riderCode,
+//           } = riderData;
+
+//           const distance = calculateHaversineDistance(
+//             parseFloat(merchantLatitude),
+//             parseFloat(merchantLongitude),
+//             parseFloat(customerLatitude),
+//             parseFloat(customerLongitude)
+//           );
+
+//           const deliveryFee = calculateDeliveryFee(distance);
+
+//           const responseData = {
+//             rider_id: riderId,
+//             fullname: riderFullname,
+//             image: riderSelfie,
+//             rider_code: riderCode,
+//             distance: distance.toFixed(2),
+//             delivery_fee: deliveryFee.toFixed(2), 
+//           };
+
+//           res.json(JsonDataResponse(responseData));
+//         }
+//       });
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json(JsonErrorResponse("Internal server error"));
+//   }
+// });
+
+router.post("/viewRiderStatus", (req, res) => {
   try {
     const orderId = req.body.order_id;
 
@@ -112,7 +253,6 @@ router.post("/viewRiderStatus", (req, res) => {
       INNER JOIN customer_address ca ON mo.mo_address_id = ca.ca_address_id
       WHERE mo.mo_order_id = '${orderId}'
     `;
-    
 
     Select(customerQuery, (err, customerResult) => {
       if (err) {
@@ -159,7 +299,8 @@ router.post("/viewRiderStatus", (req, res) => {
             mr_rider_selfie,
             mr_rider_code,
             mr_latitude,
-            mr_longitude
+            mr_longitude,
+            mr_budget
           FROM master_rider
           WHERE mr_rider_status = 'Available'
             AND mr_rider_id = '${prioRiderId}'
@@ -171,7 +312,7 @@ router.post("/viewRiderStatus", (req, res) => {
             return res.json(JsonErrorResponse(err));
           }
 
-          if (riderResult.length === 0) {
+          function findEligibleRider(callback) {
             const fallbackRiderQuery = `
               SELECT
                 mr_rider_id,
@@ -179,11 +320,13 @@ router.post("/viewRiderStatus", (req, res) => {
                 mr_rider_selfie,
                 mr_rider_code,
                 mr_latitude,
-                mr_longitude
+                mr_longitude,
+                mr_budget
               FROM master_rider
               WHERE mr_rider_status = 'Available'
-              LIMIT 1
+              ORDER BY RAND()
             `;
+
             Select(fallbackRiderQuery, (err, fallbackRiderResult) => {
               if (err) {
                 console.error(err);
@@ -194,14 +337,49 @@ router.post("/viewRiderStatus", (req, res) => {
                 return res.status(404).json(JsonErrorResponse("No available riders found"));
               }
 
-              processRiderData(fallbackRiderResult[0]);
+              for (let rider of fallbackRiderResult) {
+                const distance = calculateHaversineDistance(
+                  parseFloat(merchantLatitude),
+                  parseFloat(merchantLongitude),
+                  parseFloat(customerLatitude),
+                  parseFloat(customerLongitude)
+                );
+
+                const deliveryFee = calculateDeliveryFee(distance);
+                const feePercentage = deliveryFee * 0.15;
+
+                if (feePercentage < parseFloat(rider.mr_budget)) {
+                  return callback(rider, distance, deliveryFee);
+                }
+              }
+
+              return res.status(404).json(JsonErrorResponse("No eligible riders found within budget"));
             });
+          }
+
+          if (riderResult.length === 0) {
+            return findEligibleRider(processRiderData);
+          }
+
+          const priorityRider = riderResult[0];
+          const distance = calculateHaversineDistance(
+            parseFloat(merchantLatitude),
+            parseFloat(merchantLongitude),
+            parseFloat(customerLatitude),
+            parseFloat(customerLongitude)
+          );
+
+          const deliveryFee = calculateDeliveryFee(distance);
+          const feePercentage = deliveryFee * 0.15;
+
+          if (feePercentage < parseFloat(priorityRider.mr_budget)) {
+            processRiderData(priorityRider, distance, deliveryFee);
           } else {
-            processRiderData(riderResult[0]);
+            findEligibleRider(processRiderData);
           }
         });
 
-        function processRiderData(riderData) {
+        function processRiderData(riderData, distance, deliveryFee) {
           const {
             mr_latitude: riderLatitude,
             mr_longitude: riderLongitude,
@@ -211,22 +389,13 @@ router.post("/viewRiderStatus", (req, res) => {
             mr_rider_code: riderCode,
           } = riderData;
 
-          const distance = calculateHaversineDistance(
-            parseFloat(merchantLatitude),
-            parseFloat(merchantLongitude),
-            parseFloat(customerLatitude),
-            parseFloat(customerLongitude)
-          );
-
-          const deliveryFee = calculateDeliveryFee(distance);
-
           const responseData = {
             rider_id: riderId,
             fullname: riderFullname,
             image: riderSelfie,
             rider_code: riderCode,
             distance: distance.toFixed(2),
-            delivery_fee: deliveryFee.toFixed(2), 
+            delivery_fee: deliveryFee.toFixed(2),
           };
 
           res.json(JsonDataResponse(responseData));
@@ -238,6 +407,7 @@ router.post("/viewRiderStatus", (req, res) => {
     res.status(500).json(JsonErrorResponse("Internal server error"));
   }
 });
+
 
 router.post("/assignRider", (req, res) => {
   try {

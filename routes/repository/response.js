@@ -13,7 +13,7 @@ const MessageStatus = {
     NOTEXISTEMAIL: "Youre Email is not Exist in our Database",
     NOTEXISTCUSTOMER: "Customer is not Exist in our Database",
     NOTEXISTLOADSTATION: "Load Station is not Exist in our Database",
-
+    INSUFFICIENT: "Insufficient Funds"
   };
   
   function JsonSuccess() {
