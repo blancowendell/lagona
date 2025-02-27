@@ -1279,11 +1279,13 @@ router.post("/calculateDeliveryFee", verifyJWT, (req, res) => {
 
         return res.status(200).json({
           status: 200,
-          msg: "Delivery fee calculated successfully.",
-          data: {
-            distance: distance.toFixed(2),
-            delivery_fee: deliveryFee.toFixed(2),
-          }
+          msg: "success",
+          data: [
+            {
+              distance: distance.toFixed(2),
+              delivery_fee: deliveryFee.toFixed(2),
+            }
+          ]
         });
       });
     });
