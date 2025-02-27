@@ -29,7 +29,6 @@ router.get("/", function (req, res, next) {
 
 module.exports = router;
 
-
 router.get("/load", (req, res) => {
   try {
     let station_id = req.session.station_id;
@@ -112,7 +111,6 @@ router.post("/getTopUp", (req, res) => {
         res.json(JsonDataResponse(data));
       } else {
         res.json(JsonDataResponse(result));
-        
       }
     });
   } catch (error) {
@@ -121,67 +119,108 @@ router.post("/getTopUp", (req, res) => {
   }
 });
 
-
-
 router.post("/save", (req, res) => {
   try {
-    let status = "Active";
-    let merchant_id = req.session.merchant_id;
+    let station_id = req.session.station_id;
+    let date_response = GetCurrentDatetime();
+    const { load_id, load_amount, create_date, status, attachment } = req.body;
 
-    let createddate = GetCurrentDatetime();
-    const {
-      combo_name,
-      combo_description,
-      combo_price,
-      logo,
-    } = req.body;
+    const checkQuery = `
+      SELECT rr_rider_id
+      FROM rider_reload
+      WHERE rr_reload_id = '${load_id}'`;
 
-    let sql = InsertStatement("menu_extras", "me", [
-      "merchant_id",
-      "extra_image",
-      "extra_name",
-      "description",
-      "extra_price",
-      "is_available",
-      "created_at",
-    ]);
+    Select(checkQuery, (err, result) => {
+      if (err) {
+        console.error("Error: ", err);
+        return res.json(JsonErrorResponse(err));
+      }
 
-    let data = [
-      [
-        merchant_id,
-        logo,
-        combo_name,
-        combo_description,
-        combo_price,
-        status,
-        createddate,
-      ],
-    ];
+      if (result.length === 0) {
+        return res.json(JsonErrorResponse("Rider not found."));
+      }
 
-    let checkStatement = SelectStatement(
-      "select * from menu_extras where me_merchant_id=? and me_extra_name=?",
-      [merchant_id, combo_name]
-    );
+      const rider = result[0];
 
-    Check(checkStatement)
-      .then((result) => {
-        if (result != 0) {
-          return res.json(JsonWarningResponse(MessageStatus.EXIST));
-        } else {
-          InsertTable(sql, data, (err, result) => {
-            if (err) {
-              console.log(err);
-              return res.json(JsonErrorResponse(err));
-            }
+      let sql = InsertStatement("rider_reload_history", "rrh", [
+        "rider_id",
+        "load_station_id",
+        "amount",
+        "attachment",
+        "create_date",
+        "date_response",
+        "status",
+        "reload_reference_id",
+      ]);
 
-            res.json(JsonSuccess());
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        res.json(JsonErrorResponse(err));
-      });
+      let data = [
+        [
+          rider,
+          station_id,
+          load_amount,
+          attachment,
+          create_date,
+          date_response,
+          status,
+          load_id,
+        ],
+      ];
+
+      let checkStatement = SelectStatement(
+        "select * from menu_extras where me_merchant_id=? and me_extra_name=?",
+        [merchant_id, combo_name]
+      );
+
+      Check(checkStatement)
+        .then((result) => {
+          if (result != 0) {
+            return res.json(JsonWarningResponse(MessageStatus.EXIST));
+          } else {
+            InsertTable(sql, data, (err, result) => {
+              if (err) {
+                console.log(err);
+                return res.json(JsonErrorResponse(err));
+              }
+
+              let data = [];
+              let columns = [];
+              let arguments = [];
+
+              if (paid_date) {
+                data.push(paid_date);
+                columns.push("paid_date");
+              }
+
+              if (payment_screenshots) {
+                data.push(payment_screenshots);
+                columns.push("payment_screenshots");
+              }
+
+              if (order_id) {
+                data.push(order_id);
+                arguments.push("order_id");
+              }
+
+              let updateStatement = UpdateStatement(
+                "master_order",
+                "mo",
+                columns,
+                arguments
+              );
+
+              Update(updateStatement, data, (err, result) => {
+                if (err) console.error("Error: ", err);
+                res.json(JsonSuccess());
+              });
+              res.json(JsonSuccess());
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          res.json(JsonErrorResponse(err));
+        });
+    });
   } catch (error) {
     console.log(error);
     res.json(JsonErrorResponse(error));
@@ -225,8 +264,7 @@ router.put("/edit", (req, res) => {
       combo_availability,
     } = req.body;
 
-    console.log(logo,'img');
-    
+    console.log(logo, "img");
 
     let create_date = GetCurrentDatetime();
 
@@ -275,7 +313,7 @@ router.put("/edit", (req, res) => {
       columns,
       arguments
     );
-    
+
     let checkStatement = SelectStatement(
       "select * from menu_extras where me_extra_name = ? and me_extra_image = ? and me_description = ? and me_is_available = ? and me_extra_price = ?",
       [combo_name, logo, combo_description, combo_availability, combo_price]
@@ -302,15 +340,14 @@ router.put("/edit", (req, res) => {
   }
 });
 
-
 //#region FUNCTION
 function Check(sql) {
-    return new Promise((resolve, reject) => {
-      Select(sql, (err, result) => {
-        if (err) reject(err);
-  
-        resolve(result);
-      });
+  return new Promise((resolve, reject) => {
+    Select(sql, (err, result) => {
+      if (err) reject(err);
+
+      resolve(result);
     });
-  }
-  //#endregion
+  });
+}
+//#endregion
